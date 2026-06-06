@@ -156,11 +156,28 @@ header{display:flex;align-items:center;justify-content:space-between;padding:16p
 .budget-icon{font-size:18px;flex-shrink:0;}
 .budget-label{font-size:11px;color:var(--muted);}
 .budget-amt{font-size:14px;font-weight:600;color:var(--white);font-family:'DM Mono',monospace;}
+.budget-note{font-size:10px;color:var(--teal);font-weight:400;letter-spacing:.5px;
+  background:rgba(0,201,177,.08);padding:2px 8px;border-radius:4px;margin-left:6px;text-transform:none;}
 .budget-total{background:linear-gradient(90deg,rgba(201,168,76,.1),rgba(0,201,177,.08));
   border:1px solid var(--gold);border-radius:10px;padding:12px 18px;
-  display:flex;align-items:center;justify-content:space-between;margin-top:10px;}
+  display:flex;align-items:center;justify-content:space-between;margin-top:10px;gap:10px;flex-wrap:wrap;}
 .budget-total .lbl{font-size:13px;color:var(--gold);font-weight:600;}
-.budget-total .val{font-size:18px;font-weight:700;color:var(--gold2);font-family:'DM Mono',monospace;}
+.budget-basis{font-size:10px;color:var(--muted);margin-top:3px;line-height:1.4;}
+.budget-total-right{text-align:right;}
+.budget-total .val{font-size:20px;font-weight:700;color:var(--gold2);font-family:'DM Mono',monospace;display:block;}
+.budget-range{font-size:10px;color:var(--muted);font-family:'DM Mono',monospace;}
+/* Live budget bar */
+.budget-item{background:var(--glass);border:1px solid var(--border);border-radius:10px;
+  padding:12px 14px;display:flex;align-items:center;gap:10px;transition:all .3s;}
+.budget-item.is-selected{border-color:var(--teal);background:rgba(0,201,177,.06);}
+.budget-item.is-selectable{cursor:pointer;}
+.budget-item.is-selectable:hover{border-color:var(--gold);}
+.budget-icon{font-size:18px;flex-shrink:0;}
+.budget-label{font-size:11px;color:var(--muted);}
+.budget-amt{font-size:14px;font-weight:600;color:var(--white);font-family:'DM Mono',monospace;transition:all .3s;}
+.budget-amt.updated{color:var(--teal);}
+.budget-sel-hint{font-size:10px;color:var(--muted);margin-top:2px;}
+.budget-sel-hint.chosen{color:var(--teal);}
 
 /* Day Tabs */
 .day-tabs-wrap{background:var(--navy3);border-left:1px solid var(--border);
@@ -379,9 +396,20 @@ footer{margin-top:auto;padding:16px 20px;border-top:1px solid var(--border);
 
     <!-- Budget -->
     <div class="budget-section" id="budgetSection">
-      <div class="sec-title">💰 Budget Breakdown</div>
+      <div class="sec-title">💰 Budget Breakdown
+        <span class="budget-note" id="budgetNote">Based on lowest-cost options · Updates as you select</span>
+      </div>
       <div class="budget-grid" id="budgetGrid"></div>
-      <div class="budget-total" id="budgetTotal"></div>
+      <div class="budget-total" id="budgetTotal">
+        <div>
+          <span class="lbl">💳 Estimated Total</span>
+          <div class="budget-basis" id="budgetBasis">Showing indicative range — select options below to confirm</div>
+        </div>
+        <div class="budget-total-right">
+          <span class="val" id="budgetTotalVal">—</span>
+          <span class="budget-range" id="budgetRange"></span>
+        </div>
+      </div>
     </div>
 
     <!-- Day Tabs -->
@@ -543,30 +571,134 @@ function renderDayContent(day){
   return html;
 }
 
+/* ══ DYNAMIC BUDGET ENGINE ══ */
+// baseBudget: fixed costs (food, activities, misc) from AI — never change with option picks
+// selections: chosen hotel/flight/cab — costs update budget live
+var _baseBudget = [];       // [{icon,label,amt (number),fixed:true}]
+var _currentItinData = null;
+
+function parseAmt(str) {
+  // "₹5,600" or "5,600" or "52000" -> number
+  if (!str) return 0;
+  return parseInt(String(str).replace(/[₹,\s]/g,''), 10) || 0;
+}
+
+function fmtAmt(n) {
+  if (n >= 100000) return '₹' + (n/100000).toFixed(1).replace(/\.0$/,'') + 'L';
+  if (n >= 1000) return '₹' + n.toLocaleString('en-IN');
+  return '₹' + n;
+}
+
+function recalcBudget() {
+  // Start from base (fixed items)
+  var total = 0;
+  _baseBudget.forEach(function(item){ total += item.amt; });
+
+  // Add selected options
+  var selKeys = Object.keys(selections);
+  selKeys.forEach(function(k){
+    total += parseAmt(selections[k].price);
+  });
+
+  // Update total display
+  var totalEl = document.getElementById('budgetTotalVal');
+  if (totalEl) {
+    totalEl.textContent = fmtAmt(total);
+    totalEl.classList.add('updated');
+    setTimeout(function(){ totalEl.classList.remove('updated'); }, 800);
+  }
+
+  // Update basis text
+  var basisEl = document.getElementById('budgetBasis');
+  if (basisEl) {
+    if (selKeys.length === 0) {
+      basisEl.textContent = 'Showing indicative range — select options below to update total';
+    } else if (selKeys.length < (_currentItinData && _currentItinData.bookingOptions ? _currentItinData.bookingOptions.length : 4)) {
+      basisEl.textContent = selKeys.length + ' of ' + (_currentItinData.bookingOptions ? _currentItinData.bookingOptions.length : 4) + ' options selected — total is partial';
+    } else {
+      basisEl.textContent = 'All options selected — this is your confirmed estimated total';
+    }
+  }
+
+  // Highlight budget items that correspond to selections
+  _baseBudget.forEach(function(item, i) {
+    var el = document.getElementById('bitem-' + i);
+    if (!el) return;
+    var amtEl = el.querySelector('.budget-amt');
+    var hintEl = el.querySelector('.budget-sel-hint');
+    if (item.linkedCatId && selections[item.linkedCatId]) {
+      var sel = selections[item.linkedCatId];
+      if (amtEl) { amtEl.textContent = sel.price; amtEl.classList.add('updated'); setTimeout(function(){ amtEl.classList.remove('updated'); }, 800); }
+      if (hintEl) { hintEl.textContent = '✓ ' + sel.name; hintEl.className = 'budget-sel-hint chosen'; }
+      if (el) el.classList.add('is-selected');
+    } else if (item.linkedCatId) {
+      if (amtEl) amtEl.textContent = item.displayAmt;
+      if (hintEl) { hintEl.textContent = 'Tap below to select'; hintEl.className = 'budget-sel-hint'; }
+      if (el) el.classList.remove('is-selected');
+    }
+  });
+}
+
 /* ══ RENDER ITINERARY ══ */
 function renderItinerary(data){
+  _currentItinData = data;
+  selections = {};  // reset selections on new itinerary
+
   document.getElementById('bookingSection').style.display='';
   document.getElementById('tripDest').textContent=data.destination;
   document.getElementById('tripSub').textContent=data.subtitle;
   document.getElementById('tripBadges').innerHTML=data.badges.map(function(b){return '<span class="tbadge '+b.cls+'">'+b.text+'</span>';}).join('');
 
-  // Budget
-  const bg=document.getElementById('budgetGrid');
-  bg.innerHTML=data.budget.items.map(function(b){
-    return '<div class="budget-item"><div class="budget-icon">'+b.icon+'</div><div><div class="budget-label">'+b.label+'</div><div class="budget-amt">'+b.amt+'</div></div></div>';
+  // Build base budget — map AI budget items to categories
+  // Identify which items are "selectable" (hotel, flight, cab) vs fixed (food, activities, misc)
+  _baseBudget = [];
+  var catMap = { hotel:['hotel','stay','accommodation','resort','room'],
+                 flight:['flight','air','airline','fly'],
+                 cab:['cab','transfer','taxi','transport','grab','mrt','bus'] };
+  var usedLinkIds = {};
+
+  data.budget.items.forEach(function(b) {
+    var lbl = (b.label||'').toLowerCase();
+    var linkedCatId = null;
+    if (data.bookingOptions) {
+      Object.keys(catMap).forEach(function(cid) {
+        if (linkedCatId) return;
+        catMap[cid].forEach(function(kw) {
+          if (lbl.indexOf(kw) !== -1 && !usedLinkIds[cid]) linkedCatId = cid;
+        });
+      });
+    }
+    if (linkedCatId) usedLinkIds[linkedCatId] = true;
+    _baseBudget.push({ icon:b.icon, label:b.label, amt:parseAmt(b.amt), displayAmt:b.amt, linkedCatId:linkedCatId, fixed:!linkedCatId });
+  });
+
+  // Render budget grid with selectable hints
+  var bg = document.getElementById('budgetGrid');
+  bg.innerHTML = _baseBudget.map(function(b, i) {
+    var hint = b.linkedCatId ? '<div class="budget-sel-hint">Tap below to select</div>' : '';
+    var cls = b.linkedCatId ? ' is-selectable' : '';
+    return '<div class="budget-item'+cls+'" id="bitem-'+i+'">' +
+      '<div class="budget-icon">'+b.icon+'</div>' +
+      '<div><div class="budget-label">'+b.label+'</div>' +
+      '<div class="budget-amt">'+b.displayAmt+'</div>'+hint+'</div></div>';
   }).join('');
-  document.getElementById('budgetTotal').innerHTML='<span class="lbl">💳 Total Budget</span><span class="val">'+data.budget.total+'</span>';
+
+  // Set initial total
+  var initTotal = _baseBudget.reduce(function(s,b){ return s+b.amt; }, 0);
+  var totalEl = document.getElementById('budgetTotalVal');
+  if (totalEl) totalEl.textContent = fmtAmt(initTotal);
+  var rangeEl = document.getElementById('budgetRange');
+  if (rangeEl) rangeEl.textContent = 'Updates live as you select options';
 
   // Days
   renderDayTabs(data.days);
 
-  // Bookings
-  // Booking Options — use AI-generated options for this destination, never hardcoded fallback
+  // Booking Options
   var bookOpts = (data.bookingOptions && data.bookingOptions.length > 0) ? data.bookingOptions : null;
   if (bookOpts) { renderBookingOptions(bookOpts); } else { document.getElementById('bookingSection').style.display='none'; }
 
   // Tips
-  document.getElementById('tipsGrid').innerHTML=data.tips.map(function(t,i){
+  document.getElementById('tipsGrid').innerHTML=data.tips.map(function(t){
     return '<div class="tip-item"><div class="tip-num">💡</div><div class="tip-text">'+t+'</div></div>';
   }).join('');
 
@@ -1101,20 +1233,27 @@ function renderBookingOptions(opts) {
 
 function selectOption(catId, optIdx, name, price, catLabel) {
   var bid = catId + '-' + optIdx;
-  // Deselect prev in same category
   var prev = selections[catId];
   if (prev) {
     var prevCard = document.getElementById('optcard-' + prev.bid);
-    if (prevCard) { prevCard.classList.remove('selected'); prevCard.querySelector('.opt-select-btn').textContent = 'Select'; prevCard.querySelector('.opt-select-btn').classList.remove('chosen'); }
+    if (prevCard) {
+      prevCard.classList.remove('selected');
+      var prevBtn = prevCard.querySelector('.opt-select-btn');
+      if (prevBtn) { prevBtn.textContent = 'Select'; prevBtn.classList.remove('chosen'); }
+    }
   }
   if (prev && prev.bid === bid) {
-    // Toggle off
     delete selections[catId];
   } else {
     selections[catId] = { bid: bid, name: name, price: price, catLabel: catLabel };
     var card = document.getElementById('optcard-' + bid);
-    if (card) { card.classList.add('selected'); card.querySelector('.opt-select-btn').textContent = '✓ Selected'; card.querySelector('.opt-select-btn').classList.add('chosen'); }
+    if (card) {
+      card.classList.add('selected');
+      var btn = card.querySelector('.opt-select-btn');
+      if (btn) { btn.textContent = '✓ Selected'; btn.classList.add('chosen'); }
+    }
   }
+  recalcBudget();
   updateSummary();
 }
 
@@ -1122,13 +1261,29 @@ function updateSummary() {
   var keys = Object.keys(selections);
   var summary = document.getElementById('selSummary');
   var rows = document.getElementById('selRows');
+  if (!summary) return;
   if (keys.length === 0) { summary.classList.remove('show'); return; }
   summary.classList.add('show');
+  var selTotal = keys.reduce(function(s,k){ return s + parseAmt(selections[k].price); }, 0);
+  var fixedTotal = _baseBudget.reduce(function(s,b){ return s + (b.fixed ? b.amt : 0); }, 0);
+  var grandTotal = selTotal + fixedTotal;
   rows.innerHTML = keys.map(function(k) {
     var s = selections[k];
-    return '<div class="sel-row"><div class="sel-label">'+s.catLabel+'</div><div style="display:flex;align-items:center;gap:10px"><div class="sel-value">'+s.name+'</div><div class="sel-cost">'+s.price+'</div></div></div>';
-  }).join('');
+    return '<div class="sel-row"><div class="sel-label">' + s.catLabel + '</div>' +
+      '<div style="display:flex;align-items:center;gap:10px">' +
+      '<div class="sel-value">' + s.name + '</div>' +
+      '<div class="sel-cost">' + s.price + '</div></div></div>';
+  }).join('') +
+  '<div class="sel-row" style="border-top:1px solid rgba(201,168,76,.3);margin-top:6px;padding-top:8px;">' +
+    '<div class="sel-label" style="color:var(--gold);">Selected options subtotal</div>' +
+    '<div class="sel-cost" style="color:var(--gold);font-weight:700;">' + fmtAmt(selTotal) + '</div></div>' +
+  '<div class="sel-row"><div class="sel-label">+ Fixed costs (food, activities, misc)</div>' +
+    '<div class="sel-cost">' + fmtAmt(fixedTotal) + '</div></div>' +
+  '<div class="sel-row" style="background:rgba(0,201,177,.06);border-radius:6px;padding:8px;margin-top:4px;">' +
+    '<div class="sel-label" style="color:var(--teal);font-weight:700;">Grand Total Estimate</div>' +
+    '<div class="sel-cost" style="color:var(--teal);font-size:14px;font-weight:700;">' + fmtAmt(grandTotal) + '</div></div>';
 }
+
 
 function confirmBookings() {
   var keys = Object.keys(selections);
