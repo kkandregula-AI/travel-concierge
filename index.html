@@ -610,7 +610,7 @@ const DEMO_DATA={
       ]},
       {icon:'☀️',name:'Afternoon',activities:[
         {time:'14:00',emoji:'🍔',title:"Lunch at Mel's Drive-In (inside USS)",desc:'Burgers, milkshakes — classic diner vibes',cost:'2,800'},
-        {time:'16:30',emoji:'🏖️',title:'Siloso Beach',desc:'Free entry · Kids love the waves & sand',cost:null}
+        {time:'16:30',emoji:'🏖️',title:'Siloso Beach',desc:'Free entry · Kids love the waves and sand',cost:null}
       ]},
       {icon:'🌙',name:'Evening',activities:[
         {time:'19:00',emoji:'🍤',title:'Dinner at Coastes Beach Bar',desc:'Fish & Chips, Seafood Pasta, Sea views',cost:'3,200'},
@@ -778,24 +778,24 @@ function exportPDF(){
     const navy=[10,15,30],gold=[201,168,76],teal=[0,201,177],white=[240,246,255],muted=[136,153,187],light=[220,232,255];
 
     // Cover background
-    doc.setFillColor(...navy);doc.rect(0,0,W,297,'F');
+    doc.setFillColor(navy[0],navy[1],navy[2]);doc.rect(0,0,W,297,'F');
 
     // Header band
     doc.setFillColor(15,22,40);doc.rect(0,0,W,38,'F');
-    doc.setDrawColor(...gold);doc.setLineWidth(.3);doc.line(0,38,W,38);
+    doc.setDrawColor(gold[0],gold[1],gold[2]);doc.setLineWidth(.3);doc.line(0,38,W,38);
 
     // Logo circle
-    doc.setFillColor(...teal);doc.circle(M+6,19,6,'F');
-    doc.setTextColor(...navy);doc.setFont('helvetica','bold');doc.setFontSize(9);doc.text('✈',M+3.5,21.5);
+    doc.setFillColor(teal[0],teal[1],teal[2]);doc.circle(M+6,19,6,'F');
+    doc.setTextColor(navy[0],navy[1],navy[2]);doc.setFont('helvetica','bold');doc.setFontSize(9);doc.text('✈',M+3.5,21.5);
 
     // App name
-    doc.setTextColor(...white);doc.setFont('helvetica','bold');doc.setFontSize(16);
+    doc.setTextColor(white[0],white[1],white[2]);doc.setFont('helvetica','bold');doc.setFontSize(16);
     doc.text('TravelAI Concierge',M+16,17);
-    doc.setTextColor(...teal);doc.setFont('helvetica','normal');doc.setFontSize(8);
+    doc.setTextColor(teal[0],teal[1],teal[2]);doc.setFont('helvetica','normal');doc.setFontSize(8);
     doc.text('PERSONAL AI TRAVEL CONCIERGE',M+16,23);
 
     // Date
-    doc.setTextColor(...muted);doc.setFontSize(8);
+    doc.setTextColor(muted[0],muted[1],muted[2]);doc.setFontSize(8);
     doc.text('Generated: '+new Date().toLocaleDateString('en-IN',{day:'numeric',month:'long',year:'numeric'}),W-M,17,{align:'right'});
     doc.text('Powered by Claude AI',W-M,23,{align:'right'});
 
@@ -804,16 +804,16 @@ function exportPDF(){
     // Trip title
     const dest=document.getElementById('tripDest').textContent;
     const sub=document.getElementById('tripSub').textContent;
-    doc.setTextColor(...gold);doc.setFont('helvetica','bold');doc.setFontSize(18);
+    doc.setTextColor(gold[0],gold[1],gold[2]);doc.setFont('helvetica','bold');doc.setFontSize(18);
     doc.text(dest,M,y);y+=8;
-    doc.setTextColor(...muted);doc.setFont('helvetica','normal');doc.setFontSize(10);
+    doc.setTextColor(muted[0],muted[1],muted[2]);doc.setFont('helvetica','normal');doc.setFontSize(10);
     doc.text(sub,M,y);y+=5;
 
     // Separator
-    doc.setDrawColor(...gold);doc.setLineWidth(.4);doc.line(M,y,W-M,y);y+=8;
+    doc.setDrawColor(gold[0],gold[1],gold[2]);doc.setLineWidth(.4);doc.line(M,y,W-M,y);y+=8;
 
     // Budget Section
-    doc.setTextColor(...gold);doc.setFont('helvetica','bold');doc.setFontSize(11);
+    doc.setTextColor(gold[0],gold[1],gold[2]);doc.setFont('helvetica','bold');doc.setFontSize(11);
     doc.text('BUDGET BREAKDOWN',M,y);y+=6;
     const budgetItems=document.querySelectorAll('.budget-item');
     const col=2,cellW=(W-M*2-8)/col;
@@ -824,9 +824,9 @@ function exportPDF(){
       doc.setDrawColor(50,60,90);doc.setLineWidth(.2);doc.roundedRect(bx,by,cellW,11,2,2,'S');
       const lbl=item.querySelector('.budget-label').textContent;
       const amt=item.querySelector('.budget-amt').textContent;
-      doc.setTextColor(...muted);doc.setFont('helvetica','normal');doc.setFontSize(7.5);
+      doc.setTextColor(muted[0],muted[1],muted[2]);doc.setFont('helvetica','normal');doc.setFontSize(7.5);
       doc.text(lbl,bx+3,by+5);
-      doc.setTextColor(...white);doc.setFont('helvetica','bold');doc.setFontSize(9);
+      doc.setTextColor(white[0],white[1],white[2]);doc.setFont('helvetica','bold');doc.setFontSize(9);
       doc.text(amt,bx+3,by+9);
       col_i=(col_i+1)%col;
     });
@@ -836,8 +836,8 @@ function exportPDF(){
     // Total bar
     const tot=document.querySelector('.budget-total .val').textContent;
     doc.setFillColor(40,35,15);doc.roundedRect(M,y,W-M*2,10,2,2,'F');
-    doc.setDrawColor(...gold);doc.setLineWidth(.4);doc.roundedRect(M,y,W-M*2,10,2,2,'S');
-    doc.setTextColor(...gold);doc.setFont('helvetica','bold');doc.setFontSize(11);
+    doc.setDrawColor(gold[0],gold[1],gold[2]);doc.setLineWidth(.4);doc.roundedRect(M,y,W-M*2,10,2,2,'S');
+    doc.setTextColor(gold[0],gold[1],gold[2]);doc.setFont('helvetica','bold');doc.setFontSize(11);
     doc.text('TOTAL BUDGET',M+4,y+6.5);
     doc.text(tot,W-M-4,y+6.5,{align:'right'});
     y+=16;
@@ -845,28 +845,28 @@ function exportPDF(){
     // Days
     const dayTabs=document.querySelectorAll('.day-tab');
     dayTabs.forEach(function(tab,di){
-      if(y>260){doc.addPage();doc.setFillColor(...navy);doc.rect(0,0,W,297,'F');y=M;}
+      if(y>260){doc.addPage();doc.setFillColor(navy[0],navy[1],navy[2]);doc.rect(0,0,W,297,'F');y=M;}
       doc.setFillColor(15,25,45);doc.roundedRect(M,y,W-M*2,8,2,2,'F');
-      doc.setDrawColor(...teal);doc.setLineWidth(.3);doc.line(M,y+8,W-M,y+8);
-      doc.setTextColor(...teal);doc.setFont('helvetica','bold');doc.setFontSize(10);
+      doc.setDrawColor(teal[0],teal[1],teal[2]);doc.setLineWidth(.3);doc.line(M,y+8,W-M,y+8);
+      doc.setTextColor(teal[0],teal[1],teal[2]);doc.setFont('helvetica','bold');doc.setFontSize(10);
       doc.text('DAY '+(di+1)+' — '+tab.textContent.replace(/Day \d+ · /,'').toUpperCase(),M+3,y+5.5);
       y+=11;
 
       const dayContent=document.getElementById('day-'+di);
       const rows=dayContent.querySelectorAll('.activity-row');
       rows.forEach(function(row){
-        if(y>270){doc.addPage();doc.setFillColor(...navy);doc.rect(0,0,W,297,'F');y=M;}
+        if(y>270){doc.addPage();doc.setFillColor(navy[0],navy[1],navy[2]);doc.rect(0,0,W,297,'F');y=M;}
         const time=row.querySelector('.act-time').textContent;
         const title=row.querySelector('.act-title').textContent;
         const descEl=row.querySelector('.act-desc');
         const costEl=row.querySelector('.act-cost');
-        doc.setTextColor(...teal);doc.setFont('helvetica','bold');doc.setFontSize(8.5);
+        doc.setTextColor(teal[0],teal[1],teal[2]);doc.setFont('helvetica','bold');doc.setFontSize(8.5);
         doc.text(time,M+2,y);
-        doc.setTextColor(...white);doc.text(title,M+18,y);
-        if(costEl){doc.setTextColor(...gold);doc.text(costEl.textContent,W-M,y,{align:'right'});}
+        doc.setTextColor(white[0],white[1],white[2]);doc.text(title,M+18,y);
+        if(costEl){doc.setTextColor(gold[0],gold[1],gold[2]);doc.text(costEl.textContent,W-M,y,{align:'right'});}
         y+=5;
         if(descEl){
-          doc.setTextColor(...muted);doc.setFont('helvetica','normal');doc.setFontSize(7.5);
+          doc.setTextColor(muted[0],muted[1],muted[2]);doc.setFont('helvetica','normal');doc.setFontSize(7.5);
           const lines=doc.splitTextToSize(descEl.textContent,W-M*2-22);
           doc.text(lines,M+18,y);
           y+=lines.length*4;
@@ -877,31 +877,31 @@ function exportPDF(){
     });
 
     // Bookings
-    if(y>240){doc.addPage();doc.setFillColor(...navy);doc.rect(0,0,W,297,'F');y=M;}
-    doc.setDrawColor(...gold);doc.setLineWidth(.3);doc.line(M,y,W-M,y);y+=7;
-    doc.setTextColor(...gold);doc.setFont('helvetica','bold');doc.setFontSize(11);
+    if(y>240){doc.addPage();doc.setFillColor(navy[0],navy[1],navy[2]);doc.rect(0,0,W,297,'F');y=M;}
+    doc.setDrawColor(gold[0],gold[1],gold[2]);doc.setLineWidth(.3);doc.line(M,y,W-M,y);y+=7;
+    doc.setTextColor(gold[0],gold[1],gold[2]);doc.setFont('helvetica','bold');doc.setFontSize(11);
     doc.text('AGENTIC AI — BOOKING STATUS',M,y);y+=7;
     document.querySelectorAll('.booking-item').forEach(function(b){
-      if(y>275){doc.addPage();doc.setFillColor(...navy);doc.rect(0,0,W,297,'F');y=M;}
+      if(y>275){doc.addPage();doc.setFillColor(navy[0],navy[1],navy[2]);doc.rect(0,0,W,297,'F');y=M;}
       doc.setTextColor(0,201,177);doc.setFontSize(8);doc.text('✓',M+2,y);
-      doc.setTextColor(...white);doc.setFont('helvetica','bold');doc.setFontSize(8.5);
+      doc.setTextColor(white[0],white[1],white[2]);doc.setFont('helvetica','bold');doc.setFontSize(8.5);
       doc.text(b.querySelector('.booking-service').textContent,M+8,y);
-      doc.setTextColor(...muted);doc.setFont('helvetica','normal');doc.setFontSize(7.5);
+      doc.setTextColor(muted[0],muted[1],muted[2]);doc.setFont('helvetica','normal');doc.setFontSize(7.5);
       doc.text(b.querySelector('.booking-ref').textContent,M+8,y+4);
       y+=9;
     });
 
     // Tips
-    if(y>240){doc.addPage();doc.setFillColor(...navy);doc.rect(0,0,W,297,'F');y=M;}
-    y+=4;doc.setDrawColor(...gold);doc.line(M,y,W-M,y);y+=7;
-    doc.setTextColor(...gold);doc.setFont('helvetica','bold');doc.setFontSize(11);
+    if(y>240){doc.addPage();doc.setFillColor(navy[0],navy[1],navy[2]);doc.rect(0,0,W,297,'F');y=M;}
+    y+=4;doc.setDrawColor(gold[0],gold[1],gold[2]);doc.line(M,y,W-M,y);y+=7;
+    doc.setTextColor(gold[0],gold[1],gold[2]);doc.setFont('helvetica','bold');doc.setFontSize(11);
     doc.text('PRO TIPS FROM YOUR CONCIERGE',M,y);y+=7;
     document.querySelectorAll('.tip-text').forEach(function(t,i){
-      if(y>270){doc.addPage();doc.setFillColor(...navy);doc.rect(0,0,W,297,'F');y=M;}
+      if(y>270){doc.addPage();doc.setFillColor(navy[0],navy[1],navy[2]);doc.rect(0,0,W,297,'F');y=M;}
       doc.setFillColor(30,25,10);doc.roundedRect(M,y-1,W-M*2,10,2,2,'F');
-      doc.setTextColor(...gold);doc.setFont('helvetica','bold');doc.setFontSize(8);
+      doc.setTextColor(gold[0],gold[1],gold[2]);doc.setFont('helvetica','bold');doc.setFontSize(8);
       doc.text('💡 Tip '+(i+1),M+3,y+5);
-      doc.setTextColor(...light);doc.setFont('helvetica','normal');doc.setFontSize(7.5);
+      doc.setTextColor(light[0],light[1],light[2]);doc.setFont('helvetica','normal');doc.setFontSize(7.5);
       const lines=doc.splitTextToSize(t.textContent,W-M*2-22);
       doc.text(lines,M+18,y+4.5);
       y+=Math.max(11,lines.length*4.5+3);
@@ -912,8 +912,8 @@ function exportPDF(){
     for(let p=1;p<=pages;p++){
       doc.setPage(p);
       doc.setFillColor(10,12,22);doc.rect(0,284,W,13,'F');
-      doc.setDrawColor(...gold);doc.setLineWidth(.2);doc.line(0,284,W,284);
-      doc.setTextColor(...muted);doc.setFont('helvetica','normal');doc.setFontSize(7);
+      doc.setDrawColor(gold[0],gold[1],gold[2]);doc.setLineWidth(.2);doc.line(0,284,W,284);
+      doc.setTextColor(muted[0],muted[1],muted[2]);doc.setFont('helvetica','normal');doc.setFontSize(7);
       doc.text('Designed & Architected by Krishnamurthy Kandregula · Made by Claude · TravelAI Personal Concierge',M,290);
       doc.text('Page '+p+' of '+pages,W-M,290,{align:'right'});
     }
@@ -951,7 +951,7 @@ const SINGAPORE_BOOKING_OPTIONS = [
       {name:'IndiGo 6E 81/82 — HYD ↔ SIN',badges:[{t:'Best Price',c:'best'},{t:'Direct',c:'popular'}],
        price:'₹52,000',per:'4 passengers · return',
        details:[{icon:'🕐',label:'Depart',val:'09:30 HYD'},{icon:'🕒',label:'Arrive',val:'15:10 SIN (+0)'},{icon:'⏱️',label:'Duration',val:'5h 40m direct'},{icon:'🧳',label:'Baggage',val:'15kg check-in each'}],
-       desc:'Best value direct flight. Good on-time record on this route. IndiGo's most punctual SIN service.',
+       desc:'Best value direct flight. Good on-time record on this route. IndiGo best punctual SIN service.',
        link:'https://goindigo.in'},
       {name:'Air India AI 347/348 — HYD ↔ SIN',badges:[{t:'Full Service',c:'premium'}],
        price:'₹68,000',per:'4 passengers · return',
@@ -961,7 +961,7 @@ const SINGAPORE_BOOKING_OPTIONS = [
       {name:'Singapore Airlines SQ 524 — via BOM',badges:[{t:'Premium',c:'gold'}],
        price:'₹1,12,000',per:'4 passengers · return',
        details:[{icon:'🕐',label:'Depart',val:'06:00 HYD → BOM'},{icon:'🕒',label:'Arrive',val:'14:20 SIN'},{icon:'⏱️',label:'Duration',val:'8h 20m 1-stop'},{icon:'🧳',label:'Baggage',val:'30kg each + lounge'}],
-       desc:'World's best airline. Over budget but best in-flight experience — worth it for a special occasion.',
+       desc:'World-class airline. Over budget but best in-flight experience — worth it for a special occasion.',
        link:'https://singaporeair.com'}
     ]
   },
@@ -996,7 +996,7 @@ const SINGAPORE_BOOKING_OPTIONS = [
       {name:'Singapore Zoo + Night Safari Combo',badges:[{t:'Popular',c:'popular'},{t:'Save 15%',c:'best'}],
        price:'₹25,300',per:'2 adults + 2 kids (combo)',
        details:[{icon:'⏰',label:'Zoo Opens',val:'9:00 AM'},{icon:'🌙',label:'Safari',val:'7:30 PM tram'},{icon:'📍',label:'Location',val:'Mandai (same complex)'},{icon:'💡',label:'Tip',val:'Combo saves ₹3,800'}],
-       desc:'World's best open-concept zoo + world's first nocturnal safari. Do both in one day — memorable for kids.',
+       desc:'World-class open-concept zoo and world-first nocturnal safari. Do both in one day - memorable for kids.',
        link:'https://mandai.com'},
       {name:'Gardens by the Bay — Domes',badges:[{t:'Budget-Friendly',c:'budget'}],
        price:'₹11,000',per:'2 adults + 2 kids (Cloud Forest + Flower Dome)',
@@ -1015,39 +1015,60 @@ function renderBookingOptions(opts) {
   var cats = document.getElementById('bookCats');
   var panels = document.getElementById('bookPanels');
   cats.innerHTML = ''; panels.innerHTML = '';
+  // Store opts globally for event delegation
+  window._bookOpts = opts;
   opts.forEach(function(cat, ci) {
-    // Tab
     var tab = document.createElement('button');
     tab.className = 'book-cat' + (ci === 0 ? ' active' : '');
     tab.textContent = cat.category;
-    tab.onclick = function() {
-      document.querySelectorAll('.book-cat').forEach(function(t){t.classList.remove('active');});
-      document.querySelectorAll('.book-panel').forEach(function(p){p.classList.remove('active');});
-      tab.classList.add('active');
-      document.getElementById('panel-' + cat.id).classList.add('active');
-    };
+    tab.setAttribute('data-panelid', cat.id);
     cats.appendChild(tab);
-    // Panel
     var panel = document.createElement('div');
     panel.className = 'book-panel' + (ci === 0 ? ' active' : '');
     panel.id = 'panel-' + cat.id;
-    var html = '';
     cat.options.forEach(function(opt, oi) {
       var bid = cat.id + '-' + oi;
       var isSelected = selections[cat.id] && selections[cat.id].bid === bid;
-      html += '<div class="opt-card' + (isSelected ? ' selected' : '') + '" id="optcard-' + bid + '">';
-      html += '<div class="opt-header">';
-      html += '<div><div class="opt-name">' + opt.name + '</div>';
-      html += '<div class="opt-badge-wrap">' + opt.badges.map(function(b){return '<span class="opt-badge '+b.c+'">'+b.t+'</span>';}).join('') + '</div></div>';
-      html += '<div class="opt-price"><div class="opt-price-main">' + opt.price + '</div><div class="opt-price-sub">' + opt.per + '</div></div>';
-      html += '</div>';
-      html += '<div class="opt-details">' + opt.details.map(function(d){return '<div class="opt-detail">'+d.icon+' '+d.label+': <span>'+d.val+'</span></div>';}).join('') + '</div>';
-      html += '<div class="opt-footer"><div class="opt-desc">' + opt.desc + '</div>';
-      html += '<button class="opt-select-btn' + (isSelected ? ' chosen' : '') + '" onclick="selectOption('' + cat.id + '',' + oi + ','' + opt.name + '','' + opt.price + '','' + cat.category + '')">' + (isSelected ? '✓ Selected' : 'Select') + '</button>';
-      html += '</div></div>';
+      var card = document.createElement('div');
+      card.className = 'opt-card' + (isSelected ? ' selected' : '');
+      card.id = 'optcard-' + bid;
+      var badges = opt.badges.map(function(b){ return '<span class="opt-badge ' + b.c + '">' + b.t + '</span>'; }).join('');
+      var dets = opt.details.map(function(d){ return '<div class="opt-detail">' + d.icon + ' ' + d.label + ': <span>' + d.val + '</span></div>'; }).join('');
+      card.innerHTML = '<div class="opt-header">' +
+        '<div><div class="opt-name">' + opt.name + '</div>' +
+        '<div class="opt-badge-wrap">' + badges + '</div></div>' +
+        '<div class="opt-price"><div class="opt-price-main">' + opt.price + '</div><div class="opt-price-sub">' + opt.per + '</div></div>' +
+        '</div>' +
+        '<div class="opt-details">' + dets + '</div>' +
+        '<div class="opt-footer"><div class="opt-desc">' + opt.desc + '</div>' +
+        '<button class="opt-select-btn' + (isSelected ? ' chosen' : '') + '" data-catid="' + cat.id + '" data-optidx="' + oi + '">' + (isSelected ? '✓ Selected' : 'Select') + '</button>' +
+        '</div>';
+      panel.appendChild(card);
     });
-    panel.innerHTML = html;
     panels.appendChild(panel);
+  });
+  // Category tab clicks
+  cats.addEventListener('click', function(e) {
+    var btn = e.target.closest('.book-cat');
+    if (!btn) return;
+    document.querySelectorAll('.book-cat').forEach(function(t){ t.classList.remove('active'); });
+    document.querySelectorAll('.book-panel').forEach(function(p){ p.classList.remove('active'); });
+    btn.classList.add('active');
+    var pid = btn.getAttribute('data-panelid');
+    var panel = document.getElementById('panel-' + pid);
+    if (panel) panel.classList.add('active');
+  });
+  // Select button clicks via event delegation on panels container
+  panels.addEventListener('click', function(e) {
+    var btn = e.target.closest('.opt-select-btn');
+    if (!btn) return;
+    var catId = btn.getAttribute('data-catid');
+    var optIdx = parseInt(btn.getAttribute('data-optidx'), 10);
+    var matchedCat = null;
+    window._bookOpts.forEach(function(c){ if (c.id === catId) matchedCat = c; });
+    if (!matchedCat) return;
+    var opt = matchedCat.options[optIdx];
+    selectOption(catId, optIdx, opt.name, opt.price, matchedCat.category);
   });
   updateSummary();
 }
