@@ -218,9 +218,26 @@ header{display:flex;align-items:center;justify-content:space-between;padding:14p
 .sel-label{color:var(--muted);display:flex;align-items:center;gap:5px;}
 .sel-value{color:var(--white);font-weight:600;}
 .sel-cost{color:var(--gold);font-family:'DM Mono',monospace;font-size:11px;}
-.confirm-btn{width:100%;margin-top:10px;padding:12px;background:linear-gradient(135deg,var(--teal),var(--teal2));border:none;color:var(--navy);font-family:'DM Sans',sans-serif;font-size:14px;font-weight:700;border-radius:10px;cursor:pointer;}
-.confirm-btn:active{opacity:.85;}
-.confirm-note{font-size:10px;color:var(--muted);text-align:center;margin-top:5px;}
+.mark-booked-btn{width:100%;margin-top:12px;padding:13px;
+  background:linear-gradient(135deg,#1a4a2e,#22c55e);
+  border:1px solid rgba(34,197,94,.4);color:#fff;font-family:'DM Sans',sans-serif;
+  font-size:13px;font-weight:700;border-radius:10px;cursor:pointer;transition:all .2s;
+  display:flex;align-items:center;justify-content:center;gap:8px;}
+.mark-booked-btn:active{opacity:.85;}
+.mark-booked-btn:disabled{opacity:.5;cursor:not-allowed;}
+.confirm-note{font-size:10px;color:var(--muted);text-align:center;margin-top:6px;line-height:1.5;}
+.booking-status-row{display:flex;flex-direction:column;gap:6px;margin-top:10px;}
+.booking-item-row{display:flex;align-items:center;justify-content:space-between;
+  padding:8px 12px;background:var(--glass);border:1px solid var(--border);
+  border-radius:8px;gap:8px;}
+.booking-item-row.booked{border-color:rgba(34,197,94,.4);background:rgba(34,197,94,.06);}
+.bi-label{font-size:12px;color:var(--light);flex:1;}
+.bi-name{font-size:11px;color:var(--muted);flex:2;}
+.bi-cost{font-size:12px;color:var(--gold);font-family:'DM Mono',monospace;font-weight:600;flex-shrink:0;}
+.bi-status{font-size:11px;font-weight:600;padding:3px 9px;border-radius:5px;white-space:nowrap;}
+.bi-status.pending{background:rgba(245,158,11,.1);color:var(--amber);border:1px solid rgba(245,158,11,.3);}
+.bi-status.booked{background:rgba(34,197,94,.12);color:var(--green);border:1px solid rgba(34,197,94,.3);}
+.tap-to-book{font-size:10px;color:var(--teal);cursor:pointer;text-decoration:underline;white-space:nowrap;}
 .tips-section{background:var(--navy3);border:1px solid var(--border);border-top:none;border-radius:0 0 16px 16px;padding:14px 18px;}
 .tips-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:8px;}
 .tip-item{display:flex;gap:9px;padding:9px 11px;background:rgba(201,168,76,.05);border:1px solid rgba(201,168,76,.15);border-radius:9px;}
@@ -325,10 +342,11 @@ footer{margin-top:auto;padding:14px 18px;border-top:1px solid var(--border);disp
       <div class="book-cats" id="bookCats"></div>
       <div id="bookPanels"></div>
       <div class="selection-summary" id="selSummary">
-        <div class="sel-title">&#x1F4CB; Your Selections</div>
+        <div class="sel-title">&#x1F4CB; Your Budget Plan</div>
         <div id="selRows"></div>
-        <button class="confirm-btn" id="confirmBtn">&#x2705; Confirm &amp; Proceed to Book</button>
-        <div class="confirm-note">Opens each provider site in a new tab to complete payment</div>
+        <div class="booking-status-row" id="bookingStatusRow"></div>
+        <button class="mark-booked-btn" id="markBookedBtn">&#x1F3F7;&#xFE0F; I Have Booked — Generate Final PDF</button>
+        <div class="confirm-note">After booking on each provider site, tap above to generate your confirmed itinerary PDF</div>
       </div>
     </div>
     <div class="tips-section">
@@ -862,25 +880,108 @@ function selectOption(catId,optIdx,name,price,catLabel){
   recalcBudget();updateSummary();
 }
 
+/* ══ BOOKING STATE ══ */
+var _bookedItems = {};   // catId -> true once user marks as booked
+
 function updateSummary(){
   var keys=Object.keys(selections);
   var summary=document.getElementById('selSummary');
   var rows=document.getElementById('selRows');
+  var statusRow=document.getElementById('bookingStatusRow');
   if(!summary)return;
   if(keys.length===0){summary.classList.remove('show');return;}
   summary.classList.add('show');
   var selTotal=keys.reduce(function(s,k){return s+parseAmt(selections[k].price);},0);
   var fixedTotal=_baseBudget.reduce(function(s,b){return s+(b.fixed?b.amt:0);},0);
   var grand=selTotal+fixedTotal;
-  rows.innerHTML=keys.map(function(k){var s=selections[k];return '<div class="sel-row"><div class="sel-label">'+s.catLabel+'</div><div style="display:flex;align-items:center;gap:8px"><div class="sel-value">'+s.name+'</div><div class="sel-cost">'+s.price+'</div></div></div>';}).join('')+
-    '<div class="sel-row" style="border-top:1px solid rgba(201,168,76,.3);margin-top:6px;padding-top:8px;"><div class="sel-label" style="color:var(--gold);">Options subtotal</div><div class="sel-cost" style="color:var(--gold);font-weight:700;">'+fmtAmt(selTotal)+'</div></div>'+
-    '<div class="sel-row"><div class="sel-label">+ Fixed (food, activities, misc)</div><div class="sel-cost">'+fmtAmt(fixedTotal)+'</div></div>'+
-    '<div class="sel-row" style="background:rgba(0,201,177,.07);border-radius:6px;padding:7px;margin-top:4px;"><div class="sel-label" style="color:var(--teal);font-weight:700;">Grand Total Estimate</div><div class="sel-cost" style="color:var(--teal);font-size:13px;font-weight:700;">'+fmtAmt(grand)+'</div></div>';
+
+  // Budget summary rows
+  rows.innerHTML=
+    keys.map(function(k){
+      var s=selections[k];
+      var isLowest=isLowestOption(k);
+      return '<div class="sel-row">'+
+        '<div class="sel-label">'+(isLowest?'<span style="color:var(--green);font-size:10px;">&#10003; Lowest</span> ':'')+s.catLabel+'</div>'+
+        '<div style="display:flex;align-items:center;gap:8px">'+
+        '<div class="sel-value">'+s.name+'</div>'+
+        '<div class="sel-cost">'+s.price+'</div></div></div>';
+    }).join('')+
+    '<div class="sel-row" style="border-top:1px solid rgba(201,168,76,.3);margin-top:6px;padding-top:8px;">'+
+      '<div class="sel-label" style="color:var(--gold);">Selected options</div>'+
+      '<div class="sel-cost" style="color:var(--gold);font-weight:700;">'+fmtAmt(selTotal)+'</div></div>'+
+    '<div class="sel-row">'+
+      '<div class="sel-label">+ Fixed (food, activities, misc)</div>'+
+      '<div class="sel-cost">'+fmtAmt(fixedTotal)+'</div></div>'+
+    '<div class="sel-row" style="background:rgba(0,201,177,.07);border-radius:6px;padding:7px;margin-top:4px;">'+
+      '<div class="sel-label" style="color:var(--teal);font-weight:700;">Grand Total Estimate</div>'+
+      '<div class="sel-cost" style="color:var(--teal);font-size:14px;font-weight:700;">'+fmtAmt(grand)+'</div></div>';
+
+  // Booking status rows — one per selection with "Tap to book" link + booked toggle
+  if(statusRow){
+    statusRow.innerHTML='<div style="font-size:11px;color:var(--muted);margin-bottom:6px;font-weight:600;">BOOKING STATUS &mdash; tap each link to book, then mark done:</div>'+
+    keys.map(function(k){
+      var s=selections[k];
+      var booked=!!_bookedItems[k];
+      var bookUrl=getBookingUrl(k,s.name);
+      return '<div class="booking-item-row'+(booked?' booked':'')+'" id="birow-'+k+'">'+
+        '<div class="bi-label">'+s.catLabel.replace(/^[^ ]+ /,'')+'</div>'+
+        '<div class="bi-name">'+s.name+'</div>'+
+        '<div class="bi-cost">'+s.price+'</div>'+
+        (booked
+          ? '<span class="bi-status booked">Done</span>'
+          : '<a class="tap-to-book" href="'+bookUrl+'" target="_blank" rel="noopener" data-catid="'+k+'">Book</a>'+
+            '<button class="bi-status pending" data-markcatid="'+k+'">Mark Done</button>'
+        )+
+      '</div>';
+    }).join('');
+  }
+
+  // Show/hide generate PDF button based on booking state
+  var mbBtn=document.getElementById('markBookedBtn');
+  if(mbBtn){
+    var allBooked=keys.length>0&&keys.every(function(k){return !!_bookedItems[k];});
+    mbBtn.textContent=allBooked?'Generate Confirmed Itinerary PDF':'I Have Booked - Generate Final PDF';
+  }
+
+  // Wire up Mark Done buttons via delegation on statusRow
+  if(statusRow){
+    statusRow.addEventListener('click',function handler(e){
+      var btn=e.target.closest('[data-markcatid]');
+      if(!btn)return;
+      _bookedItems[btn.getAttribute('data-markcatid')]=true;
+      statusRow.removeEventListener('click',handler);
+      updateSummary();
+    });
+  }
 }
 
-document.getElementById('confirmBtn').addEventListener('click',function(){
-  var keys=Object.keys(selections);if(!keys.length)return;
-  alert('Your selections:\n\n'+keys.map(function(k){return selections[k].catLabel.replace(/^[^ ]+ /,'')+': '+selections[k].name+' — '+selections[k].price;}).join('\n')+'\n\nTap the provider links on each option card to complete booking on their secure site. No charges have been made.');
+function isLowestOption(catId){
+  if(!window._bookOpts)return false;
+  var cat=null;
+  window._bookOpts.forEach(function(c2){if(c2.id===catId)cat=c2;});
+  if(!cat||!cat.options||cat.options.length===0)return false;
+  var sel=selections[catId];if(!sel)return false;
+  var lowest=cat.options.reduce(function(best,opt){
+    return parseAmt(opt.price)<parseAmt(best.price)?opt:best;
+  },cat.options[0]);
+  return sel.name===lowest.name;
+}
+
+function getBookingUrl(catId,name){
+  var q=encodeURIComponent((name||'').slice(0,40));
+  var urls={
+    hotel:'https://www.makemytrip.com/hotels/hotel-listing/?searchText='+q,
+    flight:'https://www.makemytrip.com/flights/',
+    cab:'https://www.makemytrip.com/cabs/',
+    attract:'https://www.klook.com/en-IN/search/?keyword='+q
+  };
+  return urls[catId]||'https://www.makemytrip.com/';
+}
+
+
+
+document.getElementById('markBookedBtn').addEventListener('click',function(){
+  exportPDF(true);
 });
 
 /* ══ SINGAPORE DEMO DATA ══ */
@@ -999,6 +1100,193 @@ function planTrip(){
 }
 
 /* 
+/* ══ EXPORT PDF — works in two modes:
+   exportPDF(false) = Preview itinerary
+   exportPDF(true)  = Confirmed booking PDF with booked items ══ */
+function exportPDF(confirmedMode){
+  var btn=document.getElementById('pdfBtn');
+  var mbBtn=document.getElementById('markBookedBtn');
+  var activeBtn=confirmedMode?mbBtn:btn;
+  if(activeBtn){activeBtn.textContent='\u23F3 Building PDF\u2026';activeBtn.disabled=true;}
+
+  function doExport(){
+    try{
+      var jsPDF=(window.jspdf&&window.jspdf.jsPDF)||window.jsPDF;
+      if(!jsPDF)throw new Error('PDF library not available');
+      var doc=new jsPDF({orientation:'portrait',unit:'mm',format:'a4'});
+      var W=210,M=16,y=M;
+      var nv=[10,15,30],gd=[201,168,76],tl=[0,201,177],wh=[240,246,255],mu=[136,153,187],gr=[34,197,94];
+
+      function newPage(){
+        doc.addPage();
+        doc.setFillColor(nv[0],nv[1],nv[2]);doc.rect(0,0,W,297,'F');
+        y=M;
+      }
+      function checkY(need){if(y+need>278)newPage();}
+
+      // ── Cover Header ──
+      doc.setFillColor(nv[0],nv[1],nv[2]);doc.rect(0,0,W,297,'F');
+      doc.setFillColor(12,20,40);doc.rect(0,0,W,42,'F');
+      doc.setDrawColor(gd[0],gd[1],gd[2]);doc.setLineWidth(.4);doc.line(0,42,W,42);
+      doc.setFillColor(tl[0],tl[1],tl[2]);doc.circle(M+5,21,5,'F');
+      doc.setTextColor(wh[0],wh[1],wh[2]);doc.setFont('helvetica','bold');doc.setFontSize(15);
+      doc.text('TravelAI Concierge',M+14,18);
+      doc.setTextColor(tl[0],tl[1],tl[2]);doc.setFont('helvetica','normal');doc.setFontSize(8);
+      doc.text(confirmedMode?'CONFIRMED ITINERARY':'TRAVEL PLAN PREVIEW',M+14,25);
+      doc.setTextColor(mu[0],mu[1],mu[2]);doc.setFontSize(7.5);
+      var dateStr=new Date().toLocaleDateString('en-IN',{day:'numeric',month:'long',year:'numeric'});
+      doc.text('Generated: '+dateStr,W-M,18,{align:'right'});
+      doc.text(confirmedMode?'Status: BOOKINGS CONFIRMED':'Status: Plan Preview',W-M,25,{align:'right'});
+      y=52;
+
+      // ── Trip Title ──
+      var dest=document.getElementById('tripDest').textContent||'Your Trip';
+      var sub=document.getElementById('tripSub').textContent||'';
+      doc.setTextColor(gd[0],gd[1],gd[2]);doc.setFont('helvetica','bold');doc.setFontSize(17);
+      doc.text(dest.replace(/[^\x00-\x7E]/g,'').trim()||'Your Trip',M,y);y+=8;
+      doc.setTextColor(mu[0],mu[1],mu[2]);doc.setFont('helvetica','normal');doc.setFontSize(10);
+      doc.text(sub.replace(/[^\x00-\x7E]/g,'').trim(),M,y);y+=5;
+      doc.setDrawColor(gd[0],gd[1],gd[2]);doc.setLineWidth(.3);doc.line(M,y,W-M,y);y+=8;
+
+      // ── Budget ──
+      doc.setTextColor(gd[0],gd[1],gd[2]);doc.setFont('helvetica','bold');doc.setFontSize(10);
+      doc.text('BUDGET BREAKDOWN',M,y);y+=5;
+      var budgetItems=document.querySelectorAll('.budget-item');
+      var col=2,cW=(W-M*2-6)/col,ci=0,rY=y;
+      budgetItems.forEach(function(item,i){
+        var bx=M+ci*(cW+6),by=rY+Math.floor(i/col)*13;
+        doc.setFillColor(18,26,48);doc.roundedRect(bx,by,cW,10,1.5,1.5,'F');
+        var lbl=(item.querySelector('.budget-label')||{}).textContent||'';
+        var amt=(item.querySelector('.budget-amt')||{}).textContent||'';
+        doc.setTextColor(mu[0],mu[1],mu[2]);doc.setFont('helvetica','normal');doc.setFontSize(7);doc.text(lbl.slice(0,28),bx+2,by+4.5);
+        doc.setTextColor(wh[0],wh[1],wh[2]);doc.setFont('helvetica','bold');doc.setFontSize(8.5);doc.text(amt,bx+2,by+8.5);
+        ci=(ci+1)%col;
+      });
+      y=rY+Math.ceil(budgetItems.length/col)*13+4;
+      var tv=(document.getElementById('budgetTotalVal')||{}).textContent||'--';
+      doc.setFillColor(35,30,10);doc.roundedRect(M,y,W-M*2,9,2,2,'F');
+      doc.setDrawColor(gd[0],gd[1],gd[2]);doc.setLineWidth(.3);doc.roundedRect(M,y,W-M*2,9,2,2,'S');
+      doc.setTextColor(gd[0],gd[1],gd[2]);doc.setFont('helvetica','bold');doc.setFontSize(10);
+      doc.text('TOTAL ESTIMATE',M+3,y+6);doc.text(tv,W-M-3,y+6,{align:'right'});y+=14;
+
+      // ── Booked Items (confirmed mode only) ──
+      if(confirmedMode&&Object.keys(selections).length>0){
+        checkY(12);
+        doc.setTextColor(gr[0],gr[1],gr[2]);doc.setFont('helvetica','bold');doc.setFontSize(10);
+        doc.text('BOOKINGS SUMMARY',M,y);y+=5;
+        Object.keys(selections).forEach(function(k){
+          checkY(10);
+          var s=selections[k];
+          var booked=!!_bookedItems[k];
+          doc.setFillColor(booked?8:20,booked?30:18,booked?15:40);
+          doc.roundedRect(M,y,W-M*2,9,1.5,1.5,'F');
+          doc.setDrawColor(booked?gr[0]:60,booked?gr[1]:70,booked?gr[2]:90);
+          doc.setLineWidth(.25);doc.roundedRect(M,y,W-M*2,9,1.5,1.5,'S');
+          doc.setTextColor(booked?gr[0]:mu[0],booked?gr[1]:mu[1],booked?gr[2]:mu[2]);
+          doc.setFont('helvetica','bold');doc.setFontSize(8);
+          doc.text(booked?'\u2713':'\u25CB',M+3,y+6);
+          doc.setTextColor(wh[0],wh[1],wh[2]);
+          var catName=s.catLabel.replace(/^[^ ]+ /,'').replace(/[^\x00-\x7E]/g,'');
+          doc.text(catName+': '+s.name.replace(/[^\x00-\x7E]/g,'').slice(0,45),M+8,y+6);
+          doc.setTextColor(gd[0],gd[1],gd[2]);
+          doc.text(s.price,W-M-3,y+6,{align:'right'});
+          y+=11;
+        });
+        doc.setTextColor(tl[0],tl[1],tl[2]);doc.setFont('helvetica','normal');doc.setFontSize(8);
+        doc.text('Verify all bookings on provider confirmation emails before travel.',M,y);y+=10;
+      }
+
+      // ── Day-by-Day Itinerary ──
+      var dayTabs=document.querySelectorAll('.day-tab');
+      dayTabs.forEach(function(tab,di){
+        checkY(16);
+        doc.setFillColor(12,22,42);doc.roundedRect(M,y,W-M*2,8,2,2,'F');
+        doc.setTextColor(tl[0],tl[1],tl[2]);doc.setFont('helvetica','bold');doc.setFontSize(9.5);
+        var dayLabel=tab.textContent.replace(/[^\x00-\x7E]/g,'').replace(/Day \d+ . /,'').toUpperCase().slice(0,50);
+        doc.text('DAY '+(di+1)+' -- '+dayLabel,M+3,y+5.5);y+=10;
+        var dc=document.getElementById('day-'+di);if(!dc)return;
+        dc.querySelectorAll('.activity-row').forEach(function(row){
+          checkY(9);
+          var te=row.querySelector('.act-time');
+          var ti=row.querySelector('.act-title');
+          var de=row.querySelector('.act-desc');
+          var ce=row.querySelector('.act-cost');
+          if(!te||!ti)return;
+          var timeStr=te.textContent.replace(/[^\x00-\x7E]/g,'');
+          var titleStr=ti.textContent.replace(/[^\x00-\x7E]/g,'').slice(0,55);
+          doc.setTextColor(tl[0],tl[1],tl[2]);doc.setFont('helvetica','bold');doc.setFontSize(8);
+          doc.text(timeStr,M+2,y);
+          doc.setTextColor(wh[0],wh[1],wh[2]);
+          doc.text(titleStr,M+16,y);
+          if(ce){doc.setTextColor(gd[0],gd[1],gd[2]);doc.text(ce.textContent.replace(/[^\x00-\x7E]/g,''),W-M,y,{align:'right'});}
+          y+=5;
+          if(de){
+            checkY(5);
+            doc.setTextColor(mu[0],mu[1],mu[2]);doc.setFont('helvetica','normal');doc.setFontSize(7);
+            var descStr=de.textContent.replace(/[^\x00-\x7E]/g,'');
+            var ls=doc.splitTextToSize(descStr,W-M*2-18);
+            doc.text(ls,M+16,y);y+=ls.length*3.8;
+          }
+          y+=2;
+        });
+        y+=4;
+      });
+
+      // ── Tips ──
+      var tipEls=document.querySelectorAll('.tip-text');
+      if(tipEls.length){
+        checkY(14);
+        doc.setDrawColor(gd[0],gd[1],gd[2]);doc.line(M,y,W-M,y);y+=6;
+        doc.setTextColor(gd[0],gd[1],gd[2]);doc.setFont('helvetica','bold');doc.setFontSize(10);
+        doc.text('PRO TIPS',M,y);y+=6;
+        tipEls.forEach(function(t,i){
+          checkY(10);
+          var tipStr=t.textContent.replace(/[^\x00-\x7E]/g,'');
+          doc.setFillColor(28,22,8);doc.roundedRect(M,y-1,W-M*2,9,1.5,1.5,'F');
+          doc.setTextColor(gd[0],gd[1],gd[2]);doc.setFont('helvetica','bold');doc.setFontSize(7.5);
+          doc.text('Tip '+(i+1),M+2,y+5);
+          doc.setTextColor(wh[0],wh[1],wh[2]);doc.setFont('helvetica','normal');doc.setFontSize(7);
+          var ls=doc.splitTextToSize(tipStr,W-M*2-16);
+          doc.text(ls,M+13,y+4);y+=Math.max(10,ls.length*4+3);
+        });
+      }
+
+      // ── Footer on every page ──
+      var pg=doc.internal.getNumberOfPages();
+      for(var p=1;p<=pg;p++){
+        doc.setPage(p);
+        doc.setFillColor(8,10,18);doc.rect(0,284,W,13,'F');
+        doc.setDrawColor(gd[0],gd[1],gd[2]);doc.setLineWidth(.2);doc.line(0,284,W,284);
+        doc.setTextColor(mu[0],mu[1],mu[2]);doc.setFont('helvetica','normal');doc.setFontSize(6.5);
+        doc.text('Designed & Architected by Krishnamurthy Kandregula - Made by Claude - TravelAI Personal Concierge',M,290);
+        doc.text('Page '+p+' of '+pg,W-M,290,{align:'right'});
+      }
+
+      var fname=confirmedMode?'TravelAI_CONFIRMED_Itinerary.pdf':'TravelAI_Travel_Plan.pdf';
+      doc.save(fname);
+    }catch(e){
+      alert('PDF error: '+e.message);
+    }finally{
+      if(activeBtn){
+        activeBtn.textContent=confirmedMode?'\uD83C\uDFF7\uFE0F I Have Booked \u2014 Generate Final PDF':'\u2B07 Export PDF';
+        activeBtn.disabled=false;
+      }
+    }
+  }
+
+  if(window.jspdf||window.jsPDF){doExport();}
+  else{
+    var s=document.createElement('script');
+    s.src='https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js';
+    s.onload=function(){doExport();};
+    s.onerror=function(){
+      if(activeBtn){activeBtn.textContent=confirmedMode?'\uD83C\uDFF7\uFE0F I Have Booked \u2014 Generate Final PDF':'\u2B07 Export PDF';activeBtn.disabled=false;}
+      alert('PDF library blocked. Try on a different network or browser.');
+    };
+    document.head.appendChild(s);
+  }
+}
+
 /* ══ WIRE UP BUTTONS ══ */
 document.getElementById('demoBtn').addEventListener('click', loadDemo);
 document.getElementById('sendBtn').addEventListener('click', planTrip);
