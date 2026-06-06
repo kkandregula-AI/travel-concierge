@@ -201,16 +201,65 @@ header{display:flex;align-items:center;justify-content:space-between;padding:16p
   padding:2px 9px;border-radius:5px;font-size:11px;color:var(--gold);font-weight:600;
   font-family:'DM Mono',monospace;}
 
-/* Booking Status */
-.booking-section{background:rgba(0,0,0,.2);border:1px solid var(--border);
-  border-top:none;padding:16px 22px;}
-.booking-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:8px;}
-.booking-item{display:flex;align-items:center;gap:9px;padding:9px 13px;
-  background:rgba(0,201,177,.05);border:1px solid var(--border2);border-radius:9px;}
-.booking-check{font-size:14px;flex-shrink:0;}
-.booking-text{}
-.booking-service{font-size:12px;font-weight:600;color:var(--white);}
-.booking-ref{font-size:10px;color:var(--teal);font-family:'DM Mono',monospace;}
+/* ── HUMAN-IN-THE-LOOP BOOKING OPTIONS ── */
+.booking-section{background:rgba(0,0,0,.25);border:1px solid var(--border);border-top:none;padding:18px 22px;}
+.booking-notice{display:flex;align-items:flex-start;gap:10px;padding:11px 14px;
+  background:rgba(245,158,11,.07);border:1px solid rgba(245,158,11,.3);
+  border-radius:10px;margin-bottom:16px;}
+.booking-notice-icon{font-size:18px;flex-shrink:0;margin-top:1px;}
+.booking-notice-text{font-size:12px;color:var(--light);line-height:1.6;}
+.booking-notice-text strong{color:var(--amber);}
+.book-cats{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:14px;}
+.book-cat{padding:6px 14px;border-radius:20px;font-size:12px;font-weight:600;
+  cursor:pointer;border:1px solid var(--border);color:var(--muted);
+  background:transparent;transition:all .2s;white-space:nowrap;}
+.book-cat:hover{color:var(--light);border-color:var(--teal);}
+.book-cat.active{color:var(--navy);background:var(--teal);border-color:var(--teal);}
+.book-panel{display:none;}
+.book-panel.active{display:block;animation:fadeUp .25s ease;}
+.opt-card{background:var(--glass);border:1px solid var(--border);border-radius:12px;
+  padding:14px 16px;margin-bottom:10px;transition:all .2s;}
+.opt-card:hover{border-color:var(--teal);background:var(--glass2);}
+.opt-card.selected{border-color:var(--teal);background:rgba(0,201,177,.07);
+  box-shadow:0 0 0 2px rgba(0,201,177,.15);}
+.opt-header{display:flex;align-items:flex-start;justify-content:space-between;gap:10px;margin-bottom:8px;}
+.opt-name{font-size:14px;font-weight:600;color:var(--white);}
+.opt-badge-wrap{display:flex;gap:5px;flex-wrap:wrap;margin-top:3px;}
+.opt-badge{font-size:10px;padding:2px 8px;border-radius:4px;font-weight:600;}
+.opt-badge.best{background:rgba(34,197,94,.15);border:1px solid rgba(34,197,94,.3);color:var(--green);}
+.opt-badge.popular{background:rgba(0,201,177,.1);border:1px solid rgba(0,201,177,.25);color:var(--teal);}
+.opt-badge.budget{background:rgba(245,158,11,.1);border:1px solid rgba(245,158,11,.25);color:var(--amber);}
+.opt-badge.premium{background:rgba(201,168,76,.1);border:1px solid rgba(201,168,76,.25);color:var(--gold);}
+.opt-price{text-align:right;flex-shrink:0;}
+.opt-price-main{font-size:16px;font-weight:700;color:var(--gold);font-family:'DM Mono',monospace;}
+.opt-price-sub{font-size:10px;color:var(--muted);}
+.opt-details{display:flex;gap:10px;flex-wrap:wrap;margin-bottom:10px;}
+.opt-detail{display:flex;align-items:center;gap:4px;font-size:11px;color:var(--muted);}
+.opt-detail span{color:var(--light);}
+.opt-stars{color:var(--gold);font-size:11px;letter-spacing:1px;}
+.opt-footer{display:flex;align-items:center;justify-content:space-between;gap:10px;}
+.opt-desc{font-size:11px;color:var(--muted);line-height:1.5;flex:1;}
+.opt-select-btn{background:transparent;border:1px solid var(--teal);color:var(--teal);
+  font-family:'DM Sans',sans-serif;font-size:12px;font-weight:600;
+  padding:7px 16px;border-radius:8px;cursor:pointer;transition:all .2s;white-space:nowrap;flex-shrink:0;}
+.opt-select-btn:hover{background:rgba(0,201,177,.12);}
+.opt-select-btn.chosen{background:var(--teal);color:var(--navy);}
+.selection-summary{margin-top:14px;padding:12px 16px;
+  background:rgba(0,201,177,.06);border:1px solid var(--border2);border-radius:10px;display:none;}
+.selection-summary.show{display:block;}
+.sel-title{font-size:11px;color:var(--teal);letter-spacing:1.5px;text-transform:uppercase;font-weight:600;margin-bottom:8px;}
+.sel-row{display:flex;align-items:center;justify-content:space-between;
+  padding:5px 0;border-bottom:1px solid rgba(255,255,255,.05);font-size:12px;}
+.sel-row:last-child{border-bottom:none;}
+.sel-label{color:var(--muted);display:flex;align-items:center;gap:6px;}
+.sel-value{color:var(--white);font-weight:600;}
+.sel-cost{color:var(--gold);font-family:'DM Mono',monospace;font-size:11px;}
+.confirm-btn{width:100%;margin-top:12px;padding:12px;
+  background:linear-gradient(135deg,var(--teal),var(--teal2));
+  border:none;color:var(--navy);font-family:'DM Sans',sans-serif;
+  font-size:14px;font-weight:700;border-radius:10px;cursor:pointer;transition:all .2s;}
+.confirm-btn:hover{transform:translateY(-1px);box-shadow:var(--glow-teal);}
+.confirm-note{font-size:10px;color:var(--muted);text-align:center;margin-top:6px;}
 
 /* Tips */
 .tips-section{background:var(--navy3);border:1px solid var(--border);
@@ -273,11 +322,11 @@ footer{margin-top:auto;padding:16px 20px;border-top:1px solid var(--border);
 <div class="hero">
   <div class="hero-tag">✦ Three-Layer Intelligence</div>
   <h1>Your Personal<br><span>Travel Concierge</span></h1>
-  <p>Tell us your dream trip. AI understands preferences, GenAI crafts your itinerary, Agentic AI handles every booking — flights, hotels, cabs, restaurants.</p>
+  <p>Tell us your dream trip. AI understands preferences, GenAI crafts your itinerary, Agentic AI curates options for flights, hotels &amp; cabs — <strong style="color:var(--teal)">you review and choose</strong>.</p>
   <div class="tiers">
     <div class="tier ai"><span class="tier-dot"></span>🧠 AI — Understands</div>
     <div class="tier gen"><span class="tier-dot"></span>✨ GenAI — Creates</div>
-    <div class="tier agent"><span class="tier-dot"></span>🤖 Agentic — Books</div>
+    <div class="tier agent"><span class="tier-dot"></span>🤖 Agentic — Suggests & You Decide</div>
   </div>
 </div>
 
@@ -341,10 +390,24 @@ footer{margin-top:auto;padding:16px 20px;border-top:1px solid var(--border);
     </div>
     <div class="day-content-wrap" id="dayContentWrap"></div>
 
-    <!-- Booking Status -->
+    <!-- Human-in-the-Loop Booking Options -->
     <div class="booking-section" id="bookingSection">
-      <div class="sec-title">🤖 Agentic AI — Booking Status</div>
-      <div class="booking-grid" id="bookingGrid"></div>
+      <div class="sec-title">🛎️ Review &amp; Select Your Options</div>
+      <div class="booking-notice">
+        <div class="booking-notice-icon">⚠️</div>
+        <div class="booking-notice-text">
+          <strong>You are always in control.</strong> TravelAI never books anything automatically.
+          Review the AI-curated options below, compare prices &amp; ratings, then tap <strong>Select</strong> on your preferred choice. Only after you confirm will any booking be initiated.
+        </div>
+      </div>
+      <div class="book-cats" id="bookCats"></div>
+      <div id="bookPanels"></div>
+      <div class="selection-summary" id="selSummary">
+        <div class="sel-title">📋 Your Selections</div>
+        <div id="selRows"></div>
+        <button class="confirm-btn" onclick="confirmBookings()">✅ Confirm &amp; Proceed to Book</button>
+        <div class="confirm-note">You will be redirected to each provider's secure site to complete payment</div>
+      </div>
     </div>
 
     <!-- Tips -->
@@ -433,7 +496,7 @@ refreshKeyStatus();
 function setPrompt(el){document.getElementById('promptInput').value=el.textContent.trim();}
 
 /* ══ THINKING ══ */
-const stages=['Analysing preferences & budget…','GenAI crafting your itinerary…','Agentic AI searching flights…','Comparing hotel options…','Pre-booking restaurants…','Finalising your travel plan…'];
+const stages=['Analysing preferences & budget…','GenAI crafting your itinerary…','Searching flight options…','Comparing hotel choices…','Finding restaurant options…','Preparing your review selections…'];
 let si=0,st;
 function startStages(){si=0;document.getElementById('thinkingStage').textContent=stages[0];st=setInterval(()=>{si=(si+1)%stages.length;document.getElementById('thinkingStage').textContent=stages[si];},2000);}
 function stopStages(){clearInterval(st);}
@@ -497,9 +560,8 @@ function renderItinerary(data){
   renderDayTabs(data.days);
 
   // Bookings
-  document.getElementById('bookingGrid').innerHTML=data.bookings.map(function(b){
-    return '<div class="booking-item"><div class="booking-check">✅</div><div class="booking-text"><div class="booking-service">'+b.service+'</div><div class="booking-ref">'+b.ref+'</div></div></div>';
-  }).join('');
+  // Booking Options (human-in-the-loop)
+  renderBookingOptions(data.bookingOptions || SINGAPORE_BOOKING_OPTIONS);
 
   // Tips
   document.getElementById('tipsGrid').innerHTML=data.tips.map(function(t,i){
@@ -859,6 +921,173 @@ function exportPDF(){
     const fname='TravelAI_'+dest.replace(/[^a-zA-Z0-9]/g,'_').replace(/_+/g,'_')+'_Itinerary.pdf';
     doc.save(fname);
   } catch(e){alert('PDF export error: '+e.message);}
+}
+
+/* ══ BOOKING OPTIONS DATA (Singapore demo) ══ */
+const SINGAPORE_BOOKING_OPTIONS = [
+  {
+    category:'🏨 Hotels', id:'hotel',
+    options:[
+      {name:'Fragrance Hotel Ruby',badges:[{t:'Best Value',c:'best'},{t:'Near MRT',c:'popular'}],
+       price:'₹5,600',per:'per night · 5 nights = ₹28,000',
+       details:[{icon:'⭐',label:'Rating',val:'3.5★★★'},{icon:'📍',label:'Area',val:'Geylang, near Aljunied MRT'},{icon:'🛏️',label:'Room',val:'Family Room (2+2)'},{icon:'🌐',label:'WiFi',val:'Free'}],
+       desc:'Clean, well-located budget hotel with easy MRT access to all major attractions. 8 min walk to MRT.',
+       link:'https://booking.com'},
+      {name:'Hotel Boss Singapore',badges:[{t:'Popular',c:'popular'},{t:'City Centre',c:'teal'}],
+       price:'₹7,200',per:'per night · 5 nights = ₹36,000',
+       details:[{icon:'⭐',label:'Rating',val:'4★★★★'},{icon:'📍',label:'Area',val:'Lavender, 5 min MRT'},{icon:'🛏️',label:'Room',val:'Superior Family Room'},{icon:'🌐',label:'WiFi',val:'Free'}],
+       desc:'Modern mid-range hotel with rooftop pool and restaurant. Central location, great city views.',
+       link:'https://booking.com'},
+      {name:'Marina Bay Sands',badges:[{t:'Premium',c:'premium'},{t:'Iconic',c:'gold'}],
+       price:'₹38,000',per:'per night · 5 nights = ₹1,90,000',
+       details:[{icon:'⭐',label:'Rating',val:'5★★★★★'},{icon:'📍',label:'Area',val:'Marina Bay — Waterfront'},{icon:'🛏️',label:'Room',val:'Deluxe Suite, Marina view'},{icon:'♾️',label:'Pool',val:'Infinity rooftop pool'}],
+       desc:'World-famous luxury hotel with the iconic infinity pool. Over budget but unbeatable experience.',
+       link:'https://marinabaysands.com'}
+    ]
+  },
+  {
+    category:'✈️ Flights', id:'flight',
+    options:[
+      {name:'IndiGo 6E 81/82 — HYD ↔ SIN',badges:[{t:'Best Price',c:'best'},{t:'Direct',c:'popular'}],
+       price:'₹52,000',per:'4 passengers · return',
+       details:[{icon:'🕐',label:'Depart',val:'09:30 HYD'},{icon:'🕒',label:'Arrive',val:'15:10 SIN (+0)'},{icon:'⏱️',label:'Duration',val:'5h 40m direct'},{icon:'🧳',label:'Baggage',val:'15kg check-in each'}],
+       desc:'Best value direct flight. Good on-time record on this route. IndiGo's most punctual SIN service.',
+       link:'https://goindigo.in'},
+      {name:'Air India AI 347/348 — HYD ↔ SIN',badges:[{t:'Full Service',c:'premium'}],
+       price:'₹68,000',per:'4 passengers · return',
+       details:[{icon:'🕐',label:'Depart',val:'11:15 HYD'},{icon:'🕒',label:'Arrive',val:'17:45 SIN (+0)'},{icon:'⏱️',label:'Duration',val:'6h 30m direct'},{icon:'🧳',label:'Baggage',val:'25kg check-in each'}],
+       desc:'Full-service carrier with meals included and extra baggage. Wider seats, better for families with kids.',
+       link:'https://airindia.com'},
+      {name:'Singapore Airlines SQ 524 — via BOM',badges:[{t:'Premium',c:'gold'}],
+       price:'₹1,12,000',per:'4 passengers · return',
+       details:[{icon:'🕐',label:'Depart',val:'06:00 HYD → BOM'},{icon:'🕒',label:'Arrive',val:'14:20 SIN'},{icon:'⏱️',label:'Duration',val:'8h 20m 1-stop'},{icon:'🧳',label:'Baggage',val:'30kg each + lounge'}],
+       desc:'World's best airline. Over budget but best in-flight experience — worth it for a special occasion.',
+       link:'https://singaporeair.com'}
+    ]
+  },
+  {
+    category:'🚕 Transfers', id:'cab',
+    options:[
+      {name:'Grab (App-based)',badges:[{t:'Recommended',c:'best'},{t:'Flexible',c:'popular'}],
+       price:'₹800–1,200',per:'per airport transfer',
+       details:[{icon:'📱',label:'Book',val:'Grab app'},{icon:'⏱️',label:'Wait',val:'3–7 min'},{icon:'💳',label:'Payment',val:'Card / PayNow'},{icon:'🌡️',label:'AC',val:'Always'}],
+       desc:'Most popular ride-hailing in Singapore. Fixed-price or metered. Download app before travel. Most economical.',
+       link:'https://grab.com'},
+      {name:'SMRT Taxis (Comfort/CityCab)',badges:[{t:'Official',c:'teal'}],
+       price:'₹1,000–1,600',per:'per airport transfer',
+       details:[{icon:'📞',label:'Book',val:'Call or app'},{icon:'⏱️',label:'Wait',val:'5–15 min'},{icon:'💳',label:'Payment',val:'Cash / Card'},{icon:'🌡️',label:'AC',val:'Always'}],
+       desc:'Traditional metered taxi. More reliable during peak hours. Ask for receipt for expense claims.',
+       link:'https://smrt.com.sg'},
+      {name:'Private Transfer (pre-arranged)',badges:[{t:'Family Comfort',c:'premium'}],
+       price:'₹3,800',per:'full day with driver',
+       details:[{icon:'🚗',label:'Vehicle',val:'Toyota Innova (7-seater)'},{icon:'⏱️',label:'Book',val:'48h in advance'},{icon:'💳',label:'Payment',val:'Prepaid'},{icon:'👨‍✈️',label:'Guide',val:'English-speaking'}],
+       desc:'Dedicated driver for the whole day. Best for Day 4 (Zoo + Night Safari). Comfortable with kids & luggage.',
+       link:'https://klook.com'}
+    ]
+  },
+  {
+    category:'🎡 Attractions', id:'attract',
+    options:[
+      {name:'Universal Studios Singapore',badges:[{t:'Must-Do for Kids',c:'best'},{t:'Pre-book',c:'popular'}],
+       price:'₹18,500',per:'2 adults + 2 kids (entry)',
+       details:[{icon:'⏰',label:'Opens',val:'10:00 AM'},{icon:'⏱️',label:'Duration',val:'Full day (6–8 hrs)'},{icon:'📍',label:'Location',val:'Sentosa Island'},{icon:'💡',label:'Tip',val:'Book online, 20% off'}],
+       desc:'Jurassic World, Minion Park, Transformers — guaranteed hit with kids aged 6–12. Book online for savings.',
+       link:'https://rwsentosa.com'},
+      {name:'Singapore Zoo + Night Safari Combo',badges:[{t:'Popular',c:'popular'},{t:'Save 15%',c:'best'}],
+       price:'₹25,300',per:'2 adults + 2 kids (combo)',
+       details:[{icon:'⏰',label:'Zoo Opens',val:'9:00 AM'},{icon:'🌙',label:'Safari',val:'7:30 PM tram'},{icon:'📍',label:'Location',val:'Mandai (same complex)'},{icon:'💡',label:'Tip',val:'Combo saves ₹3,800'}],
+       desc:'World's best open-concept zoo + world's first nocturnal safari. Do both in one day — memorable for kids.',
+       link:'https://mandai.com'},
+      {name:'Gardens by the Bay — Domes',badges:[{t:'Budget-Friendly',c:'budget'}],
+       price:'₹11,000',per:'2 adults + 2 kids (Cloud Forest + Flower Dome)',
+       details:[{icon:'⏰',label:'Opens',val:'9:00 AM'},{icon:'⏱️',label:'Duration',val:'2.5–3 hrs'},{icon:'📍',label:'Location',val:'Marina Bay'},{icon:'💡',label:'Tip',val:'Outdoor Supertrees FREE'}],
+       desc:'Stunning indoor cloud forest with 35m waterfall. The outdoor Supertree Grove is completely free.',
+       link:'https://gardensbythebay.com.sg'}
+    ]
+  }
+];
+
+/* ══ SELECTED BOOKINGS STATE ══ */
+var selections = {};
+
+/* ══ RENDER BOOKING OPTIONS ══ */
+function renderBookingOptions(opts) {
+  var cats = document.getElementById('bookCats');
+  var panels = document.getElementById('bookPanels');
+  cats.innerHTML = ''; panels.innerHTML = '';
+  opts.forEach(function(cat, ci) {
+    // Tab
+    var tab = document.createElement('button');
+    tab.className = 'book-cat' + (ci === 0 ? ' active' : '');
+    tab.textContent = cat.category;
+    tab.onclick = function() {
+      document.querySelectorAll('.book-cat').forEach(function(t){t.classList.remove('active');});
+      document.querySelectorAll('.book-panel').forEach(function(p){p.classList.remove('active');});
+      tab.classList.add('active');
+      document.getElementById('panel-' + cat.id).classList.add('active');
+    };
+    cats.appendChild(tab);
+    // Panel
+    var panel = document.createElement('div');
+    panel.className = 'book-panel' + (ci === 0 ? ' active' : '');
+    panel.id = 'panel-' + cat.id;
+    var html = '';
+    cat.options.forEach(function(opt, oi) {
+      var bid = cat.id + '-' + oi;
+      var isSelected = selections[cat.id] && selections[cat.id].bid === bid;
+      html += '<div class="opt-card' + (isSelected ? ' selected' : '') + '" id="optcard-' + bid + '">';
+      html += '<div class="opt-header">';
+      html += '<div><div class="opt-name">' + opt.name + '</div>';
+      html += '<div class="opt-badge-wrap">' + opt.badges.map(function(b){return '<span class="opt-badge '+b.c+'">'+b.t+'</span>';}).join('') + '</div></div>';
+      html += '<div class="opt-price"><div class="opt-price-main">' + opt.price + '</div><div class="opt-price-sub">' + opt.per + '</div></div>';
+      html += '</div>';
+      html += '<div class="opt-details">' + opt.details.map(function(d){return '<div class="opt-detail">'+d.icon+' '+d.label+': <span>'+d.val+'</span></div>';}).join('') + '</div>';
+      html += '<div class="opt-footer"><div class="opt-desc">' + opt.desc + '</div>';
+      html += '<button class="opt-select-btn' + (isSelected ? ' chosen' : '') + '" onclick="selectOption('' + cat.id + '',' + oi + ','' + opt.name + '','' + opt.price + '','' + cat.category + '')">' + (isSelected ? '✓ Selected' : 'Select') + '</button>';
+      html += '</div></div>';
+    });
+    panel.innerHTML = html;
+    panels.appendChild(panel);
+  });
+  updateSummary();
+}
+
+function selectOption(catId, optIdx, name, price, catLabel) {
+  var bid = catId + '-' + optIdx;
+  // Deselect prev in same category
+  var prev = selections[catId];
+  if (prev) {
+    var prevCard = document.getElementById('optcard-' + prev.bid);
+    if (prevCard) { prevCard.classList.remove('selected'); prevCard.querySelector('.opt-select-btn').textContent = 'Select'; prevCard.querySelector('.opt-select-btn').classList.remove('chosen'); }
+  }
+  if (prev && prev.bid === bid) {
+    // Toggle off
+    delete selections[catId];
+  } else {
+    selections[catId] = { bid: bid, name: name, price: price, catLabel: catLabel };
+    var card = document.getElementById('optcard-' + bid);
+    if (card) { card.classList.add('selected'); card.querySelector('.opt-select-btn').textContent = '✓ Selected'; card.querySelector('.opt-select-btn').classList.add('chosen'); }
+  }
+  updateSummary();
+}
+
+function updateSummary() {
+  var keys = Object.keys(selections);
+  var summary = document.getElementById('selSummary');
+  var rows = document.getElementById('selRows');
+  if (keys.length === 0) { summary.classList.remove('show'); return; }
+  summary.classList.add('show');
+  rows.innerHTML = keys.map(function(k) {
+    var s = selections[k];
+    return '<div class="sel-row"><div class="sel-label">'+s.catLabel+'</div><div style="display:flex;align-items:center;gap:10px"><div class="sel-value">'+s.name+'</div><div class="sel-cost">'+s.price+'</div></div></div>';
+  }).join('');
+}
+
+function confirmBookings() {
+  var keys = Object.keys(selections);
+  if (keys.length === 0) return;
+  var lines = keys.map(function(k){ return selections[k].catLabel.replace(/[^ ]+ /,'') + ': ' + selections[k].name + ' — ' + selections[k].price; });
+  alert('Your selections have been noted:\n\n' + lines.join('\n') + '\n\nIn a live app, you would now be redirected to each provider\'s secure booking page to complete payment. No charges have been made.');
 }
 
 document.getElementById('promptInput').addEventListener('keydown',function(e){if(e.key==='Enter'&&(e.ctrlKey||e.metaKey))planTrip();});
