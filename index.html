@@ -545,6 +545,7 @@ function renderDayContent(day){
 
 /* ══ RENDER ITINERARY ══ */
 function renderItinerary(data){
+  document.getElementById('bookingSection').style.display='';
   document.getElementById('tripDest').textContent=data.destination;
   document.getElementById('tripSub').textContent=data.subtitle;
   document.getElementById('tripBadges').innerHTML=data.badges.map(function(b){return '<span class="tbadge '+b.cls+'">'+b.text+'</span>';}).join('');
@@ -560,8 +561,9 @@ function renderItinerary(data){
   renderDayTabs(data.days);
 
   // Bookings
-  // Booking Options (human-in-the-loop)
-  renderBookingOptions(data.bookingOptions || SINGAPORE_BOOKING_OPTIONS);
+  // Booking Options — use AI-generated options for this destination, never hardcoded fallback
+  var bookOpts = (data.bookingOptions && data.bookingOptions.length > 0) ? data.bookingOptions : null;
+  if (bookOpts) { renderBookingOptions(bookOpts); } else { document.getElementById('bookingSection').style.display='none'; }
 
   // Tips
   document.getElementById('tipsGrid').innerHTML=data.tips.map(function(t,i){
@@ -689,6 +691,8 @@ function loadDemo(){
   setTimeout(function(){
     stopStages();
     document.getElementById('thinking').classList.remove('active');
+    document.getElementById('bookingSection').style.display='';
+    DEMO_DATA.bookingOptions = SINGAPORE_BOOKING_OPTIONS;
     renderItinerary(DEMO_DATA);
     document.getElementById('tokenBadge').textContent='⚡ Demo — 0 tokens used';
     db.disabled=false;sb.disabled=false;db.textContent='🇸🇬 See Demo';
@@ -707,10 +711,10 @@ async function planTrip(){
   document.getElementById('tokenBadge').textContent='⚡ Processing…';
   startStages();
 
-  const sys=`You are TravelAI — a premium Personal Travel Concierge. When given a travel request, respond ONLY with a valid JSON object (no markdown, no explanation) with this exact structure:
+  const sys=`You are TravelAI — a premium Personal Travel Concierge. When given a travel request, respond ONLY with a valid JSON object (no markdown, no explanation) matching this exact structure:
 {
-  "destination": "string — emoji + city name",
-  "subtitle": "string — travellers, dates",
+  "destination": "emoji + city name",
+  "subtitle": "travellers, dates",
   "badges": [{"text":"string","cls":"teal|gold|green"}],
   "budget": {
     "total": "₹X,XX,XXX",
@@ -724,16 +728,38 @@ async function planTrip(){
           "icon": "emoji",
           "name": "Morning|Afternoon|Evening|Night",
           "activities": [
-            {"time":"HH:MM","emoji":"emoji","title":"string","desc":"string or null","cost":"X,XXX or null"}
+            {"time":"HH:MM","emoji":"emoji","title":"string","desc":"string or null","cost":"number string or null"}
           ]
         }
       ]
     }
   ],
-  "bookings": [{"service":"string","ref":"string"}],
-  "tips": ["string","string","string"]
+  "tips": ["string","string","string"],
+  "bookingOptions": [
+    {
+      "category": "emoji + Category Name",
+      "id": "hotel|flight|cab|activity",
+      "options": [
+        {
+          "name": "Option name",
+          "badges": [{"t":"label","c":"best|popular|budget|premium"}],
+          "price": "₹X,XXX",
+          "per": "per night / per person / etc",
+          "details": [{"icon":"emoji","label":"string","val":"string"}],
+          "desc": "One sentence recommendation",
+          "link": "https://example.com"
+        }
+      ]
+    }
+  ]
 }
-All amounts in Indian Rupees (₹). Make it detailed and realistic.`;
+Rules:
+- bookingOptions MUST have exactly 4 categories: Hotels (id=hotel), Flights (id=flight), Transfers (id=cab), Attractions (id=attract)
+- Each category MUST have exactly 3 options ranging from budget to premium
+- All options must be SPECIFIC to the destination requested, with real hotel/airline names for that city
+- All amounts in Indian Rupees (₹)
+- No apostrophes in any string values — use alternate wording
+- No markdown, no explanation, pure JSON only`;
 
   try {
     const res=await fetch('https://api.anthropic.com/v1/messages',{
@@ -761,7 +787,7 @@ All amounts in Indian Rupees (₹). Make it detailed and realistic.`;
     document.getElementById('budgetTotal').innerHTML='';
     document.getElementById('dayTabs').innerHTML='';
     document.getElementById('dayContentWrap').innerHTML='';
-    document.getElementById('bookingGrid').innerHTML='';
+    document.getElementById('bookingSection').style.display='none';
     document.getElementById('tipsGrid').innerHTML='';
     document.getElementById('itinCard').classList.add('visible');
     document.getElementById('tokenBadge').textContent='⚡ Error';
