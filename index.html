@@ -10,365 +10,230 @@
 <link rel="manifest" href="#" id="manifest-link">
 <title>TravelAI Concierge</title>
 <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@300;400;600;700&family=DM+Sans:wght@300;400;500;600&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
-<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
 <style>
-:root{
-  --navy:#0a0f1e;--navy3:#161e35;
-  --gold:#c9a84c;--gold2:#e8c870;
-  --teal:#00c9b1;--teal2:#00e5cc;
-  --amber:#f59e0b;--rose:#f43f5e;--green:#22c55e;
-  --muted:#8899bb;--light:#dce8ff;--white:#f0f6ff;
-  --glass:rgba(255,255,255,0.04);--glass2:rgba(255,255,255,0.08);
-  --border:rgba(201,168,76,0.2);--border2:rgba(0,201,177,0.15);
-  --shadow:0 24px 64px rgba(0,0,0,0.5);
-  --glow-gold:0 0 30px rgba(201,168,76,0.25);
-  --glow-teal:0 0 30px rgba(0,201,177,0.25);
-}
+:root{--navy:#0a0f1e;--navy3:#161e35;--gold:#c9a84c;--gold2:#e8c870;--teal:#00c9b1;--teal2:#00e5cc;--amber:#f59e0b;--rose:#f43f5e;--green:#22c55e;--muted:#8899bb;--light:#dce8ff;--white:#f0f6ff;--glass:rgba(255,255,255,0.04);--glass2:rgba(255,255,255,0.08);--border:rgba(201,168,76,0.2);--border2:rgba(0,201,177,0.15);--shadow:0 24px 64px rgba(0,0,0,0.5);--glow-gold:0 0 30px rgba(201,168,76,0.25);--glow-teal:0 0 30px rgba(0,201,177,0.25);}
 *{margin:0;padding:0;box-sizing:border-box;}
-body{font-family:'DM Sans',sans-serif;background:var(--navy);color:var(--light);min-height:100vh;overflow-x:hidden;}
 html{overflow-x:hidden;max-width:100vw;}
-.bg-mesh{position:fixed;inset:0;z-index:0;pointer-events:none;
-  background:radial-gradient(ellipse 80% 50% at 10% 0%,rgba(0,201,177,0.08) 0%,transparent 60%),
-             radial-gradient(ellipse 60% 40% at 90% 100%,rgba(201,168,76,0.08) 0%,transparent 60%);}
-.bg-grid{position:fixed;inset:0;z-index:0;pointer-events:none;opacity:0.03;
-  background-image:linear-gradient(rgba(255,255,255,.5) 1px,transparent 1px),
-                   linear-gradient(90deg,rgba(255,255,255,.5) 1px,transparent 1px);
-  background-size:48px 48px;}
+body{font-family:'DM Sans',sans-serif;background:var(--navy);color:var(--light);min-height:100vh;overflow-x:hidden;}
+.bg-mesh{position:fixed;inset:0;z-index:0;pointer-events:none;background:radial-gradient(ellipse 80% 50% at 10% 0%,rgba(0,201,177,.08) 0%,transparent 60%),radial-gradient(ellipse 60% 40% at 90% 100%,rgba(201,168,76,.08) 0%,transparent 60%);}
+.bg-grid{position:fixed;inset:0;z-index:0;pointer-events:none;opacity:.03;background-image:linear-gradient(rgba(255,255,255,.5) 1px,transparent 1px),linear-gradient(90deg,rgba(255,255,255,.5) 1px,transparent 1px);background-size:48px 48px;}
 .app{position:relative;z-index:1;display:flex;flex-direction:column;min-height:100vh;}
 
 /* HEADER */
-header{display:flex;align-items:center;justify-content:space-between;padding:14px 16px;
-  border-bottom:1px solid var(--border);backdrop-filter:blur(20px);
-  background:rgba(10,15,30,0.88);position:sticky;top:0;z-index:100;overflow:hidden;}
-.logo{display:flex;align-items:center;gap:11px;}
-.logo-icon{width:38px;height:38px;border-radius:10px;
-  background:linear-gradient(135deg,var(--teal),var(--gold));
-  display:flex;align-items:center;justify-content:center;font-size:19px;box-shadow:var(--glow-teal);}
-.logo-text{font-family:'Cormorant Garamond',serif;font-size:21px;font-weight:600;color:var(--white);}
+header{display:flex;align-items:center;justify-content:space-between;padding:14px 16px;border-bottom:1px solid var(--border);backdrop-filter:blur(20px);background:rgba(10,15,30,.88);position:sticky;top:0;z-index:100;overflow:hidden;}
+.logo{display:flex;align-items:center;gap:10px;flex-shrink:1;min-width:0;}
+.logo-icon{width:36px;height:36px;border-radius:9px;background:linear-gradient(135deg,var(--teal),var(--gold));display:flex;align-items:center;justify-content:center;font-size:18px;box-shadow:var(--glow-teal);flex-shrink:0;}
+.logo-text{font-family:'Cormorant Garamond',serif;font-size:20px;font-weight:600;color:var(--white);}
 .logo-sub{font-size:10px;color:var(--teal);letter-spacing:2px;text-transform:uppercase;}
-.header-badge{display:flex;align-items:center;gap:5px;background:rgba(0,201,177,0.1);
-  border:1px solid var(--border2);padding:5px 10px;border-radius:20px;font-size:11px;color:var(--teal);white-space:nowrap;flex-shrink:0;}
+.header-badge{display:flex;align-items:center;gap:5px;background:rgba(0,201,177,.1);border:1px solid var(--border2);padding:5px 10px;border-radius:20px;font-size:11px;color:var(--teal);white-space:nowrap;flex-shrink:0;}
 .pulse{width:6px;height:6px;background:var(--teal);border-radius:50%;animation:pulse 2s infinite;flex-shrink:0;}
 @keyframes pulse{0%,100%{opacity:1;transform:scale(1)}50%{opacity:.5;transform:scale(1.5)}}
 
 /* HERO */
-.hero{padding:36px 20px 24px;text-align:center;overflow:hidden;}
-.hero-tag{display:inline-flex;align-items:center;gap:7px;background:var(--glass2);
-  border:1px solid var(--border);padding:5px 14px;border-radius:20px;
-  font-size:11px;color:var(--gold);letter-spacing:1.5px;text-transform:uppercase;margin-bottom:16px;}
-.hero h1{font-family:'Cormorant Garamond',serif;font-size:clamp(1.9rem,6vw,3.4rem);
-  font-weight:300;line-height:1.1;color:var(--white);margin-bottom:12px;}
+.hero{padding:32px 20px 22px;text-align:center;overflow:hidden;}
+.hero-tag{display:inline-flex;align-items:center;gap:7px;background:var(--glass2);border:1px solid var(--border);padding:5px 14px;border-radius:20px;font-size:11px;color:var(--gold);letter-spacing:1.5px;text-transform:uppercase;margin-bottom:14px;}
+.hero h1{font-family:'Cormorant Garamond',serif;font-size:clamp(1.8rem,6vw,3.2rem);font-weight:300;line-height:1.1;color:var(--white);margin-bottom:12px;}
 .hero h1 span{color:var(--gold);font-weight:600;font-style:italic;}
-.hero p{font-size:14px;color:var(--muted);max-width:500px;margin:0 auto 22px;line-height:1.7;}
-.tiers{display:flex;justify-content:center;gap:8px;flex-wrap:wrap;}
-.tier{display:flex;align-items:center;gap:6px;padding:6px 13px;border-radius:8px;
-  font-size:11px;font-weight:500;border:1px solid;}
+.hero p{font-size:14px;color:var(--muted);max-width:500px;margin:0 auto 20px;line-height:1.7;}
+.tiers{display:flex;justify-content:center;gap:7px;flex-wrap:wrap;}
+.tier{display:flex;align-items:center;gap:6px;padding:6px 12px;border-radius:8px;font-size:11px;font-weight:500;border:1px solid;}
 .tier.ai{background:rgba(245,158,11,.08);border-color:rgba(245,158,11,.3);color:var(--amber);}
 .tier.gen{background:rgba(0,201,177,.08);border-color:rgba(0,201,177,.3);color:var(--teal);}
 .tier.agent{background:rgba(244,63,94,.08);border-color:rgba(244,63,94,.3);color:var(--rose);}
 .tier-dot{width:6px;height:6px;border-radius:50%;background:currentColor;flex-shrink:0;}
 
-/* PROMPT AREA */
-.prompt-wrap{padding:24px 16px 14px;max-width:700px;margin:0 auto;width:100%;}
-.chips{display:flex;gap:7px;flex-wrap:wrap;margin-bottom:11px;justify-content:center;
-  max-width:100%;overflow:hidden;}
-.chip{background:var(--glass);border:1px solid var(--border);padding:5px 12px;
-  border-radius:20px;font-size:11px;color:var(--muted);cursor:pointer;transition:all .2s;
-  white-space:nowrap;}
-.chip:hover{background:rgba(201,168,76,.1);border-color:var(--gold);color:var(--gold);}
-
-.apikey-row{display:flex;align-items:center;gap:7px;margin-bottom:10px;
-  background:var(--glass);border:1px solid var(--border);border-radius:10px;padding:9px 12px;
-  flex-wrap:nowrap;overflow:hidden;}
+/* PROMPT */
+.prompt-wrap{padding:20px 16px 14px;max-width:700px;margin:0 auto;width:100%;}
+.chips{display:flex;gap:7px;flex-wrap:wrap;margin-bottom:10px;justify-content:center;}
+.chip{background:var(--glass);border:1px solid var(--border);padding:5px 12px;border-radius:20px;font-size:11px;color:var(--muted);cursor:pointer;transition:all .2s;white-space:nowrap;}
+.chip:hover,.chip:active{background:rgba(201,168,76,.1);border-color:var(--gold);color:var(--gold);}
+.apikey-row{display:flex;align-items:center;gap:7px;margin-bottom:10px;background:var(--glass);border:1px solid var(--border);border-radius:10px;padding:9px 12px;overflow:hidden;}
 .apikey-row label{font-size:12px;color:var(--muted);white-space:nowrap;flex-shrink:0;}
-.apikey-row input{flex:1;background:transparent;border:none;outline:none;
-  color:var(--white);font-size:12px;font-family:'DM Mono',monospace;min-width:0;width:0;}
+.apikey-row input{flex:1;background:transparent;border:none;outline:none;color:var(--white);font-size:12px;font-family:'DM Mono',monospace;min-width:0;width:0;}
 .apikey-row input::placeholder{color:var(--muted);}
-.apikey-save{background:rgba(201,168,76,.15);border:1px solid var(--border);color:var(--gold);
-  font-size:12px;padding:5px 12px;border-radius:7px;cursor:pointer;font-weight:600;
-  white-space:nowrap;flex-shrink:0;}
+.apikey-save{background:rgba(201,168,76,.15);border:1px solid var(--border);color:var(--gold);font-size:12px;padding:5px 12px;border-radius:7px;cursor:pointer;font-weight:600;white-space:nowrap;flex-shrink:0;}
 .apikey-save:hover{background:rgba(201,168,76,.28);}
 .apikey-status{font-size:11px;white-space:nowrap;padding:3px 7px;border-radius:5px;flex-shrink:0;}
 .apikey-status.set{color:var(--teal);background:rgba(0,201,177,.1);}
 .apikey-status.unset{color:var(--amber);background:rgba(245,158,11,.1);}
-
-.prompt-box{background:var(--navy3);border:1px solid var(--border);border-radius:16px;
-  overflow:hidden;box-shadow:var(--shadow),var(--glow-teal);transition:border-color .3s,box-shadow .3s;}
-.prompt-box:focus-within{border-color:var(--teal);box-shadow:var(--shadow),0 0 0 3px rgba(0,201,177,.12);}
-.prompt-input{width:100%;background:transparent;border:none;outline:none;
-  padding:16px 18px 8px;color:var(--white);font-size:14px;
-  font-family:'DM Sans',sans-serif;resize:none;line-height:1.6;min-height:76px;}
+.prompt-box{background:var(--navy3);border:1px solid var(--border);border-radius:16px;overflow:hidden;box-shadow:var(--shadow),var(--glow-teal);transition:border-color .3s;}
+.prompt-box:focus-within{border-color:var(--teal);}
+.prompt-input{width:100%;background:transparent;border:none;outline:none;padding:16px 16px 8px;color:var(--white);font-size:14px;font-family:'DM Sans',sans-serif;resize:none;line-height:1.6;min-height:76px;display:block;}
 .prompt-input::placeholder{color:var(--muted);}
 .prompt-footer{display:flex;flex-direction:column;gap:10px;padding:10px 14px 14px;}
 .prompt-meta{font-size:11px;color:var(--muted);display:flex;align-items:center;gap:5px;}
-.btn-group{display:flex;gap:8px;align-items:stretch;}
-.demo-btn{background:transparent;border:1px solid var(--gold);color:var(--gold);
-  font-family:'DM Sans',sans-serif;font-size:13px;font-weight:600;
-  padding:11px 0;border-radius:10px;cursor:pointer;transition:all .2s;
-  flex:1;text-align:center;}
-.demo-btn:hover{background:rgba(201,168,76,.12);box-shadow:var(--glow-gold);}
+.btn-group{display:flex;gap:8px;}
+.demo-btn{background:transparent;border:1px solid var(--gold);color:var(--gold);font-family:'DM Sans',sans-serif;font-size:13px;font-weight:600;padding:12px 0;border-radius:10px;cursor:pointer;transition:all .2s;flex:1;text-align:center;-webkit-tap-highlight-color:rgba(0,0,0,0);}
+.demo-btn:active{background:rgba(201,168,76,.2);}
 .demo-btn:disabled{opacity:.5;cursor:not-allowed;}
-.send-btn{background:linear-gradient(135deg,var(--teal),var(--teal2));border:none;
-  color:var(--navy);font-family:'DM Sans',sans-serif;font-size:13px;font-weight:700;
-  padding:11px 0;border-radius:10px;cursor:pointer;transition:all .2s;flex:1.5;text-align:center;}
-.send-btn:hover{transform:translateY(-1px);box-shadow:var(--glow-teal);}
-.send-btn:disabled{opacity:.5;cursor:not-allowed;transform:none;}
+.send-btn{background:linear-gradient(135deg,var(--teal),var(--teal2));border:none;color:var(--navy);font-family:'DM Sans',sans-serif;font-size:13px;font-weight:700;padding:12px 0;border-radius:10px;cursor:pointer;transition:all .2s;flex:1.6;text-align:center;-webkit-tap-highlight-color:rgba(0,0,0,0);}
+.send-btn:active{opacity:.85;}
+.send-btn:disabled{opacity:.5;cursor:not-allowed;}
 
 /* THINKING */
 .response-area{padding:0 16px 20px;max-width:700px;margin:0 auto;width:100%;}
-.thinking{display:none;align-items:center;gap:10px;padding:14px 18px;
-  background:var(--glass);border:1px solid var(--border2);border-radius:12px;
-  margin-bottom:14px;font-size:13px;color:var(--teal);}
+.thinking{display:none;align-items:center;gap:10px;padding:14px 18px;background:var(--glass);border:1px solid var(--border2);border-radius:12px;margin-bottom:14px;font-size:13px;color:var(--teal);}
 .thinking.active{display:flex;}
-.thinking-dots span{display:inline-block;width:5px;height:5px;border-radius:50%;
-  background:var(--teal);margin:0 2px;animation:bounce 1.2s infinite;}
+.thinking-dots span{display:inline-block;width:5px;height:5px;border-radius:50%;background:var(--teal);margin:0 2px;animation:bounce 1.2s infinite;}
 .thinking-dots span:nth-child(2){animation-delay:.2s}
 .thinking-dots span:nth-child(3){animation-delay:.4s}
 @keyframes bounce{0%,60%,100%{transform:translateY(0)}30%{transform:translateY(-7px)}}
 
-/* ═══ RICH ITINERARY CARD ═══ */
+/* ITINERARY CARD */
 .itin-card{display:none;animation:fadeUp .4s ease;}
 .itin-card.visible{display:block;}
 @keyframes fadeUp{from{opacity:0;transform:translateY(14px)}to{opacity:1;transform:translateY(0)}}
-
-/* Trip Header Banner */
-.trip-banner{background:linear-gradient(135deg,#0d1f3c,#0f2a1e);
-  border:1px solid var(--border);border-radius:16px 16px 0 0;
-  padding:20px 22px;display:flex;align-items:flex-start;justify-content:space-between;gap:12px;flex-wrap:wrap;}
-.trip-title-wrap{}
-.trip-dest{font-family:'Cormorant Garamond',serif;font-size:26px;font-weight:600;color:var(--white);line-height:1.1;}
+.trip-banner{background:linear-gradient(135deg,#0d1f3c,#0f2a1e);border:1px solid var(--border);border-radius:16px 16px 0 0;padding:18px 18px;display:flex;align-items:flex-start;justify-content:space-between;gap:12px;flex-wrap:wrap;}
+.trip-dest{font-family:'Cormorant Garamond',serif;font-size:24px;font-weight:600;color:var(--white);line-height:1.1;}
 .trip-sub{font-size:12px;color:var(--muted);margin-top:4px;}
-.trip-badges{display:flex;gap:7px;flex-wrap:wrap;margin-top:10px;}
-.tbadge{padding:4px 11px;border-radius:6px;font-size:11px;font-weight:600;letter-spacing:.4px;}
+.trip-badges{display:flex;gap:6px;flex-wrap:wrap;margin-top:8px;}
+.tbadge{padding:4px 10px;border-radius:6px;font-size:11px;font-weight:600;}
 .tbadge.green{background:rgba(34,197,94,.12);border:1px solid rgba(34,197,94,.3);color:var(--green);}
 .tbadge.gold{background:rgba(201,168,76,.12);border:1px solid rgba(201,168,76,.3);color:var(--gold);}
 .tbadge.teal{background:rgba(0,201,177,.1);border:1px solid var(--border2);color:var(--teal);}
-.pdf-btn{background:linear-gradient(135deg,var(--gold),var(--gold2));border:none;
-  color:var(--navy);font-family:'DM Sans',sans-serif;font-size:12px;font-weight:700;
-  padding:10px 18px;border-radius:10px;cursor:pointer;display:flex;align-items:center;gap:6px;
-  transition:all .2s;white-space:nowrap;flex-shrink:0;}
-.pdf-btn:hover{transform:translateY(-1px);box-shadow:var(--glow-gold);}
+.pdf-btn{background:linear-gradient(135deg,var(--gold),var(--gold2));border:none;color:var(--navy);font-family:'DM Sans',sans-serif;font-size:12px;font-weight:700;padding:10px 16px;border-radius:10px;cursor:pointer;transition:all .2s;white-space:nowrap;flex-shrink:0;}
+.pdf-btn:active{opacity:.8;}
 
-/* Budget Summary */
-.budget-section{background:var(--navy3);border-left:1px solid var(--border);
-  border-right:1px solid var(--border);padding:18px 22px;}
-.sec-title{font-size:11px;color:var(--gold);letter-spacing:2px;text-transform:uppercase;
-  font-weight:600;margin-bottom:14px;display:flex;align-items:center;gap:8px;}
+/* BUDGET */
+.budget-section{background:var(--navy3);border-left:1px solid var(--border);border-right:1px solid var(--border);padding:16px 18px;}
+.sec-title{font-size:11px;color:var(--gold);letter-spacing:2px;text-transform:uppercase;font-weight:600;margin-bottom:4px;display:flex;align-items:center;gap:8px;flex-wrap:wrap;}
 .sec-title::after{content:'';flex:1;height:1px;background:linear-gradient(90deg,var(--border),transparent);}
-.budget-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(140px,1fr));gap:8px;}
-.budget-item{background:var(--glass);border:1px solid var(--border);border-radius:10px;
-  padding:12px 14px;display:flex;align-items:center;gap:10px;}
+.budget-note{font-size:10px;color:var(--teal);font-weight:400;letter-spacing:.3px;background:rgba(0,201,177,.08);padding:2px 8px;border-radius:4px;text-transform:none;white-space:nowrap;}
+.budget-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(140px,1fr));gap:8px;margin-top:12px;}
+.budget-item{background:var(--glass);border:1px solid var(--border);border-radius:10px;padding:10px 12px;display:flex;align-items:center;gap:10px;transition:all .3s;}
+.budget-item.is-selected{border-color:var(--teal);background:rgba(0,201,177,.06);}
 .budget-icon{font-size:18px;flex-shrink:0;}
 .budget-label{font-size:11px;color:var(--muted);}
-.budget-amt{font-size:14px;font-weight:600;color:var(--white);font-family:'DM Mono',monospace;}
-.budget-note{font-size:10px;color:var(--teal);font-weight:400;letter-spacing:.5px;
-  background:rgba(0,201,177,.08);padding:2px 8px;border-radius:4px;margin-left:6px;text-transform:none;}
-.budget-total{background:linear-gradient(90deg,rgba(201,168,76,.1),rgba(0,201,177,.08));
-  border:1px solid var(--gold);border-radius:10px;padding:12px 18px;
-  display:flex;align-items:center;justify-content:space-between;margin-top:10px;gap:10px;flex-wrap:wrap;}
+.budget-amt{font-size:14px;font-weight:600;color:var(--white);font-family:'DM Mono',monospace;transition:all .3s;}
+.budget-sel-hint{font-size:10px;color:var(--muted);margin-top:2px;}
+.budget-sel-hint.chosen{color:var(--teal);}
+.budget-total{background:linear-gradient(90deg,rgba(201,168,76,.1),rgba(0,201,177,.08));border:1px solid var(--gold);border-radius:10px;padding:12px 16px;display:flex;align-items:center;justify-content:space-between;margin-top:10px;gap:10px;flex-wrap:wrap;}
 .budget-total .lbl{font-size:13px;color:var(--gold);font-weight:600;}
 .budget-basis{font-size:10px;color:var(--muted);margin-top:3px;line-height:1.4;}
 .budget-total-right{text-align:right;}
 .budget-total .val{font-size:20px;font-weight:700;color:var(--gold2);font-family:'DM Mono',monospace;display:block;}
 .budget-range{font-size:10px;color:var(--muted);font-family:'DM Mono',monospace;}
-/* Live budget bar */
-.budget-item{background:var(--glass);border:1px solid var(--border);border-radius:10px;
-  padding:12px 14px;display:flex;align-items:center;gap:10px;transition:all .3s;}
-.budget-item.is-selected{border-color:var(--teal);background:rgba(0,201,177,.06);}
-.budget-item.is-selectable{cursor:pointer;}
-.budget-item.is-selectable:hover{border-color:var(--gold);}
-.budget-icon{font-size:18px;flex-shrink:0;}
-.budget-label{font-size:11px;color:var(--muted);}
-.budget-amt{font-size:14px;font-weight:600;color:var(--white);font-family:'DM Mono',monospace;transition:all .3s;}
-.budget-amt.updated{color:var(--teal);}
-.budget-sel-hint{font-size:10px;color:var(--muted);margin-top:2px;}
-.budget-sel-hint.chosen{color:var(--teal);}
+@keyframes flashUpdate{0%{color:var(--teal)}100%{color:var(--gold2)}}
+.val.updated,.budget-amt.updated{animation:flashUpdate .6s ease;}
 
-/* Day Tabs */
-.day-tabs-wrap{background:var(--navy3);border-left:1px solid var(--border);
-  border-right:1px solid var(--border);border-top:1px solid var(--border);
-  padding:14px 22px 0;}
-.day-tabs{display:flex;gap:6px;overflow-x:auto;padding-bottom:0;
-  scrollbar-width:none;-ms-overflow-style:none;}
+/* DAY TABS */
+.day-tabs-wrap{background:var(--navy3);border-left:1px solid var(--border);border-right:1px solid var(--border);border-top:1px solid var(--border);padding:12px 18px 0;}
+.day-tabs{display:flex;gap:5px;overflow-x:auto;scrollbar-width:none;-ms-overflow-style:none;}
 .day-tabs::-webkit-scrollbar{display:none;}
-.day-tab{padding:8px 16px;border-radius:8px 8px 0 0;font-size:12px;font-weight:600;
-  cursor:pointer;border:1px solid transparent;border-bottom:none;
-  white-space:nowrap;transition:all .2s;color:var(--muted);background:transparent;}
-.day-tab:hover{color:var(--light);background:var(--glass);}
+.day-tab{padding:8px 14px;border-radius:8px 8px 0 0;font-size:12px;font-weight:600;cursor:pointer;border:1px solid transparent;border-bottom:none;white-space:nowrap;transition:all .2s;color:var(--muted);background:transparent;}
 .day-tab.active{color:var(--teal);background:rgba(0,201,177,.08);border-color:var(--border2);}
-
-/* Day Content */
-.day-content-wrap{background:var(--navy3);border:1px solid var(--border);
-  border-top:1px solid var(--border2);}
-.day-content{display:none;padding:18px 22px;}
+.day-content-wrap{background:var(--navy3);border:1px solid var(--border);border-top:1px solid var(--border2);}
+.day-content{display:none;padding:16px 18px;}
 .day-content.active{display:block;animation:fadeUp .3s ease;}
-
-.session-block{margin-bottom:18px;}
-.session-header{display:flex;align-items:center;gap:8px;margin-bottom:10px;
-  padding-bottom:8px;border-bottom:1px solid var(--glass2);}
-.session-icon{font-size:16px;}
-.session-name{font-size:12px;color:var(--muted);text-transform:uppercase;letter-spacing:1.5px;font-weight:600;}
-
-.activity-row{display:flex;gap:12px;padding:10px 0;
-  border-bottom:1px solid rgba(255,255,255,.04);align-items:flex-start;}
+.session-block{margin-bottom:16px;}
+.session-header{display:flex;align-items:center;gap:8px;margin-bottom:8px;padding-bottom:7px;border-bottom:1px solid var(--glass2);}
+.session-icon{font-size:15px;}
+.session-name{font-size:11px;color:var(--muted);text-transform:uppercase;letter-spacing:1.5px;font-weight:600;}
+.activity-row{display:flex;gap:10px;padding:9px 0;border-bottom:1px solid rgba(255,255,255,.04);align-items:flex-start;}
 .activity-row:last-child{border-bottom:none;}
-.act-time{font-size:12px;font-weight:600;color:var(--teal);font-family:'DM Mono',monospace;
-  min-width:42px;flex-shrink:0;padding-top:1px;}
-.act-emoji{font-size:16px;flex-shrink:0;}
-.act-body{}
+.act-time{font-size:11px;font-weight:600;color:var(--teal);font-family:'DM Mono',monospace;min-width:40px;flex-shrink:0;padding-top:2px;}
+.act-emoji{font-size:15px;flex-shrink:0;}
 .act-title{font-size:13px;font-weight:600;color:var(--white);line-height:1.3;}
-.act-desc{font-size:12px;color:var(--muted);margin-top:3px;line-height:1.5;}
-.act-cost{display:inline-flex;align-items:center;gap:4px;margin-top:5px;
-  background:rgba(201,168,76,.1);border:1px solid rgba(201,168,76,.25);
-  padding:2px 9px;border-radius:5px;font-size:11px;color:var(--gold);font-weight:600;
-  font-family:'DM Mono',monospace;}
+.act-desc{font-size:11px;color:var(--muted);margin-top:3px;line-height:1.5;}
+.act-cost{display:inline-flex;align-items:center;margin-top:5px;background:rgba(201,168,76,.1);border:1px solid rgba(201,168,76,.25);padding:2px 8px;border-radius:5px;font-size:11px;color:var(--gold);font-weight:600;font-family:'DM Mono',monospace;}
 
-/* ── HUMAN-IN-THE-LOOP BOOKING OPTIONS ── */
-.booking-section{background:rgba(0,0,0,.25);border:1px solid var(--border);border-top:none;padding:18px 22px;}
-.booking-notice{display:flex;align-items:flex-start;gap:10px;padding:11px 14px;
-  background:rgba(245,158,11,.07);border:1px solid rgba(245,158,11,.3);
-  border-radius:10px;margin-bottom:16px;}
-.booking-notice-icon{font-size:18px;flex-shrink:0;margin-top:1px;}
-.booking-notice-text{font-size:12px;color:var(--light);line-height:1.6;}
+/* BOOKING OPTIONS */
+.booking-section{background:rgba(0,0,0,.2);border:1px solid var(--border);border-top:none;padding:16px 18px;}
+.booking-notice{display:flex;align-items:flex-start;gap:10px;padding:10px 13px;background:rgba(245,158,11,.07);border:1px solid rgba(245,158,11,.3);border-radius:10px;margin-bottom:14px;}
+.booking-notice-icon{font-size:17px;flex-shrink:0;margin-top:1px;}
+.booking-notice-text{font-size:11px;color:var(--light);line-height:1.6;}
 .booking-notice-text strong{color:var(--amber);}
-.book-cats{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:14px;}
-.book-cat{padding:6px 14px;border-radius:20px;font-size:12px;font-weight:600;
-  cursor:pointer;border:1px solid var(--border);color:var(--muted);
-  background:transparent;transition:all .2s;white-space:nowrap;}
-.book-cat:hover{color:var(--light);border-color:var(--teal);}
+.book-cats{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:12px;}
+.book-cat{padding:6px 13px;border-radius:20px;font-size:12px;font-weight:600;cursor:pointer;border:1px solid var(--border);color:var(--muted);background:transparent;transition:all .2s;white-space:nowrap;-webkit-tap-highlight-color:rgba(0,0,0,0);}
 .book-cat.active{color:var(--navy);background:var(--teal);border-color:var(--teal);}
 .book-panel{display:none;}
 .book-panel.active{display:block;animation:fadeUp .25s ease;}
-.opt-card{background:var(--glass);border:1px solid var(--border);border-radius:12px;
-  padding:14px 16px;margin-bottom:10px;transition:all .2s;}
-.opt-card:hover{border-color:var(--teal);background:var(--glass2);}
-.opt-card.selected{border-color:var(--teal);background:rgba(0,201,177,.07);
-  box-shadow:0 0 0 2px rgba(0,201,177,.15);}
-.opt-header{display:flex;align-items:flex-start;justify-content:space-between;gap:10px;margin-bottom:8px;}
-.opt-name{font-size:14px;font-weight:600;color:var(--white);}
-.opt-badge-wrap{display:flex;gap:5px;flex-wrap:wrap;margin-top:3px;}
-.opt-badge{font-size:10px;padding:2px 8px;border-radius:4px;font-weight:600;}
+.opt-card{background:var(--glass);border:1px solid var(--border);border-radius:12px;padding:13px 14px;margin-bottom:10px;transition:all .2s;}
+.opt-card.selected{border-color:var(--teal);background:rgba(0,201,177,.07);box-shadow:0 0 0 2px rgba(0,201,177,.15);}
+.opt-header{display:flex;align-items:flex-start;justify-content:space-between;gap:10px;margin-bottom:7px;}
+.opt-name{font-size:13px;font-weight:600;color:var(--white);}
+.opt-badge-wrap{display:flex;gap:4px;flex-wrap:wrap;margin-top:3px;}
+.opt-badge{font-size:10px;padding:2px 7px;border-radius:4px;font-weight:600;}
 .opt-badge.best{background:rgba(34,197,94,.15);border:1px solid rgba(34,197,94,.3);color:var(--green);}
 .opt-badge.popular{background:rgba(0,201,177,.1);border:1px solid rgba(0,201,177,.25);color:var(--teal);}
 .opt-badge.budget{background:rgba(245,158,11,.1);border:1px solid rgba(245,158,11,.25);color:var(--amber);}
 .opt-badge.premium{background:rgba(201,168,76,.1);border:1px solid rgba(201,168,76,.25);color:var(--gold);}
 .opt-price{text-align:right;flex-shrink:0;}
-.opt-price-main{font-size:16px;font-weight:700;color:var(--gold);font-family:'DM Mono',monospace;}
+.opt-price-main{font-size:15px;font-weight:700;color:var(--gold);font-family:'DM Mono',monospace;}
 .opt-price-sub{font-size:10px;color:var(--muted);}
-.opt-details{display:flex;gap:10px;flex-wrap:wrap;margin-bottom:10px;}
+.opt-details{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:8px;}
 .opt-detail{display:flex;align-items:center;gap:4px;font-size:11px;color:var(--muted);}
 .opt-detail span{color:var(--light);}
-.opt-stars{color:var(--gold);font-size:11px;letter-spacing:1px;}
 .opt-footer{display:flex;align-items:center;justify-content:space-between;gap:10px;}
 .opt-desc{font-size:11px;color:var(--muted);line-height:1.5;flex:1;}
-.opt-select-btn{background:transparent;border:1px solid var(--teal);color:var(--teal);
-  font-family:'DM Sans',sans-serif;font-size:12px;font-weight:600;
-  padding:7px 14px;border-radius:8px;cursor:pointer;transition:all .2s;white-space:nowrap;flex-shrink:0;}
-.opt-select-btn:hover{background:rgba(0,201,177,.12);}
+.opt-select-btn{background:transparent;border:1px solid var(--teal);color:var(--teal);font-family:'DM Sans',sans-serif;font-size:12px;font-weight:600;padding:7px 14px;border-radius:8px;cursor:pointer;transition:all .2s;white-space:nowrap;flex-shrink:0;-webkit-tap-highlight-color:rgba(0,0,0,0);}
+.opt-select-btn:active{background:rgba(0,201,177,.2);}
 .opt-select-btn.chosen{background:var(--teal);color:var(--navy);}
-/* Book-now button */
-.opt-book-btn{background:linear-gradient(135deg,#1a6b3a,#22c55e);border:none;color:#fff;
-  font-family:'DM Sans',sans-serif;font-size:11px;font-weight:700;
-  padding:7px 13px;border-radius:8px;cursor:pointer;transition:all .2s;
-  white-space:nowrap;flex-shrink:0;display:flex;align-items:center;gap:4px;}
-.opt-book-btn:hover{transform:translateY(-1px);box-shadow:0 4px 12px rgba(34,197,94,.3);}
-/* Honest live-deals row */
-.deals-row{display:flex;align-items:center;gap:6px;flex-wrap:wrap;
-  margin-top:8px;padding:7px 10px;
-  background:rgba(34,197,94,.05);border:1px solid rgba(34,197,94,.15);border-radius:8px;}
-.deals-label{font-size:11px;color:var(--green);font-weight:600;white-space:nowrap;}
-.deal-chip{font-size:11px;font-weight:600;padding:3px 9px;border-radius:5px;
-  background:rgba(34,197,94,.1);border:1px solid rgba(34,197,94,.25);
-  color:var(--green);text-decoration:none;transition:all .2s;white-space:nowrap;}
-.deal-chip:hover{background:rgba(34,197,94,.2);transform:translateY(-1px);}
-.deals-disclaimer{font-size:10px;color:var(--muted);font-style:italic;width:100%;margin-top:2px;}
-/* Traveller cost breakdown */
-.opt-per-person{margin-top:4px;display:flex;gap:8px;flex-wrap:wrap;}
-.per-pill{font-size:10px;padding:2px 8px;border-radius:4px;
-  background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.1);color:var(--muted);}
+.opt-per-person{margin-top:5px;display:flex;gap:6px;flex-wrap:wrap;}
+.per-pill{font-size:10px;padding:2px 7px;border-radius:4px;background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.1);color:var(--muted);}
 .per-pill.total{color:var(--gold);border-color:rgba(201,168,76,.25);background:rgba(201,168,76,.07);}
-/* Provider logos row */
-.opt-providers{display:flex;gap:6px;flex-wrap:wrap;margin-top:8px;align-items:center;}
-.provider-chip{font-size:10px;padding:3px 9px;border-radius:5px;font-weight:600;
-  cursor:pointer;transition:all .2s;text-decoration:none;display:inline-flex;align-items:center;gap:3px;}
-.provider-chip:hover{transform:translateY(-1px);}
+.opt-providers{display:flex;gap:5px;flex-wrap:wrap;margin-top:8px;align-items:center;}
+.provider-label{font-size:10px;color:var(--muted);}
+.provider-chip{font-size:10px;padding:3px 8px;border-radius:5px;font-weight:600;cursor:pointer;transition:all .2s;text-decoration:none;display:inline-flex;align-items:center;gap:3px;white-space:nowrap;}
+.provider-chip:active{opacity:.7;}
 .provider-chip.mmtrip{background:rgba(234,67,53,.12);border:1px solid rgba(234,67,53,.3);color:#ea4335;}
 .provider-chip.cleartrip{background:rgba(59,130,246,.12);border:1px solid rgba(59,130,246,.3);color:#3b82f6;}
 .provider-chip.ixigo{background:rgba(251,146,60,.12);border:1px solid rgba(251,146,60,.3);color:#fb923c;}
 .provider-chip.goibibo{background:rgba(16,185,129,.12);border:1px solid rgba(16,185,129,.3);color:#10b981;}
 .provider-chip.booking{background:rgba(0,113,194,.12);border:1px solid rgba(0,113,194,.3);color:#0071c2;}
 .provider-chip.agoda{background:rgba(239,68,68,.12);border:1px solid rgba(239,68,68,.3);color:#ef4444;}
-.provider-chip.airbnb{background:rgba(255,90,95,.12);border:1px solid rgba(255,90,95,.3);color:#ff5a5f;}
 .provider-chip.klook{background:rgba(255,77,0,.12);border:1px solid rgba(255,77,0,.3);color:#ff4d00;}
-.provider-label{font-size:10px;color:var(--muted);margin-right:2px;}
-/* Budget total animation */
-@keyframes flashUpdate{0%{color:var(--teal);transform:scale(1.05)}100%{color:var(--gold2);transform:scale(1)}}
-.budget-amt.updated,.val.updated{animation:flashUpdate .5s ease;}
-.selection-summary{margin-top:14px;padding:12px 16px;
-  background:rgba(0,201,177,.06);border:1px solid var(--border2);border-radius:10px;display:none;}
+.deals-row{display:flex;align-items:center;gap:5px;flex-wrap:wrap;margin-top:7px;padding:6px 9px;background:rgba(34,197,94,.05);border:1px solid rgba(34,197,94,.15);border-radius:7px;}
+.deals-label{font-size:10px;color:var(--green);font-weight:600;white-space:nowrap;}
+.deal-chip{font-size:10px;font-weight:600;padding:2px 8px;border-radius:4px;background:rgba(34,197,94,.1);border:1px solid rgba(34,197,94,.25);color:var(--green);text-decoration:none;white-space:nowrap;}
+.deals-disclaimer{font-size:10px;color:var(--muted);font-style:italic;width:100%;margin-top:1px;}
+.selection-summary{margin-top:12px;padding:12px 14px;background:rgba(0,201,177,.06);border:1px solid var(--border2);border-radius:10px;display:none;}
 .selection-summary.show{display:block;}
 .sel-title{font-size:11px;color:var(--teal);letter-spacing:1.5px;text-transform:uppercase;font-weight:600;margin-bottom:8px;}
-.sel-row{display:flex;align-items:center;justify-content:space-between;
-  padding:5px 0;border-bottom:1px solid rgba(255,255,255,.05);font-size:12px;}
+.sel-row{display:flex;align-items:center;justify-content:space-between;padding:5px 0;border-bottom:1px solid rgba(255,255,255,.05);font-size:12px;}
 .sel-row:last-child{border-bottom:none;}
-.sel-label{color:var(--muted);display:flex;align-items:center;gap:6px;}
+.sel-label{color:var(--muted);display:flex;align-items:center;gap:5px;}
 .sel-value{color:var(--white);font-weight:600;}
 .sel-cost{color:var(--gold);font-family:'DM Mono',monospace;font-size:11px;}
-.confirm-btn{width:100%;margin-top:12px;padding:12px;
-  background:linear-gradient(135deg,var(--teal),var(--teal2));
-  border:none;color:var(--navy);font-family:'DM Sans',sans-serif;
-  font-size:14px;font-weight:700;border-radius:10px;cursor:pointer;transition:all .2s;}
-.confirm-btn:hover{transform:translateY(-1px);box-shadow:var(--glow-teal);}
-.confirm-note{font-size:10px;color:var(--muted);text-align:center;margin-top:6px;}
+.confirm-btn{width:100%;margin-top:10px;padding:12px;background:linear-gradient(135deg,var(--teal),var(--teal2));border:none;color:var(--navy);font-family:'DM Sans',sans-serif;font-size:14px;font-weight:700;border-radius:10px;cursor:pointer;}
+.confirm-btn:active{opacity:.85;}
+.confirm-note{font-size:10px;color:var(--muted);text-align:center;margin-top:5px;}
 
-/* Tips */
-.tips-section{background:var(--navy3);border:1px solid var(--border);
-  border-top:none;border-radius:0 0 16px 16px;padding:16px 22px;}
+/* TIPS */
+.tips-section{background:var(--navy3);border:1px solid var(--border);border-top:none;border-radius:0 0 16px 16px;padding:14px 18px;}
 .tips-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:8px;}
-.tip-item{display:flex;gap:10px;padding:10px 12px;background:rgba(201,168,76,.05);
-  border:1px solid rgba(201,168,76,.15);border-radius:9px;}
-.tip-num{font-size:18px;flex-shrink:0;}
-.tip-text{font-size:12px;color:var(--light);line-height:1.6;}
+.tip-item{display:flex;gap:9px;padding:9px 11px;background:rgba(201,168,76,.05);border:1px solid rgba(201,168,76,.15);border-radius:9px;}
+.tip-text{font-size:11px;color:var(--light);line-height:1.6;}
 
 /* FEATURES */
-.features{padding:24px 16px 16px;max-width:700px;margin:0 auto;width:100%;}
-.section-label{font-size:10px;color:var(--gold);letter-spacing:2px;text-transform:uppercase;
-  font-weight:600;margin-bottom:12px;display:flex;align-items:center;gap:9px;}
+.features{padding:22px 16px 16px;max-width:700px;margin:0 auto;width:100%;}
+.section-label{font-size:10px;color:var(--gold);letter-spacing:2px;text-transform:uppercase;font-weight:600;margin-bottom:11px;display:flex;align-items:center;gap:8px;}
 .section-label::after{content:'';flex:1;height:1px;background:linear-gradient(90deg,var(--border),transparent);}
-.feat-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(160px,1fr));gap:10px;}
-.feat-card{background:var(--glass);border:1px solid var(--border);border-radius:11px;
-  padding:16px 14px;transition:all .25s;}
-.feat-card:hover{background:var(--glass2);border-color:var(--teal);transform:translateY(-2px);box-shadow:var(--glow-teal);}
-.feat-icon{font-size:22px;margin-bottom:8px;}
-.feat-name{font-size:13px;font-weight:600;color:var(--white);margin-bottom:5px;}
+.feat-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:10px;}
+.feat-card{background:var(--glass);border:1px solid var(--border);border-radius:11px;padding:14px 13px;transition:all .25s;}
+.feat-icon{font-size:21px;margin-bottom:7px;}
+.feat-name{font-size:13px;font-weight:600;color:var(--white);margin-bottom:4px;}
 .feat-desc{font-size:11px;color:var(--muted);line-height:1.6;}
 
 /* FOOTER */
-footer{margin-top:auto;padding:16px 20px;border-top:1px solid var(--border);
-  display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:8px;
-  background:rgba(10,15,30,.65);backdrop-filter:blur(10px);font-size:11px;color:var(--muted);}
+footer{margin-top:auto;padding:14px 18px;border-top:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:7px;background:rgba(10,15,30,.65);backdrop-filter:blur(10px);font-size:11px;color:var(--muted);}
 .footer-credit{font-family:'DM Mono',monospace;letter-spacing:.4px;}
 .footer-credit span{color:var(--gold);}
-.token-badge{font-family:'DM Mono',monospace;font-size:11px;background:var(--glass);
-  border:1px solid var(--border);padding:3px 9px;border-radius:6px;color:var(--teal);}
+.token-badge{font-family:'DM Mono',monospace;font-size:11px;background:var(--glass);border:1px solid var(--border);padding:3px 9px;border-radius:6px;color:var(--teal);}
 
 /* INSTALL TOAST */
-.install-toast{position:fixed;bottom:76px;left:50%;transform:translateX(-50%);
-  background:var(--navy3);border:1px solid var(--gold);border-radius:12px;padding:13px 18px;
-  display:none;align-items:center;gap:12px;box-shadow:var(--shadow),var(--glow-gold);
-  font-size:13px;color:var(--white);z-index:200;white-space:nowrap;}
+.install-toast{position:fixed;bottom:70px;left:50%;transform:translateX(-50%);background:var(--navy3);border:1px solid var(--gold);border-radius:12px;padding:12px 16px;display:none;align-items:center;gap:11px;box-shadow:var(--shadow),var(--glow-gold);font-size:12px;color:var(--white);z-index:200;white-space:nowrap;}
 .install-toast.show{display:flex;}
-.install-btn{background:linear-gradient(135deg,var(--gold),var(--gold2));border:none;
-  color:var(--navy);font-weight:600;font-size:12px;padding:6px 14px;border-radius:7px;cursor:pointer;}
-.toast-close{background:none;border:none;color:var(--muted);cursor:pointer;font-size:17px;padding:0 3px;}
-
-::-webkit-scrollbar{width:5px;}
+.install-btn{background:linear-gradient(135deg,var(--gold),var(--gold2));border:none;color:var(--navy);font-weight:600;font-size:11px;padding:6px 13px;border-radius:7px;cursor:pointer;}
+.toast-close{background:none;border:none;color:var(--muted);cursor:pointer;font-size:16px;padding:0 3px;}
+::-webkit-scrollbar{width:4px;}
 ::-webkit-scrollbar-track{background:var(--navy);}
-::-webkit-scrollbar-thumb{background:var(--border);border-radius:3px;}
+::-webkit-scrollbar-thumb{background:var(--border);border-radius:2px;}
 </style>
 </head>
 <body>
-<div class="bg-mesh"></div><div class="bg-grid"></div>
+<div class="bg-mesh"></div>
+<div class="bg-grid"></div>
 <div class="app">
 
 <header>
@@ -382,36 +247,34 @@ footer{margin-top:auto;padding:16px 20px;border-top:1px solid var(--border);
 <div class="hero">
   <div class="hero-tag">✦ Three-Layer Intelligence</div>
   <h1>Your Personal<br><span>Travel Concierge</span></h1>
-  <p>Tell us your dream trip. AI understands preferences, GenAI crafts your itinerary, Agentic AI curates options for flights, hotels &amp; cabs — <strong style="color:var(--teal)">you review and choose</strong>.</p>
+  <p>Tell us your dream trip. AI understands preferences, GenAI crafts your itinerary, Agentic AI curates options — <strong style="color:var(--teal)">you review and choose.</strong></p>
   <div class="tiers">
     <div class="tier ai"><span class="tier-dot"></span>🧠 AI — Understands</div>
     <div class="tier gen"><span class="tier-dot"></span>✨ GenAI — Creates</div>
-    <div class="tier agent"><span class="tier-dot"></span>🤖 Agentic — Suggests & You Decide</div>
+    <div class="tier agent"><span class="tier-dot"></span>🤖 Agentic — Suggests</div>
   </div>
 </div>
 
 <div class="prompt-wrap">
   <div class="chips">
-    <div class="chip" onclick="setPrompt(this)">5-day family trip Singapore ₹1.5L</div>
-    <div class="chip" onclick="setPrompt(this)">Romantic weekend Goa ₹40,000</div>
-    <div class="chip" onclick="setPrompt(this)">Solo Europe 15 days ₹2L</div>
-    <div class="chip" onclick="setPrompt(this)">Honeymoon Maldives 7 nights ₹3L</div>
+    <div class="chip" id="chip1">5-day family Singapore ₹1.5L</div>
+    <div class="chip" id="chip2">Romantic weekend Goa ₹40,000</div>
+    <div class="chip" id="chip3">Solo Europe 15 days ₹2L</div>
+    <div class="chip" id="chip4">Honeymoon Maldives 7 nights ₹3L</div>
   </div>
   <div class="apikey-row">
     <label>🔑 API Key</label>
     <input type="password" id="apiKeyInput" placeholder="sk-ant-... (for Plan My Trip)" autocomplete="off">
-    <button class="apikey-save" onclick="saveKey()">Save</button>
+    <button class="apikey-save" id="apiSaveBtn">Save</button>
     <span class="apikey-status unset" id="keyStatus">Not set</span>
   </div>
   <div class="prompt-box">
-    <textarea class="prompt-input" id="promptInput"
-      placeholder='Try: "Plan a 5-day family trip to Singapore under ₹1.5 lakh — 2 adults, 2 kids"'
-      rows="3"></textarea>
+    <textarea class="prompt-input" id="promptInput" placeholder='Try: "Plan a 5-day family trip to Singapore under ₹1.5 lakh — 2 adults, 2 kids"' rows="3"></textarea>
     <div class="prompt-footer">
-      <div class="prompt-meta"><span>💡</span> Add destination, duration, budget & travellers</div>
+      <div class="prompt-meta"><span>💡</span> Add destination, duration, budget &amp; travellers</div>
       <div class="btn-group">
-        <button class="demo-btn" id="demoBtn" onclick="loadDemo()">🇸🇬 See Demo</button>
-        <button class="send-btn" id="sendBtn" onclick="planTrip()">✈ Plan My Trip</button>
+        <button class="demo-btn" id="demoBtn">🇸🇬 See Demo</button>
+        <button class="send-btn" id="sendBtn">✈ Plan My Trip</button>
       </div>
     </div>
   </div>
@@ -421,73 +284,47 @@ footer{margin-top:auto;padding:16px 20px;border-top:1px solid var(--border);
   <div class="thinking" id="thinking">
     <span>🤖 Agentic AI thinking</span>
     <div class="thinking-dots"><span></span><span></span><span></span></div>
-    <span id="thinkingStage" style="color:var(--muted);font-size:12px;">Analysing preferences…</span>
+    <span id="thinkingStage" style="color:var(--muted);font-size:11px;">Analysing preferences…</span>
   </div>
-
-  <!-- RICH ITINERARY CARD -->
   <div class="itin-card" id="itinCard">
-
-    <!-- Banner -->
     <div class="trip-banner" id="tripBanner">
-      <div class="trip-title-wrap">
+      <div>
         <div class="trip-dest" id="tripDest">Singapore</div>
-        <div class="trip-sub" id="tripSub">5 Days · 2 Adults, 2 Kids · Jun 15–19 2025</div>
+        <div class="trip-sub" id="tripSub">5 Days · 2 Adults, 2 Kids</div>
         <div class="trip-badges" id="tripBadges"></div>
       </div>
-      <button class="pdf-btn" onclick="exportPDF()">⬇ Export PDF</button>
+      <button class="pdf-btn" id="pdfBtn">⬇ Export PDF</button>
     </div>
-
-    <!-- Budget -->
-    <div class="budget-section" id="budgetSection">
-      <div class="sec-title">💰 Budget Breakdown
-        <span class="budget-note" id="budgetNote">Based on lowest-cost options · Updates as you select</span>
-      </div>
+    <div class="budget-section">
+      <div class="sec-title">💰 Budget Breakdown <span class="budget-note">Updates live as you select options</span></div>
       <div class="budget-grid" id="budgetGrid"></div>
       <div class="budget-total" id="budgetTotal">
-        <div>
-          <span class="lbl">💳 Estimated Total</span>
-          <div class="budget-basis" id="budgetBasis">Showing indicative range — select options below to confirm</div>
-        </div>
-        <div class="budget-total-right">
-          <span class="val" id="budgetTotalVal">—</span>
-          <span class="budget-range" id="budgetRange"></span>
-        </div>
+        <div><span class="lbl">💳 Estimated Total</span><div class="budget-basis" id="budgetBasis">Select options below to update total</div></div>
+        <div class="budget-total-right"><span class="val" id="budgetTotalVal">—</span><span class="budget-range">Updates live</span></div>
       </div>
     </div>
-
-    <!-- Day Tabs -->
-    <div class="day-tabs-wrap">
-      <div class="day-tabs" id="dayTabs"></div>
-    </div>
+    <div class="day-tabs-wrap"><div class="day-tabs" id="dayTabs"></div></div>
     <div class="day-content-wrap" id="dayContentWrap"></div>
-
-    <!-- Human-in-the-Loop Booking Options -->
     <div class="booking-section" id="bookingSection">
       <div class="sec-title">🛎️ Review &amp; Select Your Options</div>
       <div class="booking-notice">
         <div class="booking-notice-icon">⚠️</div>
-        <div class="booking-notice-text">
-          <strong>You are always in control.</strong> TravelAI never books anything automatically.
-          Review AI-curated options, compare prices &amp; ratings, tap <strong>Select</strong> to build your plan, then open a booking platform to complete payment. Prices shown are <strong>estimates</strong> — always verify the final price on the booking site before paying. Discount codes shown are links to live deals pages, not AI-generated claims.
-        </div>
+        <div class="booking-notice-text"><strong>You are always in control.</strong> TravelAI never books anything automatically. Review options, select your preferences, then open a booking platform to pay. Prices are estimates — verify on the booking site. Deal links go to live platform pages, not AI-generated claims.</div>
       </div>
       <div class="book-cats" id="bookCats"></div>
       <div id="bookPanels"></div>
       <div class="selection-summary" id="selSummary">
         <div class="sel-title">📋 Your Selections</div>
         <div id="selRows"></div>
-        <button class="confirm-btn" onclick="confirmBookings()">✅ Confirm &amp; Proceed to Book</button>
+        <button class="confirm-btn" id="confirmBtn">✅ Confirm &amp; Proceed to Book</button>
         <div class="confirm-note">You will be redirected to each provider's secure site to complete payment</div>
       </div>
     </div>
-
-    <!-- Tips -->
-    <div class="tips-section" id="tipsSection">
+    <div class="tips-section">
       <div class="sec-title">✨ Pro Tips from Your Concierge</div>
       <div class="tips-grid" id="tipsGrid"></div>
     </div>
-
-  </div><!-- end itin-card -->
+  </div>
 </div>
 
 <div class="features">
@@ -495,10 +332,10 @@ footer{margin-top:auto;padding:16px 20px;border-top:1px solid var(--border);
   <div class="feat-grid">
     <div class="feat-card"><div class="feat-icon">🧠</div><div class="feat-name">Preference Engine</div><div class="feat-desc">Learns your travel style, dietary needs, budget patterns and past trips.</div></div>
     <div class="feat-card"><div class="feat-icon">🗺️</div><div class="feat-name">Smart Itineraries</div><div class="feat-desc">Day-by-day plans with timings, distances, must-sees and hidden gems.</div></div>
-    <div class="feat-card"><div class="feat-icon">✈️</div><div class="feat-name">Flight Booking</div><div class="feat-desc">Best-value flights across 200+ airlines with auto seat selection.</div></div>
-    <div class="feat-card"><div class="feat-icon">🏨</div><div class="feat-name">Hotel & Stays</div><div class="feat-desc">Hotels near attractions within budget, with all check-in logistics handled.</div></div>
-    <div class="feat-card"><div class="feat-icon">🚕</div><div class="feat-name">Cab & Transfers</div><div class="feat-desc">Airport pickups and city transfers pre-booked so you never wait.</div></div>
-    <div class="feat-card"><div class="feat-icon">🔄</div><div class="feat-name">Change Management</div><div class="feat-desc">Flight delay? Agentic AI reschedules and rebooks automatically.</div></div>
+    <div class="feat-card"><div class="feat-icon">✈️</div><div class="feat-name">Flight Options</div><div class="feat-desc">Curated flight choices with per-person cost clarity — you pick and book.</div></div>
+    <div class="feat-card"><div class="feat-icon">🏨</div><div class="feat-name">Hotel Choices</div><div class="feat-desc">Budget to luxury options with real booking site links for all travellers.</div></div>
+    <div class="feat-card"><div class="feat-icon">🏷️</div><div class="feat-name">Live Deal Links</div><div class="feat-desc">Direct links to MakeMyTrip, Booking.com, Klook deals pages — real prices.</div></div>
+    <div class="feat-card"><div class="feat-icon">💰</div><div class="feat-name">Live Budget</div><div class="feat-desc">Total recalculates instantly as you select hotel, flight and transfer options.</div></div>
   </div>
 </div>
 
@@ -511,31 +348,28 @@ footer{margin-top:auto;padding:16px 20px;border-top:1px solid var(--border);
 <div class="install-toast" id="installToast">
   <span>📲 Add TravelAI to home screen</span>
   <button class="install-btn" id="installBtn">Install</button>
-  <button class="toast-close" onclick="document.getElementById('installToast').classList.remove('show')">✕</button>
+  <button class="toast-close" id="toastClose">✕</button>
 </div>
 
 <script>
 /* ══ PWA ICON ══ */
 function generateIcon(sz){
-  const c=document.createElement('canvas');c.width=c.height=sz;
-  const x=c.getContext('2d'),s=sz;
-  const bg=x.createLinearGradient(0,0,s,s);
-  bg.addColorStop(0,'#0a0f1e');bg.addColorStop(1,'#0f1e2a');
-  x.fillStyle=bg;const r=s*.22;
+  var c=document.createElement('canvas');c.width=c.height=sz;
+  var x=c.getContext('2d'),s=sz;
+  var bg=x.createLinearGradient(0,0,s,s);bg.addColorStop(0,'#0a0f1e');bg.addColorStop(1,'#0f1e2a');
+  x.fillStyle=bg;var r=s*.22;
   x.beginPath();x.moveTo(r,0);x.lineTo(s-r,0);x.quadraticCurveTo(s,0,s,r);
   x.lineTo(s,s-r);x.quadraticCurveTo(s,s,s-r,s);x.lineTo(r,s);
-  x.quadraticCurveTo(0,s,0,s-r);x.lineTo(0,r);x.quadraticCurveTo(0,0,r,0);
-  x.closePath();x.fill();
-  const gl=x.createRadialGradient(s*.4,s*.35,0,s*.4,s*.35,s*.55);
+  x.quadraticCurveTo(0,s,0,s-r);x.lineTo(0,r);x.quadraticCurveTo(0,0,r,0);x.closePath();x.fill();
+  var gl=x.createRadialGradient(s*.4,s*.35,0,s*.4,s*.35,s*.55);
   gl.addColorStop(0,'rgba(0,201,177,.18)');gl.addColorStop(1,'rgba(0,0,0,0)');
   x.fillStyle=gl;x.fillRect(0,0,s,s);
   x.beginPath();x.arc(s*.5,s*.48,s*.3,0,Math.PI*2);
-  const gg=x.createLinearGradient(s*.2,s*.2,s*.8,s*.8);
+  var gg=x.createLinearGradient(s*.2,s*.2,s*.8,s*.8);
   gg.addColorStop(0,'rgba(0,201,177,.3)');gg.addColorStop(1,'rgba(201,168,76,.15)');
-  x.strokeStyle='rgba(0,201,177,.6)';x.lineWidth=s*.03;x.stroke();
-  x.fillStyle=gg;x.fill();
+  x.strokeStyle='rgba(0,201,177,.6)';x.lineWidth=s*.03;x.stroke();x.fillStyle=gg;x.fill();
   x.strokeStyle='rgba(0,201,177,.25)';x.lineWidth=s*.018;
-  for(let i=-1;i<=1;i++){const y=s*.48+i*s*.1;const hw=Math.sqrt(Math.max(0,(s*.3)**2-(y-s*.48)**2));x.beginPath();x.moveTo(s*.5-hw,y);x.lineTo(s*.5+hw,y);x.stroke();}
+  for(var i=-1;i<=1;i++){var y=s*.48+i*s*.1;var hw=Math.sqrt(Math.max(0,Math.pow(s*.3,2)-Math.pow(y-s*.48,2)));x.beginPath();x.moveTo(s*.5-hw,y);x.lineTo(s*.5+hw,y);x.stroke();}
   x.beginPath();x.ellipse(s*.5,s*.48,s*.12,s*.3,0,0,Math.PI*2);x.stroke();
   x.save();x.translate(s*.5,s*.48);x.rotate(-Math.PI/4);
   x.fillStyle='#c9a84c';x.beginPath();x.ellipse(0,0,s*.07,s*.025,0,0,Math.PI*2);x.fill();
@@ -546,67 +380,144 @@ function generateIcon(sz){
   x.beginPath();x.arc(s*.78,s*.22,s*.04,0,Math.PI*2);x.fillStyle='rgba(0,229,204,.8)';x.fill();
   return c.toDataURL('image/png');
 }
-const i192=generateIcon(192),i512=generateIcon(512);
-const mf={name:'TravelAI Concierge',short_name:'TravelAI',start_url:'.',display:'standalone',background_color:'#0a0f1e',theme_color:'#0a0f1e',icons:[{src:i192,sizes:'192x192',type:'image/png',purpose:'any maskable'},{src:i512,sizes:'512x512',type:'image/png',purpose:'any maskable'}]};
-document.getElementById('manifest-link').href=URL.createObjectURL(new Blob([JSON.stringify(mf)],{type:'application/manifest+json'}));
-const tl=document.createElement('link');tl.rel='apple-touch-icon';tl.href=i192;document.head.appendChild(tl);
-const fv=document.createElement('link');fv.rel='icon';fv.href=generateIcon(64);document.head.appendChild(fv);
+var i192=generateIcon(192),i512=generateIcon(512);
+var mf={name:'TravelAI Concierge',short_name:'TravelAI',start_url:'.',display:'standalone',background_color:'#0a0f1e',theme_color:'#0a0f1e',icons:[{src:i192,sizes:'192x192',type:'image/png',purpose:'any maskable'},{src:i512,sizes:'512x512',type:'image/png',purpose:'any maskable'}]};
+try{document.getElementById('manifest-link').href=URL.createObjectURL(new Blob([JSON.stringify(mf)],{type:'application/manifest+json'}));}catch(e){}
+var tl=document.createElement('link');tl.rel='apple-touch-icon';tl.href=i192;document.head.appendChild(tl);
+var fv=document.createElement('link');fv.rel='icon';fv.href=generateIcon(64);document.head.appendChild(fv);
 
 /* ══ PWA INSTALL ══ */
-let dp;
-window.addEventListener('beforeinstallprompt',e=>{e.preventDefault();dp=e;setTimeout(()=>document.getElementById('installToast').classList.add('show'),3000);});
-document.getElementById('installBtn').addEventListener('click',async()=>{if(!dp)return;dp.prompt();await dp.userChoice;dp=null;document.getElementById('installToast').classList.remove('show');});
+var dp=null;
+try{
+  window.addEventListener('beforeinstallprompt',function(e){
+    e.preventDefault();dp=e;
+    setTimeout(function(){var t=document.getElementById('installToast');if(t)t.classList.add('show');},4000);
+  });
+}catch(e){}
+document.getElementById('installBtn').addEventListener('click',function(){
+  if(!dp)return;dp.prompt();
+  dp.userChoice.then(function(){dp=null;var t=document.getElementById('installToast');if(t)t.classList.remove('show');});
+});
+document.getElementById('toastClose').addEventListener('click',function(){
+  var t=document.getElementById('installToast');if(t)t.classList.remove('show');
+});
 
 /* ══ API KEY ══ */
-let apiKey=localStorage.getItem('travelai_key')||'';
-function refreshKeyStatus(){const s=document.getElementById('keyStatus');if(apiKey){s.textContent='✓ Key set';s.className='apikey-status set';}else{s.textContent='Not set';s.className='apikey-status unset';}}
-function saveKey(){const v=document.getElementById('apiKeyInput').value.trim();if(v){apiKey=v;localStorage.setItem('travelai_key',v);}refreshKeyStatus();document.getElementById('apiKeyInput').value='';}
+var apiKey=(function(){try{return localStorage.getItem('travelai_key')||'';}catch(e){return '';}})();
+function refreshKeyStatus(){
+  var s=document.getElementById('keyStatus');
+  if(apiKey){s.textContent='✓ Key set';s.className='apikey-status set';}
+  else{s.textContent='Not set';s.className='apikey-status unset';}
+}
+function saveKey(){
+  var v=document.getElementById('apiKeyInput').value.trim();
+  if(v){apiKey=v;try{localStorage.setItem('travelai_key',v);}catch(e){}}
+  refreshKeyStatus();
+  document.getElementById('apiKeyInput').value='';
+}
 refreshKeyStatus();
+document.getElementById('apiSaveBtn').addEventListener('click',saveKey);
 
 /* ══ CHIPS ══ */
-function setPrompt(el){document.getElementById('promptInput').value=el.textContent.trim();}
+function setChipHandlers(){
+  ['chip1','chip2','chip3','chip4'].forEach(function(id){
+    var el=document.getElementById(id);
+    if(el)el.addEventListener('click',function(){document.getElementById('promptInput').value=el.textContent.trim();});
+  });
+}
+setChipHandlers();
 
-/* ══ THINKING ══ */
-const stages=['Analysing preferences & budget…','GenAI crafting your itinerary…','Searching flight options…','Comparing hotel choices…','Finding restaurant options…','Preparing your review selections…'];
-let si=0,st;
-function startStages(){si=0;document.getElementById('thinkingStage').textContent=stages[0];st=setInterval(()=>{si=(si+1)%stages.length;document.getElementById('thinkingStage').textContent=stages[si];},2000);}
-function stopStages(){clearInterval(st);}
+/* ══ THINKING STAGES ══ */
+var stages=['Analysing preferences & budget…','GenAI crafting your itinerary…','Searching flight options…','Comparing hotel choices…','Finding restaurant options…','Preparing your review selections…'];
+var si=0,st=null;
+function startStages(){
+  si=0;document.getElementById('thinkingStage').textContent=stages[0];
+  st=setInterval(function(){si=(si+1)%stages.length;document.getElementById('thinkingStage').textContent=stages[si];},2000);
+}
+function stopStages(){if(st)clearInterval(st);st=null;}
+
+/* ══ BUDGET ENGINE ══ */
+var _baseBudget=[];
+var _currentItinData=null;
+var selections={};
+
+function parseAmt(str){
+  if(!str)return 0;
+  return parseInt(String(str).replace(/[^\d]/g,''),10)||0;
+}
+function fmtAmt(n){
+  if(n>=100000)return '\u20b9'+(n/100000).toFixed(1).replace(/\.0$/,'')+'L';
+  if(n>=1000)return '\u20b9'+n.toLocaleString('en-IN');
+  return '\u20b9'+n;
+}
+
+function recalcBudget(){
+  var total=0;
+  _baseBudget.forEach(function(item){total+=item.amt;});
+  Object.keys(selections).forEach(function(k){total+=parseAmt(selections[k].price);});
+  var totalEl=document.getElementById('budgetTotalVal');
+  if(totalEl){totalEl.textContent=fmtAmt(total);totalEl.classList.remove('updated');void totalEl.offsetWidth;totalEl.classList.add('updated');}
+  var basisEl=document.getElementById('budgetBasis');
+  if(basisEl){
+    var nSel=Object.keys(selections).length;
+    var nOpts=_currentItinData&&_currentItinData.bookingOptions?_currentItinData.bookingOptions.length:4;
+    if(nSel===0)basisEl.textContent='Select options below to update total';
+    else if(nSel<nOpts)basisEl.textContent=nSel+' of '+nOpts+' options selected — total is partial';
+    else basisEl.textContent='All options selected — confirmed estimated total';
+  }
+  _baseBudget.forEach(function(item,i){
+    var el=document.getElementById('bitem-'+i);if(!el)return;
+    var amtEl=el.querySelector('.budget-amt');
+    var hintEl=el.querySelector('.budget-sel-hint');
+    if(item.linkedCatId&&selections[item.linkedCatId]){
+      var sel=selections[item.linkedCatId];
+      if(amtEl){amtEl.textContent=sel.price;amtEl.classList.remove('updated');void amtEl.offsetWidth;amtEl.classList.add('updated');}
+      if(hintEl){hintEl.textContent='\u2713 '+sel.name;hintEl.className='budget-sel-hint chosen';}
+      el.classList.add('is-selected');
+    }else if(item.linkedCatId){
+      if(amtEl)amtEl.textContent=item.displayAmt;
+      if(hintEl){hintEl.textContent='Tap below to select';hintEl.className='budget-sel-hint';}
+      el.classList.remove('is-selected');
+    }
+  });
+}
 
 /* ══ DAY TABS ══ */
 function renderDayTabs(days){
-  const tabsEl=document.getElementById('dayTabs');
-  const contentEl=document.getElementById('dayContentWrap');
+  var tabsEl=document.getElementById('dayTabs');
+  var contentEl=document.getElementById('dayContentWrap');
   tabsEl.innerHTML='';contentEl.innerHTML='';
   days.forEach(function(d,i){
-    const tab=document.createElement('div');
+    var tab=document.createElement('div');
     tab.className='day-tab'+(i===0?' active':'');
-    tab.textContent='Day '+(i+1)+' · '+d.label;
-    tab.onclick=function(){
-      document.querySelectorAll('.day-tab').forEach(function(t){t.classList.remove('active');});
-      document.querySelectorAll('.day-content').forEach(function(c){c.classList.remove('active');});
-      tab.classList.add('active');
-      document.getElementById('day-'+i).classList.add('active');
-    };
+    tab.textContent='Day '+(i+1)+' \u00b7 '+d.label;
+    tab.setAttribute('data-day',i);
     tabsEl.appendChild(tab);
-    const dc=document.createElement('div');
+    var dc=document.createElement('div');
     dc.className='day-content'+(i===0?' active':'');
     dc.id='day-'+i;
     dc.innerHTML=renderDayContent(d);
     contentEl.appendChild(dc);
   });
+  tabsEl.addEventListener('click',function(e){
+    var tab=e.target.closest('.day-tab');if(!tab)return;
+    var idx=parseInt(tab.getAttribute('data-day'),10);
+    document.querySelectorAll('.day-tab').forEach(function(t){t.classList.remove('active');});
+    document.querySelectorAll('.day-content').forEach(function(c){c.classList.remove('active');});
+    tab.classList.add('active');
+    var dc=document.getElementById('day-'+idx);if(dc)dc.classList.add('active');
+  });
 }
 
 function renderDayContent(day){
-  let html='';
+  var html='';
   day.sessions.forEach(function(s){
     html+='<div class="session-block"><div class="session-header"><span class="session-icon">'+s.icon+'</span><span class="session-name">'+s.name+'</span></div>';
     s.activities.forEach(function(a){
-      html+='<div class="activity-row">';
-      html+='<div class="act-time">'+a.time+'</div>';
-      html+='<div class="act-emoji">'+a.emoji+'</div>';
-      html+='<div class="act-body"><div class="act-title">'+a.title+'</div>';
-      if(a.desc) html+='<div class="act-desc">'+a.desc+'</div>';
-      if(a.cost) html+='<span class="act-cost">₹'+a.cost+'</span>';
+      html+='<div class="activity-row"><div class="act-time">'+a.time+'</div><div class="act-emoji">'+a.emoji+'</div>';
+      html+='<div><div class="act-title">'+a.title+'</div>';
+      if(a.desc)html+='<div class="act-desc">'+a.desc+'</div>';
+      if(a.cost)html+='<span class="act-cost">\u20b9'+a.cost+'</span>';
       html+='</div></div>';
     });
     html+='</div>';
@@ -614,856 +525,299 @@ function renderDayContent(day){
   return html;
 }
 
-/* ══ DYNAMIC BUDGET ENGINE ══ */
-// baseBudget: fixed costs (food, activities, misc) from AI — never change with option picks
-// selections: chosen hotel/flight/cab — costs update budget live
-var _baseBudget = [];       // [{icon,label,amt (number),fixed:true}]
-var _currentItinData = null;
-
-function parseAmt(str) {
-  // "₹5,600" or "5,600" or "52000" -> number
-  if (!str) return 0;
-  return parseInt(String(str).replace(/[₹,\s]/g,''), 10) || 0;
-}
-
-function fmtAmt(n) {
-  if (n >= 100000) return '₹' + (n/100000).toFixed(1).replace(/\.0$/,'') + 'L';
-  if (n >= 1000) return '₹' + n.toLocaleString('en-IN');
-  return '₹' + n;
-}
-
-function recalcBudget() {
-  // Start from base (fixed items)
-  var total = 0;
-  _baseBudget.forEach(function(item){ total += item.amt; });
-
-  // Add selected options
-  var selKeys = Object.keys(selections);
-  selKeys.forEach(function(k){
-    total += parseAmt(selections[k].price);
-  });
-
-  // Update total display
-  var totalEl = document.getElementById('budgetTotalVal');
-  if (totalEl) {
-    totalEl.textContent = fmtAmt(total);
-    totalEl.classList.add('updated');
-    setTimeout(function(){ totalEl.classList.remove('updated'); }, 800);
-  }
-
-  // Update basis text
-  var basisEl = document.getElementById('budgetBasis');
-  if (basisEl) {
-    if (selKeys.length === 0) {
-      basisEl.textContent = 'Showing indicative range — select options below to update total';
-    } else if (selKeys.length < (_currentItinData && _currentItinData.bookingOptions ? _currentItinData.bookingOptions.length : 4)) {
-      basisEl.textContent = selKeys.length + ' of ' + (_currentItinData.bookingOptions ? _currentItinData.bookingOptions.length : 4) + ' options selected — total is partial';
-    } else {
-      basisEl.textContent = 'All options selected — this is your confirmed estimated total';
-    }
-  }
-
-  // Highlight budget items that correspond to selections
-  _baseBudget.forEach(function(item, i) {
-    var el = document.getElementById('bitem-' + i);
-    if (!el) return;
-    var amtEl = el.querySelector('.budget-amt');
-    var hintEl = el.querySelector('.budget-sel-hint');
-    if (item.linkedCatId && selections[item.linkedCatId]) {
-      var sel = selections[item.linkedCatId];
-      if (amtEl) { amtEl.textContent = sel.price; amtEl.classList.add('updated'); setTimeout(function(){ amtEl.classList.remove('updated'); }, 800); }
-      if (hintEl) { hintEl.textContent = '✓ ' + sel.name; hintEl.className = 'budget-sel-hint chosen'; }
-      if (el) el.classList.add('is-selected');
-    } else if (item.linkedCatId) {
-      if (amtEl) amtEl.textContent = item.displayAmt;
-      if (hintEl) { hintEl.textContent = 'Tap below to select'; hintEl.className = 'budget-sel-hint'; }
-      if (el) el.classList.remove('is-selected');
-    }
-  });
-}
-
 /* ══ RENDER ITINERARY ══ */
 function renderItinerary(data){
-  _currentItinData = data;
-  selections = {};  // reset selections on new itinerary
-
+  _currentItinData=data;
+  selections={};
   document.getElementById('bookingSection').style.display='';
   document.getElementById('tripDest').textContent=data.destination;
   document.getElementById('tripSub').textContent=data.subtitle;
   document.getElementById('tripBadges').innerHTML=data.badges.map(function(b){return '<span class="tbadge '+b.cls+'">'+b.text+'</span>';}).join('');
-
-  // Build base budget — map AI budget items to categories
-  // Identify which items are "selectable" (hotel, flight, cab) vs fixed (food, activities, misc)
-  _baseBudget = [];
-  var catMap = { hotel:['hotel','stay','accommodation','resort','room'],
-                 flight:['flight','air','airline','fly'],
-                 cab:['cab','transfer','taxi','transport','grab','mrt','bus'] };
-  var usedLinkIds = {};
-
-  data.budget.items.forEach(function(b) {
-    var lbl = (b.label||'').toLowerCase();
-    var linkedCatId = null;
-    if (data.bookingOptions) {
-      Object.keys(catMap).forEach(function(cid) {
-        if (linkedCatId) return;
-        catMap[cid].forEach(function(kw) {
-          if (lbl.indexOf(kw) !== -1 && !usedLinkIds[cid]) linkedCatId = cid;
-        });
+  var catMap={hotel:['hotel','stay','accommodation','resort'],flight:['flight','air','airline'],cab:['cab','transfer','taxi','transport','mrt']};
+  var usedLinks={};
+  _baseBudget=[];
+  data.budget.items.forEach(function(b){
+    var lbl=(b.label||'').toLowerCase();
+    var linkedCatId=null;
+    if(data.bookingOptions){
+      Object.keys(catMap).forEach(function(cid){
+        if(linkedCatId||usedLinks[cid])return;
+        catMap[cid].forEach(function(kw){if(lbl.indexOf(kw)!==-1)linkedCatId=cid;});
       });
     }
-    if (linkedCatId) usedLinkIds[linkedCatId] = true;
-    _baseBudget.push({ icon:b.icon, label:b.label, amt:parseAmt(b.amt), displayAmt:b.amt, linkedCatId:linkedCatId, fixed:!linkedCatId });
+    if(linkedCatId)usedLinks[linkedCatId]=true;
+    _baseBudget.push({icon:b.icon,label:b.label,amt:parseAmt(b.amt),displayAmt:b.amt,linkedCatId:linkedCatId,fixed:!linkedCatId});
   });
-
-  // Render budget grid with selectable hints
-  var bg = document.getElementById('budgetGrid');
-  bg.innerHTML = _baseBudget.map(function(b, i) {
-    var hint = b.linkedCatId ? '<div class="budget-sel-hint">Tap below to select</div>' : '';
-    var cls = b.linkedCatId ? ' is-selectable' : '';
-    return '<div class="budget-item'+cls+'" id="bitem-'+i+'">' +
-      '<div class="budget-icon">'+b.icon+'</div>' +
-      '<div><div class="budget-label">'+b.label+'</div>' +
-      '<div class="budget-amt">'+b.displayAmt+'</div>'+hint+'</div></div>';
+  var bg=document.getElementById('budgetGrid');
+  bg.innerHTML=_baseBudget.map(function(b,i){
+    var hint=b.linkedCatId?'<div class="budget-sel-hint">Tap below to select</div>':'';
+    var cls=b.linkedCatId?' is-selectable':'';
+    return '<div class="budget-item'+cls+'" id="bitem-'+i+'"><div class="budget-icon">'+b.icon+'</div><div><div class="budget-label">'+b.label+'</div><div class="budget-amt">'+b.displayAmt+'</div>'+hint+'</div></div>';
   }).join('');
-
-  // Set initial total
-  var initTotal = _baseBudget.reduce(function(s,b){ return s+b.amt; }, 0);
-  var totalEl = document.getElementById('budgetTotalVal');
-  if (totalEl) totalEl.textContent = fmtAmt(initTotal);
-  var rangeEl = document.getElementById('budgetRange');
-  if (rangeEl) rangeEl.textContent = 'Updates live as you select options';
-
-  // Days
+  var initTotal=_baseBudget.reduce(function(s,b){return s+b.amt;},0);
+  var tv=document.getElementById('budgetTotalVal');if(tv)tv.textContent=fmtAmt(initTotal);
   renderDayTabs(data.days);
-
-  // Booking Options
-  var bookOpts = (data.bookingOptions && data.bookingOptions.length > 0) ? data.bookingOptions : null;
-  if (bookOpts) { renderBookingOptions(bookOpts); } else { document.getElementById('bookingSection').style.display='none'; }
-
-  // Tips
-  document.getElementById('tipsGrid').innerHTML=data.tips.map(function(t){
-    return '<div class="tip-item"><div class="tip-num">💡</div><div class="tip-text">'+t+'</div></div>';
-  }).join('');
-
+  if(data.bookingOptions&&data.bookingOptions.length>0){
+    document.getElementById('bookingSection').style.display='';
+    renderBookingOptions(data.bookingOptions);
+  }else{
+    document.getElementById('bookingSection').style.display='none';
+  }
+  document.getElementById('tipsGrid').innerHTML=data.tips.map(function(t){return '<div class="tip-item"><div>💡</div><div class="tip-text">'+t+'</div></div>';}).join('');
   document.getElementById('itinCard').classList.add('visible');
   document.getElementById('itinCard').scrollIntoView({behavior:'smooth',block:'start'});
 }
 
+/* ══ BOOKING OPTIONS RENDER ══ */
+function renderBookingOptions(opts){
+  var cats=document.getElementById('bookCats');
+  var panels=document.getElementById('bookPanels');
+  cats.innerHTML='';panels.innerHTML='';
+  window._bookOpts=opts;
+  var sub=(_currentItinData&&_currentItinData.subtitle)||'';
+  var adults=2,kids=0;
+  var mA=sub.match(/(\d+)\s*[Aa]dult/);var mK=sub.match(/(\d+)\s*[Kk]id/);
+  if(mA)adults=parseInt(mA[1],10);if(mK)kids=parseInt(mK[1],10);
+  var travellers=adults+kids||2;
+  opts.forEach(function(cat,ci){
+    var tab=document.createElement('button');
+    tab.className='book-cat'+(ci===0?' active':'');
+    tab.textContent=cat.category;
+    tab.setAttribute('data-panelid',cat.id);
+    cats.appendChild(tab);
+    var panel=document.createElement('div');
+    panel.className='book-panel'+(ci===0?' active':'');
+    panel.id='panel-'+cat.id;
+    var ctxDiv=document.createElement('div');
+    ctxDiv.style.cssText='font-size:11px;color:var(--muted);margin-bottom:9px;';
+    var isPax=cat.id==='flight',isNight=cat.id==='hotel';
+    ctxDiv.innerHTML='<span style="color:var(--teal)">👥</span> '+(isPax?'Prices cover ALL '+travellers+' travellers ('+adults+' adults'+(kids?', '+kids+' kids':'')+') — return':isNight?'Price per night. All '+travellers+' travellers share room.':'Estimated totals for the trip');
+    panel.appendChild(ctxDiv);
+    cat.options.forEach(function(opt,oi){
+      var bid=cat.id+'-'+oi;
+      var isSel=selections[cat.id]&&selections[cat.id].bid===bid;
+      var card=document.createElement('div');
+      card.className='opt-card'+(isSel?' selected':'');
+      card.id='optcard-'+bid;
+      var badges=(opt.badges||[]).map(function(b){return '<span class="opt-badge '+b.c+'">'+b.t+'</span>';}).join('');
+      var dets=(opt.details||[]).map(function(d){return '<div class="opt-detail">'+d.icon+' '+d.label+': <span>'+d.val+'</span></div>';}).join('');
+      var totalP=parseAmt(opt.price);
+      var perPax=isPax&&travellers>0?Math.round(totalP/travellers):0;
+      var perAdult=isPax&&adults>0?Math.round(totalP/adults):0;
+      var perHtml='';
+      if(isPax&&perPax>0){
+        perHtml='<div class="opt-per-person"><span class="per-pill total">Total all: '+opt.price+'</span><span class="per-pill">Per adult: '+fmtAmt(perAdult)+'</span>'+(kids>0?'<span class="per-pill">'+kids+' kid(s) incl.</span>':'')+'</div>';
+      }else if(isNight&&opt.nights){
+        var ntotal=totalP*opt.nights;
+        perHtml='<div class="opt-per-person"><span class="per-pill">Per night: '+opt.price+'</span><span class="per-pill total">'+opt.nights+' nights: '+fmtAmt(ntotal)+'</span></div>';
+      }
+      var provHtml=buildProviderChips(cat.id,opt);
+      var dealHtml=buildDealsChip(cat.id);
+      card.innerHTML='<div class="opt-header"><div style="flex:1"><div class="opt-name">'+opt.name+'</div><div class="opt-badge-wrap">'+badges+'</div></div><div class="opt-price"><div class="opt-price-main">'+opt.price+'</div><div class="opt-price-sub">'+opt.per+'</div></div></div>'+(dets?'<div class="opt-details">'+dets+'</div>':'')+perHtml+'<div class="opt-footer" style="margin-top:9px"><div class="opt-desc">'+(opt.desc||'')+'</div><button class="opt-select-btn'+(isSel?' chosen':'')+ '" data-catid="'+cat.id+'" data-optidx="'+oi+'">'+(isSel?'\u2713 Selected':'Select')+'</button></div>'+provHtml+dealHtml;
+      panel.appendChild(card);
+    });
+    panels.appendChild(panel);
+  });
+  cats.addEventListener('click',function(e){
+    var btn=e.target.closest('.book-cat');if(!btn)return;
+    document.querySelectorAll('.book-cat').forEach(function(t){t.classList.remove('active');});
+    document.querySelectorAll('.book-panel').forEach(function(p){p.classList.remove('active');});
+    btn.classList.add('active');
+    var pnl=document.getElementById('panel-'+btn.getAttribute('data-panelid'));
+    if(pnl)pnl.classList.add('active');
+  });
+  panels.addEventListener('click',function(e){
+    var btn=e.target.closest('.opt-select-btn');if(!btn)return;
+    var catId=btn.getAttribute('data-catid');
+    var optIdx=parseInt(btn.getAttribute('data-optidx'),10);
+    var mc=null;(window._bookOpts||[]).forEach(function(c){if(c.id===catId)mc=c;});
+    if(!mc)return;
+    selectOption(catId,optIdx,mc.options[optIdx].name,mc.options[optIdx].price,mc.category);
+  });
+  updateSummary();
+}
+
+function buildProviderChips(catId,opt){
+  var chips=[];
+  var q=encodeURIComponent((opt.name||'').slice(0,40));
+  if(catId==='hotel'){chips=[{cls:'mmtrip',label:'MakeMyTrip',url:'https://www.makemytrip.com/hotels/hotel-listing/?searchText='+q},{cls:'booking',label:'Booking.com',url:'https://www.booking.com/search.html?ss='+q},{cls:'goibibo',label:'Goibibo',url:'https://www.goibibo.com/hotels/search/?query='+q},{cls:'agoda',label:'Agoda',url:'https://www.agoda.com/search?q='+q}];}
+  else if(catId==='flight'){chips=[{cls:'mmtrip',label:'MakeMyTrip',url:'https://www.makemytrip.com/flights/'},{cls:'cleartrip',label:'Cleartrip',url:'https://www.cleartrip.com/flights/'},{cls:'ixigo',label:'ixigo',url:'https://www.ixigo.com/flights'},{cls:'goibibo',label:'Goibibo',url:'https://www.goibibo.com/flights/'}];}
+  else if(catId==='cab'){chips=[{cls:'mmtrip',label:'MMT Cabs',url:'https://www.makemytrip.com/cabs/'},{cls:'cleartrip',label:'Cleartrip',url:'https://www.cleartrip.com/cabs/'},{cls:'ixigo',label:'ixigo',url:'https://www.ixigo.com/cabs'}];}
+  else if(catId==='attract'){chips=[{cls:'klook',label:'Klook',url:'https://www.klook.com/en-IN/search/?keyword='+q},{cls:'mmtrip',label:'MMT Activities',url:'https://www.makemytrip.com/activities/'}];}
+  if(!chips.length)return '';
+  return '<div class="opt-providers"><span class="provider-label">Book on:</span>'+chips.map(function(c){return '<a class="provider-chip '+c.cls+'" href="'+c.url+'" target="_blank" rel="noopener">'+c.label+' \u2197</a>';}).join('')+'</div>';
+}
+
+function buildDealsChip(catId){
+  var links=[];
+  if(catId==='hotel'){links=[{label:'MMT Hotel Offers',url:'https://www.makemytrip.com/hotels/hotel-offers.html'},{label:'Booking.com Deals',url:'https://www.booking.com/deals.html'}];}
+  else if(catId==='flight'){links=[{label:'ixigo Fare Alerts',url:'https://www.ixigo.com/flights/price-alert'},{label:'MMT Flash Sales',url:'https://www.makemytrip.com/flights/cheap-flights.html'}];}
+  else if(catId==='cab'){links=[{label:'Grab Promos',url:'https://www.grab.com/sg/promos/'}];}
+  else if(catId==='attract'){links=[{label:'Klook Flash Deals',url:'https://www.klook.com/en-IN/deals/'},{label:'MMT Activities',url:'https://www.makemytrip.com/activities/'}];}
+  if(!links.length)return '';
+  return '<div class="deals-row"><span class="deals-label">\uD83C\uDFF7\uFE0F Live deals:</span>'+links.map(function(l){return '<a class="deal-chip" href="'+l.url+'" target="_blank" rel="noopener">'+l.label+' \u2197</a>';}).join('')+'<span class="deals-disclaimer">Prices above are estimates — verify on booking site before paying</span></div>';
+}
+
+function selectOption(catId,optIdx,name,price,catLabel){
+  var bid=catId+'-'+optIdx;
+  var prev=selections[catId];
+  if(prev){
+    var pc=document.getElementById('optcard-'+prev.bid);
+    if(pc){pc.classList.remove('selected');var pb=pc.querySelector('.opt-select-btn');if(pb){pb.textContent='Select';pb.classList.remove('chosen');}}
+  }
+  if(prev&&prev.bid===bid){delete selections[catId];}
+  else{
+    selections[catId]={bid:bid,name:name,price:price,catLabel:catLabel};
+    var card=document.getElementById('optcard-'+bid);
+    if(card){card.classList.add('selected');var btn=card.querySelector('.opt-select-btn');if(btn){btn.textContent='\u2713 Selected';btn.classList.add('chosen');}}
+  }
+  recalcBudget();updateSummary();
+}
+
+function updateSummary(){
+  var keys=Object.keys(selections);
+  var summary=document.getElementById('selSummary');
+  var rows=document.getElementById('selRows');
+  if(!summary)return;
+  if(keys.length===0){summary.classList.remove('show');return;}
+  summary.classList.add('show');
+  var selTotal=keys.reduce(function(s,k){return s+parseAmt(selections[k].price);},0);
+  var fixedTotal=_baseBudget.reduce(function(s,b){return s+(b.fixed?b.amt:0);},0);
+  var grand=selTotal+fixedTotal;
+  rows.innerHTML=keys.map(function(k){var s=selections[k];return '<div class="sel-row"><div class="sel-label">'+s.catLabel+'</div><div style="display:flex;align-items:center;gap:8px"><div class="sel-value">'+s.name+'</div><div class="sel-cost">'+s.price+'</div></div></div>';}).join('')+
+    '<div class="sel-row" style="border-top:1px solid rgba(201,168,76,.3);margin-top:6px;padding-top:8px;"><div class="sel-label" style="color:var(--gold);">Options subtotal</div><div class="sel-cost" style="color:var(--gold);font-weight:700;">'+fmtAmt(selTotal)+'</div></div>'+
+    '<div class="sel-row"><div class="sel-label">+ Fixed (food, activities, misc)</div><div class="sel-cost">'+fmtAmt(fixedTotal)+'</div></div>'+
+    '<div class="sel-row" style="background:rgba(0,201,177,.07);border-radius:6px;padding:7px;margin-top:4px;"><div class="sel-label" style="color:var(--teal);font-weight:700;">Grand Total Estimate</div><div class="sel-cost" style="color:var(--teal);font-size:13px;font-weight:700;">'+fmtAmt(grand)+'</div></div>';
+}
+
+document.getElementById('confirmBtn').addEventListener('click',function(){
+  var keys=Object.keys(selections);if(!keys.length)return;
+  alert('Your selections:\n\n'+keys.map(function(k){return selections[k].catLabel.replace(/^[^ ]+ /,'')+': '+selections[k].name+' — '+selections[k].price;}).join('\n')+'\n\nTap the provider links on each option card to complete booking on their secure site. No charges have been made.');
+});
+
 /* ══ SINGAPORE DEMO DATA ══ */
-const DEMO_DATA={
-  destination:'🌏 Singapore — 5-Day Family Trip',
-  subtitle:'2 Adults · 2 Kids (Ages 7 & 10)  ·  Jun 15–19, 2025',
-  badges:[{text:'✈ HYD → SIN',cls:'teal'},{text:'₹1,50,000',cls:'gold'},{text:'4★ Family',cls:'green'}],
-  budget:{
-    total:'₹1,50,000',
-    items:[
-      {icon:'✈',label:'Flights (IndiGo HYD↔SIN)',amt:'₹52,000'},
-      {icon:'🏨',label:'Fragrance Hotel Ruby (5N)',amt:'₹28,000'},
-      {icon:'🚕',label:'Transfers + MRT Passes',amt:'₹6,500'},
-      {icon:'🍽️',label:'Food & Dining',amt:'₹18,000'},
-      {icon:'🎡',label:'Attractions & Tickets',amt:'₹32,000'},
-      {icon:'🛍️',label:'Shopping & Misc',amt:'₹13,500'}
-    ]
-  },
+var SINGAPORE_BOOKING_OPTIONS=[
+  {category:'\uD83C\uDFE8 Hotels',id:'hotel',options:[
+    {name:'Fragrance Hotel Ruby',badges:[{t:'Best Value',c:'best'},{t:'Near MRT',c:'popular'}],price:'\u20b95,600',per:'per night — 5 nights = \u20b928,000',nights:5,details:[{icon:'\u2B50',label:'Rating',val:'3.5 Stars'},{icon:'\uD83D\uDCCD',label:'Area',val:'Geylang, Aljunied MRT 8 min'},{icon:'\uD83D\uDECF\uFE0F',label:'Room',val:'Family Room sleeps 4'},{icon:'\uD83C\uDF10',label:'WiFi',val:'Free'}],desc:'Clean well-located budget hotel. MRT access to all attractions. All 4 guests in one family room.'},
+    {name:'Hotel Boss Singapore',badges:[{t:'Popular',c:'popular'},{t:'City Centre',c:'teal'}],price:'\u20b97,200',per:'per night — 5 nights = \u20b936,000',nights:5,details:[{icon:'\u2B50',label:'Rating',val:'4 Stars'},{icon:'\uD83D\uDCCD',label:'Area',val:'Lavender, 5 min MRT'},{icon:'\uD83D\uDECF\uFE0F',label:'Room',val:'Superior Family Room'},{icon:'\uD83C\uDFCA',label:'Pool',val:'Rooftop pool'}],desc:'Modern mid-range hotel with rooftop pool. Central location, great city views for all 4 guests.'},
+    {name:'Marina Bay Sands',badges:[{t:'Luxury',c:'premium'},{t:'Iconic',c:'gold'}],price:'\u20b938,000',per:'per night — 5 nights = \u20b91,90,000',nights:5,details:[{icon:'\u2B50',label:'Rating',val:'5 Stars'},{icon:'\uD83D\uDCCD',label:'Area',val:'Marina Bay Waterfront'},{icon:'\uD83D\uDECF\uFE0F',label:'Room',val:'Deluxe Marina View'},{icon:'\u267E\uFE0F',label:'Pool',val:'Infinity rooftop pool'}],desc:'World-famous luxury hotel. Infinity pool included for all guests. Unbeatable iconic experience.'}
+  ]},
+  {category:'\u2708\uFE0F Flights',id:'flight',options:[
+    {name:'IndiGo 6E 81/82 HYD to SIN',badges:[{t:'Lowest Fare',c:'best'},{t:'Non-stop',c:'popular'}],price:'\u20b952,000',per:'ALL 4 travellers — return incl. taxes',details:[{icon:'\uD83D\uDD50',label:'Dep HYD',val:'09:30 AM'},{icon:'\uD83D\uDD52',label:'Arr SIN',val:'15:10 same day'},{icon:'\u23F1\uFE0F',label:'Duration',val:'5h 40m non-stop'},{icon:'\uD83E\uDDF3',label:'Baggage',val:'15kg checked per person'}],desc:'Best fare for all 4. Rs 13,000 per person return. Non-stop, good punctuality on this route.'},
+    {name:'Air India AI 347/348 HYD to SIN',badges:[{t:'Full Service',c:'popular'},{t:'Meals Incl.',c:'teal'}],price:'\u20b968,000',per:'ALL 4 travellers — meals and 25kg bags included',details:[{icon:'\uD83D\uDD50',label:'Dep HYD',val:'11:15 AM'},{icon:'\uD83D\uDD52',label:'Arr SIN',val:'17:45 same day'},{icon:'\u23F1\uFE0F',label:'Duration',val:'6h 30m non-stop'},{icon:'\uD83E\uDDF3',label:'Baggage',val:'25kg per person incl.'}],desc:'Rs 17,000 per person return with meals and generous baggage. Wider seats, better for families.'},
+    {name:'Singapore Airlines SQ via Mumbai',badges:[{t:'Premium',c:'gold'},{t:'World No.1',c:'premium'}],price:'\u20b91,12,000',per:'ALL 4 travellers — full premium service',details:[{icon:'\uD83D\uDD50',label:'Dep HYD',val:'06:00 via BOM'},{icon:'\uD83D\uDD52',label:'Arr SIN',val:'14:20'},{icon:'\u23F1\uFE0F',label:'Duration',val:'8h 20m via Mumbai'},{icon:'\uD83E\uDDF3',label:'Baggage',val:'30kg each plus lounge'}],desc:'Rs 28,000 per person return. World-class inflight service. Premium experience for special trips.'}
+  ]},
+  {category:'\uD83D\uDE95 Transfers',id:'cab',options:[
+    {name:'Grab App ride-hailing',badges:[{t:'Recommended',c:'best'},{t:'Flexible',c:'popular'}],price:'\u20b9900',per:'per one-way airport run (estimate)',details:[{icon:'\uD83D\uDCF1',label:'Book via',val:'Grab app'},{icon:'\u23F1\uFE0F',label:'Wait',val:'3 to 7 min'},{icon:'\uD83D\uDCB3',label:'Payment',val:'Card or Cash'}],desc:'Most economical. Fixed price shown before confirm. Best for airport and daily runs.'},
+    {name:'ComfortDelGro Metered Taxi',badges:[{t:'Official',c:'teal'}],price:'\u20b91,300',per:'per one-way airport run (metered)',details:[{icon:'\uD83D\uDCDE',label:'Book',val:'App or street'},{icon:'\u23F1\uFE0F',label:'Wait',val:'5 to 15 min'},{icon:'\uD83D\uDCB3',label:'Payment',val:'Cash or Card'}],desc:'Official metered taxi. Reliable at peak hours. Accepts cash and all major cards.'},
+    {name:'Private Innova Full Day Charter',badges:[{t:'Family Comfort',c:'premium'}],price:'\u20b93,800',per:'full day 8-hour charter with driver',details:[{icon:'\uD83D\uDE97',label:'Vehicle',val:'Toyota Innova 7 seats'},{icon:'\u23F1\uFE0F',label:'Advance',val:'48h booking'},{icon:'\uD83D\uDCB3',label:'Payment',val:'Prepaid online'}],desc:'Dedicated vehicle all day. Best for Zoo plus Night Safari loop. Comfortable with 4 passengers.'}
+  ]},
+  {category:'\uD83C\uDFA1 Attractions',id:'attract',options:[
+    {name:'Universal Studios Singapore',badges:[{t:'Kids Must-Do',c:'best'},{t:'Book Online',c:'popular'}],price:'\u20b918,500',per:'2 adults plus 2 kids full day entry',details:[{icon:'\u23F0',label:'Opens',val:'10:00 AM'},{icon:'\uD83D\uDCCD',label:'Location',val:'Sentosa Island'},{icon:'\uD83D\uDC76',label:'Best age',val:'5 to 15 years'}],desc:'Jurassic World, Minion Park, Transformers. All 4 family members guaranteed to love it.'},
+    {name:'Singapore Zoo plus Night Safari',badges:[{t:'Best Combo',c:'best'},{t:'Same Complex',c:'popular'}],price:'\u20b925,300',per:'2 adults plus 2 kids Zoo and Night Safari',details:[{icon:'\u23F0',label:'Zoo Opens',val:'9:00 AM'},{icon:'\uD83C\uDF19',label:'Night Safari',val:'Tram at 7:30 PM'},{icon:'\uD83D\uDCCD',label:'Location',val:'Mandai same complex'}],desc:'Open zoo by day, magical nocturnal jungle by night. Best family experience in Singapore.'},
+    {name:'Gardens by the Bay Domes',badges:[{t:'Budget Pick',c:'budget'},{t:'Outdoor FREE',c:'best'}],price:'\u20b911,000',per:'2 adults plus 2 kids Cloud Forest and Flower Dome',details:[{icon:'\u23F0',label:'Opens',val:'9:00 AM'},{icon:'\uD83D\uDCCD',label:'Location',val:'Marina Bay near MBS'}],desc:'35m indoor waterfall. Outdoor Supertrees completely free — great night photo spot.'}
+  ]}
+];
+
+var DEMO_DATA={
+  destination:'\uD83C\uDF0F Singapore \u2014 5-Day Family Trip',
+  subtitle:'2 Adults \u00b7 2 Kids (Ages 7 and 10) \u00b7 Jun 15\u201319, 2025',
+  badges:[{text:'\u2708 HYD to SIN',cls:'teal'},{text:'\u20b91,50,000',cls:'gold'},{text:'4 Star Family',cls:'green'}],
+  budget:{total:'\u20b91,50,000',items:[{icon:'\u2708',label:'Flights HYD to SIN',amt:'\u20b952,000'},{icon:'\uD83C\uDFE8',label:'Hotel 5 nights',amt:'\u20b928,000'},{icon:'\uD83D\uDE95',label:'Transfers and MRT',amt:'\u20b96,500'},{icon:'\uD83C\uDF7D\uFE0F',label:'Food and Dining',amt:'\u20b918,000'},{icon:'\uD83C\uDFA1',label:'Attractions and Tickets',amt:'\u20b932,000'},{icon:'\uD83D\uDECD\uFE0F',label:'Shopping and Misc',amt:'\u20b913,500'}]},
   days:[
-    {label:'Arrival & Marina Bay',sessions:[
-      {icon:'🌅',name:'Afternoon',activities:[
-        {time:'15:10',emoji:'✈️',title:'Land at Changi Airport T3',desc:'IndiGo 6E 81 from Hyderabad',cost:null},
-        {time:'15:40',emoji:'🚕',title:'Grab to Fragrance Hotel Ruby',desc:'~25 min ride, near Aljunied MRT',cost:'900'},
-        {time:'17:00',emoji:'🏨',title:'Check-in & Freshen Up',desc:'Booking #FHR29841 confirmed',cost:null}
-      ]},
-      {icon:'🌇',name:'Evening',activities:[
-        {time:'18:30',emoji:'🚇',title:'MRT to Bayfront Station',desc:'East–West line → Circle line',cost:null},
-        {time:'19:00',emoji:'🌉',title:'Marina Bay Sands Promenade',desc:'Iconic waterfront stroll with family',cost:null},
-        {time:'19:30',emoji:'🍜',title:'Dinner at Lau Pa Sat Hawker Centre',desc:'Chicken Rice, Satay skewers, Kaya toast',cost:'2,200'},
-        {time:'21:00',emoji:'💡',title:'Spectra Light Show (FREE)',desc:'Stunning water & light show at Marina Bay — 9 PM & 9:30 PM slots',cost:null}
-      ]}
+    {label:'Arrival and Marina Bay',sessions:[
+      {icon:'\uD83C\uDF05',name:'Afternoon',activities:[{time:'15:10',emoji:'\u2708\uFE0F',title:'Land at Changi Airport T3',desc:'IndiGo 6E 81 from Hyderabad',cost:null},{time:'15:40',emoji:'\uD83D\uDE95',title:'Grab to Fragrance Hotel Ruby',desc:'25 min ride near Aljunied MRT',cost:'900'},{time:'17:00',emoji:'\uD83C\uDFE8',title:'Check-in and Freshen Up',desc:null,cost:null}]},
+      {icon:'\uD83C\uDF07',name:'Evening',activities:[{time:'18:30',emoji:'\uD83D\uDE87',title:'MRT to Bayfront Station',desc:'East-West line to Circle line',cost:null},{time:'19:00',emoji:'\uD83C\uDF09',title:'Marina Bay Sands Promenade',desc:'Iconic waterfront stroll with family',cost:null},{time:'19:30',emoji:'\uD83C\uDF5C',title:'Dinner at Lau Pa Sat Hawker Centre',desc:'Chicken Rice, Satay, Kaya toast',cost:'2,200'},{time:'21:00',emoji:'\uD83D\uDCA1',title:'Spectra Light Show FREE',desc:'Water and light show at Marina Bay 9 PM and 9:30 PM',cost:null}]}
     ]},
-    {label:'Sentosa & Universal Studios',sessions:[
-      {icon:'🌅',name:'Morning',activities:[
-        {time:'08:30',emoji:'🥞',title:'Breakfast at Hotel',desc:'Included in stay',cost:null},
-        {time:'09:15',emoji:'🚇',title:'MRT to HarbourFront → Sentosa Express',desc:'Approx 30 min journey',cost:null},
-        {time:'10:00',emoji:'🎢',title:'Universal Studios Singapore',desc:'Jurassic World · Minion Park · Transformers · Far Far Away',cost:'18,500'}
-      ]},
-      {icon:'☀️',name:'Afternoon',activities:[
-        {time:'14:00',emoji:'🍔',title:"Lunch at Mel's Drive-In (inside USS)",desc:'Burgers, milkshakes — classic diner vibes',cost:'2,800'},
-        {time:'16:30',emoji:'🏖️',title:'Siloso Beach',desc:'Free entry · Kids love the waves and sand',cost:null}
-      ]},
-      {icon:'🌙',name:'Evening',activities:[
-        {time:'19:00',emoji:'🍤',title:'Dinner at Coastes Beach Bar',desc:'Fish & Chips, Seafood Pasta, Sea views',cost:'3,200'},
-        {time:'21:00',emoji:'🚇',title:'Return via Sentosa Express + MRT',desc:null,cost:null}
-      ]}
+    {label:'Sentosa and Universal Studios',sessions:[
+      {icon:'\uD83C\uDF05',name:'Morning',activities:[{time:'08:30',emoji:'\uD83E\uDD5E',title:'Breakfast at Hotel',desc:'Included in stay',cost:null},{time:'10:00',emoji:'\uD83C\uDFA2',title:'Universal Studios Singapore',desc:'Jurassic World, Minion Park, Transformers',cost:'18,500'}]},
+      {icon:'\u2600\uFE0F',name:'Afternoon',activities:[{time:'14:00',emoji:'\uD83C\uDF54',title:'Lunch at USS',desc:'Classic diner inside park',cost:'2,800'},{time:'16:30',emoji:'\uD83C\uDFD6\uFE0F',title:'Siloso Beach',desc:'Free entry, kids love the waves',cost:null}]},
+      {icon:'\uD83C\uDF19',name:'Evening',activities:[{time:'19:00',emoji:'\uD83E\uDD90',title:'Dinner at Coastes Beach Bar',desc:'Fish and Chips, Seafood, Sea views',cost:'3,200'}]}
     ]},
-    {label:'Gardens by the Bay & Chinatown',sessions:[
-      {icon:'🌅',name:'Morning',activities:[
-        {time:'09:00',emoji:'🌿',title:'Gardens by the Bay — Supertree Grove',desc:'FREE outdoor area · iconic 16-storey supertrees',cost:null},
-        {time:'10:00',emoji:'❄️',title:'Cloud Forest + Flower Dome (combo)',desc:'World\'s largest glass greenhouse · kids love the misty waterfall',cost:'11,000'},
-        {time:'11:30',emoji:'💦',title:"Children's Garden",desc:'FREE water play area — bring a change of clothes!',cost:null}
-      ]},
-      {icon:'☀️',name:'Afternoon',activities:[
-        {time:'13:00',emoji:'🍛',title:'Maxwell Food Centre',desc:'Tian Tian Chicken Rice (world-famous!) · Rojak · Laksa',cost:'1,600'},
-        {time:'14:30',emoji:'🏮',title:'Chinatown Heritage Centre',desc:'Rich history of Singapore\'s Chinese community',cost:'2,600'},
-        {time:'16:00',emoji:'🛍️',title:'Pagoda Street Shopping',desc:'Budget souvenirs, keychains, magnets, snacks'},
-        {time:'17:30',emoji:'🕌',title:'Sri Mariamman Temple (FREE)',desc:'Stunning Hindu heritage — beautiful South Indian architecture',cost:null}
-      ]},
-      {icon:'🌆',name:'Evening',activities:[
-        {time:'19:30',emoji:'🦀',title:'Dinner: Chinatown Complex Food Centre',desc:"Chilli Crab at Yang's Zi Char — the must-have Singapore dish",cost:'3,500'}
-      ]}
+    {label:'Gardens by the Bay and Chinatown',sessions:[
+      {icon:'\uD83C\uDF05',name:'Morning',activities:[{time:'09:00',emoji:'\uD83C\uDF3F',title:'Gardens by the Bay Supertree Grove',desc:'FREE outdoor area iconic supertrees',cost:null},{time:'10:00',emoji:'\u2744\uFE0F',title:'Cloud Forest plus Flower Dome',desc:'World largest glass greenhouse',cost:'11,000'}]},
+      {icon:'\u2600\uFE0F',name:'Afternoon',activities:[{time:'13:00',emoji:'\uD83C\uDF5B',title:'Maxwell Food Centre',desc:'Tian Tian Chicken Rice world-famous',cost:'1,600'},{time:'14:30',emoji:'\uD83C\uDFEE',title:'Chinatown Heritage Centre',desc:'Rich history of Singapore',cost:'2,600'},{time:'17:30',emoji:'\uD83D\uDD4C',title:'Sri Mariamman Temple FREE',desc:'Stunning Hindu heritage architecture',cost:null}]},
+      {icon:'\uD83C\uDF86',name:'Evening',activities:[{time:'19:30',emoji:'\uD83E\uDD80',title:'Dinner Chinatown Complex',desc:'Chilli Crab the must-have Singapore dish',cost:'3,500'}]}
     ]},
-    {label:'Little India & Night Safari',sessions:[
-      {icon:'🌅',name:'Morning',activities:[
-        {time:'09:30',emoji:'🕌',title:'Little India Walk',desc:'Mustafa Centre · Tekka Market · Sri Veeramakaliamman Temple',cost:null},
-        {time:'10:30',emoji:'🥞',title:'Breakfast at Komala Vilas',desc:'Authentic South Indian — idli, dosa, filter coffee!',cost:'900'}
-      ]},
-      {icon:'☀️',name:'Afternoon',activities:[
-        {time:'13:30',emoji:'🦁',title:'Singapore Zoo + River Wonders (combo)',desc:'World\'s best open-concept zoo — animals in natural habitats',cost:'14,800'},
-        {time:'17:00',emoji:'☕',title:'Rest at Zoo Café',desc:'Snacks and rest before Night Safari',cost:'1,200'}
-      ]},
-      {icon:'🌙',name:'Night',activities:[
-        {time:'19:30',emoji:'🦉',title:"Night Safari — World's First Nocturnal Zoo",desc:'Tram ride through jungle · 1,000 nocturnal animals · unmissable for kids!',cost:'10,500'},
-        {time:'22:00',emoji:'🚕',title:'Grab back to Hotel',desc:'~₹900 fare',cost:'900'}
-      ]}
+    {label:'Little India and Night Safari',sessions:[
+      {icon:'\uD83C\uDF05',name:'Morning',activities:[{time:'09:30',emoji:'\uD83D\uDD4C',title:'Little India Walk',desc:'Mustafa Centre, Tekka Market, Sri Veeramakaliamman Temple',cost:null},{time:'10:30',emoji:'\uD83E\uDD5E',title:'Breakfast at Komala Vilas',desc:'Authentic South Indian idli dosa filter coffee',cost:'900'}]},
+      {icon:'\u2600\uFE0F',name:'Afternoon',activities:[{time:'13:30',emoji:'\uD83E\uDD81',title:'Singapore Zoo plus River Wonders',desc:'World-class open-concept zoo',cost:'14,800'},{time:'17:00',emoji:'\u2615',title:'Rest at Zoo Cafe',desc:'Snacks before Night Safari',cost:'1,200'}]},
+      {icon:'\uD83C\uDF19',name:'Night',activities:[{time:'19:30',emoji:'\uD83E\uDD89',title:'Night Safari World First Nocturnal Zoo',desc:'Tram ride through jungle 1000 animals',cost:'10,500'},{time:'22:00',emoji:'\uD83D\uDE95',title:'Grab back to Hotel',desc:null,cost:'900'}]}
     ]},
-    {label:'Orchard Road & Departure',sessions:[
-      {icon:'🌅',name:'Morning',activities:[
-        {time:'09:00',emoji:'🍞',title:'Ya Kun Kaya Toast',desc:'Classic Singapore breakfast — kaya toast + soft-boiled eggs + kopi',cost:'400'},
-        {time:'10:00',emoji:'🛍️',title:'Orchard Road Shopping',desc:'ION Orchard · Takashimaya · Bengawan Solo cookies · Marks & Spencer',cost:'8,000'},
-        {time:'12:30',emoji:'🍜',title:'Final Lunch: Kopitiam Food Court',desc:'Wisma Atria · Mix of local hawker stalls',cost:'1,200'}
-      ]},
-      {icon:'✈️',name:'Departure',activities:[
-        {time:'14:30',emoji:'🧳',title:'Check-out · Grab to Changi Airport T1',desc:'Allow 45 min for journey',cost:'1,100'},
-        {time:'15:30',emoji:'🦋',title:'Changi Airport T1 — FREE attractions',desc:'Butterfly Garden · 40m Slide · Waterfall — kids will love it!',cost:null},
-        {time:'18:00',emoji:'✈️',title:'Board IndiGo 6E 82 → Hyderabad',desc:'Lands Hyderabad 20:15 IST · Bon voyage!',cost:null}
-      ]}
+    {label:'Orchard Road and Departure',sessions:[
+      {icon:'\uD83C\uDF05',name:'Morning',activities:[{time:'09:00',emoji:'\uD83C\uDF5E',title:'Ya Kun Kaya Toast Breakfast',desc:'Classic Singapore breakfast kaya toast soft eggs kopi',cost:'400'},{time:'10:00',emoji:'\uD83D\uDECD\uFE0F',title:'Orchard Road Shopping',desc:'ION Orchard, Takashimaya, Bengawan Solo cookies',cost:'8,000'},{time:'12:30',emoji:'\uD83C\uDF5C',title:'Final Lunch Kopitiam',desc:'Wisma Atria local hawker stalls',cost:'1,200'}]},
+      {icon:'\u2708\uFE0F',name:'Departure',activities:[{time:'14:30',emoji:'\uD83E\uDDF3',title:'Check-out and Grab to Changi T1',desc:'Allow 45 min journey',cost:'1,100'},{time:'15:30',emoji:'\uD83E\uDD8B',title:'Changi T1 FREE Attractions',desc:'Butterfly Garden, 40m Slide, Waterfall',cost:null},{time:'18:00',emoji:'\u2708\uFE0F',title:'Board IndiGo 6E 82 to Hyderabad',desc:'Lands 20:15 IST Bon voyage',cost:null}]}
     ]}
   ],
-  bookings:[
-    {service:'IndiGo 6E 81/82 HYD↔SIN',ref:'Seats 12A–D · PNR SG8841'},
-    {service:'Fragrance Hotel Ruby (5 nights)',ref:'Booking #FHR29841'},
-    {service:'Sentosa Express Day Passes',ref:'QR codes in wallet'},
-    {service:'Universal Studios (Jun 16, 10 AM)',ref:'E-tickets emailed'},
-    {service:'Cloud Forest + Flower Dome (Jun 17)',ref:'Skip-queue pre-booked'},
-    {service:'Night Safari Tram (Jun 18, 7:30 PM)',ref:'Front seats reserved'},
-    {service:'Restaurant tables reserved',ref:'Maxwell & Chinatown (family of 4)'},
-    {service:'Flight alerts + ₹150K budget alert',ref:'Notifications active'}
-  ],
-  tips:[
-    'Buy a 4-Day Tourist Pass (S$40/adult) — unlimited MRT + bus rides, saves ~S$25 each vs paying per trip.',
-    'Book USS, Zoo & Night Safari tickets online 2 weeks ahead — up to 20% cheaper than at the gate.',
-    'Eat at hawker centres (Maxwell, Lau Pa Sat, Chinatown Complex) — cuts food costs by 60% vs restaurants.',
-    'Changi Airport is a destination itself! Arrive 2.5 hrs early and let the kids enjoy the free Butterfly Garden & slide.'
-  ]
+  tips:['Buy 4-Day Tourist Pass S$40 per adult for unlimited MRT and bus rides — saves around S$25 each.','Book USS, Zoo and Night Safari tickets online two weeks ahead — up to 20% cheaper than gate price.','Eat at hawker centres like Maxwell, Lau Pa Sat and Chinatown Complex — cuts food cost by 60% vs restaurants.','Changi Airport is a destination itself. Arrive 2.5 hours early and let kids enjoy the free Butterfly Garden and slide.'],
+  bookingOptions:SINGAPORE_BOOKING_OPTIONS
 };
 
 /* ══ LOAD DEMO ══ */
 function loadDemo(){
-  const db=document.getElementById('demoBtn'),sb=document.getElementById('sendBtn');
-  db.disabled=true;sb.disabled=true;db.textContent='⏳ Loading…';
+  var db=document.getElementById('demoBtn'),sb=document.getElementById('sendBtn');
+  db.disabled=true;sb.disabled=true;db.textContent='\u23F3 Loading\u2026';
   document.getElementById('itinCard').classList.remove('visible');
   document.getElementById('thinking').classList.add('active');
-  document.getElementById('tokenBadge').textContent='⚡ Demo mode…';
+  document.getElementById('tokenBadge').textContent='\u26A1 Demo mode\u2026';
   startStages();
   setTimeout(function(){
     stopStages();
     document.getElementById('thinking').classList.remove('active');
-    document.getElementById('bookingSection').style.display='';
-    DEMO_DATA.bookingOptions = SINGAPORE_BOOKING_OPTIONS;
     renderItinerary(DEMO_DATA);
-    document.getElementById('tokenBadge').textContent='⚡ Demo — 0 tokens used';
-    db.disabled=false;sb.disabled=false;db.textContent='🇸🇬 See Demo';
-  },2800);
+    document.getElementById('tokenBadge').textContent='\u26A1 Demo \u2014 0 tokens used';
+    db.disabled=false;sb.disabled=false;db.textContent='\uD83C\uDDF8\uD83C\uDDEC See Demo';
+  },2600);
 }
 
-/* ══ PLAN TRIP (live AI) — parses raw text into structured data ══ */
-async function planTrip(){
-  const query=document.getElementById('promptInput').value.trim();
+/* ══ PLAN TRIP (live AI) ══ */
+function planTrip(){
+  var query=document.getElementById('promptInput').value.trim();
   if(!query){document.getElementById('promptInput').focus();return;}
-  if(!apiKey){alert('Please enter your Anthropic API key above and click Save.');document.getElementById('apiKeyInput').focus();return;}
-  const sb=document.getElementById('sendBtn'),db=document.getElementById('demoBtn');
+  if(!apiKey){alert('Please enter your Anthropic API key above and tap Save, then try again.');document.getElementById('apiKeyInput').focus();return;}
+  var sb=document.getElementById('sendBtn'),db=document.getElementById('demoBtn');
   sb.disabled=true;db.disabled=true;
   document.getElementById('thinking').classList.add('active');
   document.getElementById('itinCard').classList.remove('visible');
-  document.getElementById('tokenBadge').textContent='⚡ Processing…';
+  document.getElementById('tokenBadge').textContent='\u26A1 Processing\u2026';
   startStages();
-
-  const sys=`You are TravelAI — a premium Personal Travel Concierge. When given a travel request, respond ONLY with a valid JSON object (no markdown, no explanation) matching this exact structure:
-{
-  "destination": "emoji + city name",
-  "subtitle": "travellers, dates",
-  "badges": [{"text":"string","cls":"teal|gold|green"}],
-  "budget": {
-    "total": "₹X,XX,XXX",
-    "items": [{"icon":"emoji","label":"string","amt":"₹X,XXX"}]
-  },
-  "days": [
-    {
-      "label": "short day title",
-      "sessions": [
-        {
-          "icon": "emoji",
-          "name": "Morning|Afternoon|Evening|Night",
-          "activities": [
-            {"time":"HH:MM","emoji":"emoji","title":"string","desc":"string or null","cost":"number string or null"}
-          ]
-        }
-      ]
-    }
-  ],
-  "tips": ["string","string","string"],
-  "bookingOptions": [
-    {
-      "category": "emoji + Category Name",
-      "id": "hotel|flight|cab|activity",
-      "options": [
-        {
-          "name": "Option name",
-          "badges": [{"t":"label","c":"best|popular|budget|premium"}],
-          "price": "₹X,XXX",
-          "per": "description of what price covers",
-          "nights": 3,
-          "details": [{"icon":"emoji","label":"string","val":"string"}],
-          "desc": "One sentence recommendation. No apostrophes."
-        }
-      ]
-    }
-  ]
-}
-Rules:
-- bookingOptions MUST have 4 categories: Hotels (id=hotel), Flights (id=flight), Transfers (id=cab), Attractions (id=attract)
-- Each category MUST have exactly 3 options: budget, mid, premium
-- Options must use REAL hotel/airline names specific to the destination city
-- For flights: price covers ALL travellers combined return; add per-person cost in desc
-- For hotels: include nights field (number of nights); price is per night; add total in per field
-- Do NOT include any discount or deal fields — deals are sourced live from booking platforms
-- All amounts in Indian Rupees only
-- No apostrophes anywhere in any string values — rephrase instead
-- Respond with pure JSON only, no markdown, no explanation`;
-
-  try {
-    const res=await fetch('https://api.anthropic.com/v1/messages',{
-      method:'POST',
-      headers:{'Content-Type':'application/json','x-api-key':apiKey,'anthropic-version':'2023-06-01','anthropic-dangerous-direct-browser-access':'true'},
-      body:JSON.stringify({model:'claude-sonnet-4-20250514',max_tokens:4000,system:sys,messages:[{role:'user',content:query}]})
-    });
-    const d=await res.json();
-    if(d.error) throw new Error(d.error.message);
-    const raw=d.content[0].text.replace(/```json|```/g,'').trim();
-    const itinData=JSON.parse(raw);
-    stopStages();
-    document.getElementById('thinking').classList.remove('active');
+  var sys='You are TravelAI — a premium Personal Travel Concierge. When given a travel request, respond ONLY with a valid JSON object (no markdown, no explanation) with this exact structure:\n{"destination":"emoji + city name","subtitle":"travellers, dates","badges":[{"text":"string","cls":"teal|gold|green"}],"budget":{"total":"Rs X","items":[{"icon":"emoji","label":"string","amt":"Rs X"}]},"days":[{"label":"short title","sessions":[{"icon":"emoji","name":"Morning|Afternoon|Evening|Night","activities":[{"time":"HH:MM","emoji":"emoji","title":"string","desc":"string or null","cost":"number or null"}]}]}],"tips":["string","string","string"],"bookingOptions":[{"category":"emoji Name","id":"hotel|flight|cab|attract","options":[{"name":"string","badges":[{"t":"label","c":"best|popular|budget|premium"}],"price":"Rs X","per":"description","nights":3,"details":[{"icon":"emoji","label":"string","val":"string"}],"desc":"string"}]}]}\nRules: 4 bookingOptions categories (hotel, flight, cab, attract), 3 options each, SPECIFIC to destination, all amounts in Indian Rupees, flights price covers ALL travellers combined return, hotels include nights field, no apostrophes anywhere, pure JSON only';
+  fetch('https://api.anthropic.com/v1/messages',{method:'POST',headers:{'Content-Type':'application/json','x-api-key':apiKey,'anthropic-version':'2023-06-01','anthropic-dangerous-direct-browser-access':'true'},body:JSON.stringify({model:'claude-sonnet-4-20250514',max_tokens:4000,system:sys,messages:[{role:'user',content:query}]})})
+  .then(function(res){return res.json();})
+  .then(function(d){
+    if(d.error)throw new Error(d.error.message);
+    var raw=d.content[0].text.replace(/```json|```/g,'').trim();
+    var itinData=JSON.parse(raw);
+    stopStages();document.getElementById('thinking').classList.remove('active');
     renderItinerary(itinData);
-    const t=(d.usage&&d.usage.input_tokens||0)+(d.usage&&d.usage.output_tokens||0);
-    document.getElementById('tokenBadge').textContent='⚡ '+t+' tokens';
-  } catch(err){
-    stopStages();
-    document.getElementById('thinking').classList.remove('active');
-    // fallback: show error in card
-    document.getElementById('tripDest').textContent='⚠ Error';
+    var t=((d.usage&&d.usage.input_tokens)||0)+((d.usage&&d.usage.output_tokens)||0);
+    document.getElementById('tokenBadge').textContent='\u26A1 '+t+' tokens';
+  })
+  .catch(function(err){
+    stopStages();document.getElementById('thinking').classList.remove('active');
+    document.getElementById('tripDest').textContent='\u26A0 Error';
     document.getElementById('tripSub').textContent=err.message||'Something went wrong';
     document.getElementById('tripBadges').innerHTML='';
-    document.getElementById('budgetGrid').innerHTML='<p style="color:var(--muted);font-size:13px;padding:8px">'+((err.message||'').includes('JSON')?'AI response could not be parsed. Please try again.':err.message||'Check your API key.')+'</p>';
-    document.getElementById('budgetTotal').innerHTML='';
+    document.getElementById('budgetGrid').innerHTML='<p style="color:var(--muted);font-size:13px;padding:8px">'+(err.message.indexOf('JSON')!==-1?'Response could not be parsed. Please try again.':err.message)+'</p>';
+    document.getElementById('budgetTotal').style.display='none';
     document.getElementById('dayTabs').innerHTML='';
     document.getElementById('dayContentWrap').innerHTML='';
     document.getElementById('bookingSection').style.display='none';
     document.getElementById('tipsGrid').innerHTML='';
     document.getElementById('itinCard').classList.add('visible');
-    document.getElementById('tokenBadge').textContent='⚡ Error';
-  }
-  sb.disabled=false;db.disabled=false;
+    document.getElementById('tokenBadge').textContent='\u26A1 Error';
+  })
+  .finally(function(){sb.disabled=false;db.disabled=false;});
 }
 
-/* ══ PDF EXPORT ══ */
-function exportPDF(){
-  try {
-    const {jsPDF}=window.jspdf;
-    const doc=new jsPDF({orientation:'portrait',unit:'mm',format:'a4'});
-    const W=210,M=18;let y=M;
-    const navy=[10,15,30],gold=[201,168,76],teal=[0,201,177],white=[240,246,255],muted=[136,153,187],light=[220,232,255];
-
-    // Cover background
-    doc.setFillColor(navy[0],navy[1],navy[2]);doc.rect(0,0,W,297,'F');
-
-    // Header band
-    doc.setFillColor(15,22,40);doc.rect(0,0,W,38,'F');
-    doc.setDrawColor(gold[0],gold[1],gold[2]);doc.setLineWidth(.3);doc.line(0,38,W,38);
-
-    // Logo circle
-    doc.setFillColor(teal[0],teal[1],teal[2]);doc.circle(M+6,19,6,'F');
-    doc.setTextColor(navy[0],navy[1],navy[2]);doc.setFont('helvetica','bold');doc.setFontSize(9);doc.text('✈',M+3.5,21.5);
-
-    // App name
-    doc.setTextColor(white[0],white[1],white[2]);doc.setFont('helvetica','bold');doc.setFontSize(16);
-    doc.text('TravelAI Concierge',M+16,17);
-    doc.setTextColor(teal[0],teal[1],teal[2]);doc.setFont('helvetica','normal');doc.setFontSize(8);
-    doc.text('PERSONAL AI TRAVEL CONCIERGE',M+16,23);
-
-    // Date
-    doc.setTextColor(muted[0],muted[1],muted[2]);doc.setFontSize(8);
-    doc.text('Generated: '+new Date().toLocaleDateString('en-IN',{day:'numeric',month:'long',year:'numeric'}),W-M,17,{align:'right'});
-    doc.text('Powered by Claude AI',W-M,23,{align:'right'});
-
-    y=50;
-
-    // Trip title
-    const dest=document.getElementById('tripDest').textContent;
-    const sub=document.getElementById('tripSub').textContent;
-    doc.setTextColor(gold[0],gold[1],gold[2]);doc.setFont('helvetica','bold');doc.setFontSize(18);
-    doc.text(dest,M,y);y+=8;
-    doc.setTextColor(muted[0],muted[1],muted[2]);doc.setFont('helvetica','normal');doc.setFontSize(10);
-    doc.text(sub,M,y);y+=5;
-
-    // Separator
-    doc.setDrawColor(gold[0],gold[1],gold[2]);doc.setLineWidth(.4);doc.line(M,y,W-M,y);y+=8;
-
-    // Budget Section
-    doc.setTextColor(gold[0],gold[1],gold[2]);doc.setFont('helvetica','bold');doc.setFontSize(11);
-    doc.text('BUDGET BREAKDOWN',M,y);y+=6;
-    const budgetItems=document.querySelectorAll('.budget-item');
-    const col=2,cellW=(W-M*2-8)/col;
-    let col_i=0;const rowY=y;
-    budgetItems.forEach(function(item,i){
-      const bx=M+col_i*(cellW+8);const by=rowY+(Math.floor(i/col))*14;
-      doc.setFillColor(22,30,53);doc.roundedRect(bx,by,cellW,11,2,2,'F');
-      doc.setDrawColor(50,60,90);doc.setLineWidth(.2);doc.roundedRect(bx,by,cellW,11,2,2,'S');
-      const lbl=item.querySelector('.budget-label').textContent;
-      const amt=item.querySelector('.budget-amt').textContent;
-      doc.setTextColor(muted[0],muted[1],muted[2]);doc.setFont('helvetica','normal');doc.setFontSize(7.5);
-      doc.text(lbl,bx+3,by+5);
-      doc.setTextColor(white[0],white[1],white[2]);doc.setFont('helvetica','bold');doc.setFontSize(9);
-      doc.text(amt,bx+3,by+9);
-      col_i=(col_i+1)%col;
-    });
-    const rows=Math.ceil(budgetItems.length/col);
-    y=rowY+rows*14+4;
-
-    // Total bar
-    const tot=document.querySelector('.budget-total .val').textContent;
-    doc.setFillColor(40,35,15);doc.roundedRect(M,y,W-M*2,10,2,2,'F');
-    doc.setDrawColor(gold[0],gold[1],gold[2]);doc.setLineWidth(.4);doc.roundedRect(M,y,W-M*2,10,2,2,'S');
-    doc.setTextColor(gold[0],gold[1],gold[2]);doc.setFont('helvetica','bold');doc.setFontSize(11);
-    doc.text('TOTAL BUDGET',M+4,y+6.5);
-    doc.text(tot,W-M-4,y+6.5,{align:'right'});
-    y+=16;
-
-    // Days
-    const dayTabs=document.querySelectorAll('.day-tab');
-    dayTabs.forEach(function(tab,di){
-      if(y>260){doc.addPage();doc.setFillColor(navy[0],navy[1],navy[2]);doc.rect(0,0,W,297,'F');y=M;}
-      doc.setFillColor(15,25,45);doc.roundedRect(M,y,W-M*2,8,2,2,'F');
-      doc.setDrawColor(teal[0],teal[1],teal[2]);doc.setLineWidth(.3);doc.line(M,y+8,W-M,y+8);
-      doc.setTextColor(teal[0],teal[1],teal[2]);doc.setFont('helvetica','bold');doc.setFontSize(10);
-      doc.text('DAY '+(di+1)+' — '+tab.textContent.replace(/Day \d+ · /,'').toUpperCase(),M+3,y+5.5);
-      y+=11;
-
-      const dayContent=document.getElementById('day-'+di);
-      const rows=dayContent.querySelectorAll('.activity-row');
-      rows.forEach(function(row){
-        if(y>270){doc.addPage();doc.setFillColor(navy[0],navy[1],navy[2]);doc.rect(0,0,W,297,'F');y=M;}
-        const time=row.querySelector('.act-time').textContent;
-        const title=row.querySelector('.act-title').textContent;
-        const descEl=row.querySelector('.act-desc');
-        const costEl=row.querySelector('.act-cost');
-        doc.setTextColor(teal[0],teal[1],teal[2]);doc.setFont('helvetica','bold');doc.setFontSize(8.5);
-        doc.text(time,M+2,y);
-        doc.setTextColor(white[0],white[1],white[2]);doc.text(title,M+18,y);
-        if(costEl){doc.setTextColor(gold[0],gold[1],gold[2]);doc.text(costEl.textContent,W-M,y,{align:'right'});}
-        y+=5;
-        if(descEl){
-          doc.setTextColor(muted[0],muted[1],muted[2]);doc.setFont('helvetica','normal');doc.setFontSize(7.5);
-          const lines=doc.splitTextToSize(descEl.textContent,W-M*2-22);
-          doc.text(lines,M+18,y);
-          y+=lines.length*4;
-        }
-        y+=2;
-      });
-      y+=4;
-    });
-
-    // Bookings
-    if(y>240){doc.addPage();doc.setFillColor(navy[0],navy[1],navy[2]);doc.rect(0,0,W,297,'F');y=M;}
-    doc.setDrawColor(gold[0],gold[1],gold[2]);doc.setLineWidth(.3);doc.line(M,y,W-M,y);y+=7;
-    doc.setTextColor(gold[0],gold[1],gold[2]);doc.setFont('helvetica','bold');doc.setFontSize(11);
-    doc.text('AGENTIC AI — BOOKING STATUS',M,y);y+=7;
-    document.querySelectorAll('.booking-item').forEach(function(b){
-      if(y>275){doc.addPage();doc.setFillColor(navy[0],navy[1],navy[2]);doc.rect(0,0,W,297,'F');y=M;}
-      doc.setTextColor(0,201,177);doc.setFontSize(8);doc.text('✓',M+2,y);
-      doc.setTextColor(white[0],white[1],white[2]);doc.setFont('helvetica','bold');doc.setFontSize(8.5);
-      doc.text(b.querySelector('.booking-service').textContent,M+8,y);
-      doc.setTextColor(muted[0],muted[1],muted[2]);doc.setFont('helvetica','normal');doc.setFontSize(7.5);
-      doc.text(b.querySelector('.booking-ref').textContent,M+8,y+4);
-      y+=9;
-    });
-
-    // Tips
-    if(y>240){doc.addPage();doc.setFillColor(navy[0],navy[1],navy[2]);doc.rect(0,0,W,297,'F');y=M;}
-    y+=4;doc.setDrawColor(gold[0],gold[1],gold[2]);doc.line(M,y,W-M,y);y+=7;
-    doc.setTextColor(gold[0],gold[1],gold[2]);doc.setFont('helvetica','bold');doc.setFontSize(11);
-    doc.text('PRO TIPS FROM YOUR CONCIERGE',M,y);y+=7;
-    document.querySelectorAll('.tip-text').forEach(function(t,i){
-      if(y>270){doc.addPage();doc.setFillColor(navy[0],navy[1],navy[2]);doc.rect(0,0,W,297,'F');y=M;}
-      doc.setFillColor(30,25,10);doc.roundedRect(M,y-1,W-M*2,10,2,2,'F');
-      doc.setTextColor(gold[0],gold[1],gold[2]);doc.setFont('helvetica','bold');doc.setFontSize(8);
-      doc.text('💡 Tip '+(i+1),M+3,y+5);
-      doc.setTextColor(light[0],light[1],light[2]);doc.setFont('helvetica','normal');doc.setFontSize(7.5);
-      const lines=doc.splitTextToSize(t.textContent,W-M*2-22);
-      doc.text(lines,M+18,y+4.5);
-      y+=Math.max(11,lines.length*4.5+3);
-    });
-
-    // Footer on every page
-    const pages=doc.internal.getNumberOfPages();
-    for(let p=1;p<=pages;p++){
-      doc.setPage(p);
-      doc.setFillColor(10,12,22);doc.rect(0,284,W,13,'F');
-      doc.setDrawColor(gold[0],gold[1],gold[2]);doc.setLineWidth(.2);doc.line(0,284,W,284);
-      doc.setTextColor(muted[0],muted[1],muted[2]);doc.setFont('helvetica','normal');doc.setFontSize(7);
-      doc.text('Designed & Architected by Krishnamurthy Kandregula · Made by Claude · TravelAI Personal Concierge',M,290);
-      doc.text('Page '+p+' of '+pages,W-M,290,{align:'right'});
-    }
-
-    const fname='TravelAI_'+dest.replace(/[^a-zA-Z0-9]/g,'_').replace(/_+/g,'_')+'_Itinerary.pdf';
-    doc.save(fname);
-  } catch(e){alert('PDF export error: '+e.message);}
-}
-
-/* ══ BOOKING OPTIONS DATA (Singapore demo) ══ */
-const SINGAPORE_BOOKING_OPTIONS = [
-  {
-    category:'🏨 Hotels', id:'hotel',
-    options:[
-      {name:'Fragrance Hotel Ruby',
-       badges:[{t:'Best Value',c:'best'},{t:'Near MRT',c:'popular'}],
-       price:'₹5,600', per:'per night — 5 nights total = ₹28,000', nights:5,
-       details:[{icon:'⭐',label:'Rating',val:'3.5 Stars'},{icon:'📍',label:'Area',val:'Geylang — Aljunied MRT (8 min)'},{icon:'🛏️',label:'Room',val:'Family Room (sleeps 4)'},{icon:'🌐',label:'WiFi',val:'Free high-speed'}],
-       desc:'Clean well-located budget hotel. MRT access to all attractions. All 4 guests in one family room.'},
-      {name:'Hotel Boss Singapore',
-       badges:[{t:'Popular',c:'popular'},{t:'City Centre',c:'teal'}],
-       price:'₹7,200', per:'per night — 5 nights total = ₹36,000', nights:5,
-       details:[{icon:'⭐',label:'Rating',val:'4 Stars'},{icon:'📍',label:'Area',val:'Lavender — 5 min MRT'},{icon:'🛏️',label:'Room',val:'Superior Family Room'},{icon:'🏊',label:'Pool',val:'Rooftop pool included'}],
-       desc:'Modern mid-range hotel with rooftop pool and restaurant. Central location, great city views for all 4.'},
-      {name:'Marina Bay Sands',
-       badges:[{t:'Luxury',c:'premium'},{t:'Iconic',c:'gold'}],
-       price:'₹38,000', per:'per night — 5 nights total = ₹1,90,000', nights:5,
-       details:[{icon:'⭐',label:'Rating',val:'5 Stars'},{icon:'📍',label:'Area',val:'Marina Bay Waterfront'},{icon:'🛏️',label:'Room',val:'Deluxe Marina View Room'},{icon:'♾️',label:'Pool',val:'Infinity rooftop pool'}],
-       desc:'World-famous iconic hotel. The infinity pool experience is worth every rupee for a special family trip.'}
-    ]
-  },
-  {
-    category:'✈️ Flights', id:'flight',
-    options:[
-      {name:'IndiGo 6E 81/82 — HYD to SIN',
-       badges:[{t:'Lowest Fare',c:'best'},{t:'Non-stop',c:'popular'}],
-       price:'₹52,000', per:'ALL 4 travellers combined — return incl. taxes',
-       details:[{icon:'🕐',label:'Dep HYD',val:'09:30 AM'},{icon:'🕒',label:'Arr SIN',val:'15:10 same day'},{icon:'⏱️',label:'Duration',val:'5h 40m non-stop'},{icon:'🧳',label:'Baggage',val:'15kg checked per person'}],
-       desc:'₹13,000 per person return. Best fare for all 4. Non-stop, good punctuality on this route.'},
-      {name:'Air India AI 347/348 — HYD to SIN',
-       badges:[{t:'Full Service',c:'popular'},{t:'Meals Incl.',c:'teal'}],
-       price:'₹68,000', per:'ALL 4 travellers combined — meals + 25kg bags incl.',
-       details:[{icon:'🕐',label:'Dep HYD',val:'11:15 AM'},{icon:'🕒',label:'Arr SIN',val:'17:45 same day'},{icon:'⏱️',label:'Duration',val:'6h 30m non-stop'},{icon:'🧳',label:'Baggage',val:'25kg per person incl.'}],
-       desc:'₹17,000 per person return with meals and generous bags. Wider seats — better for families with young kids.'},
-      {name:'Singapore Airlines SQ via Mumbai',
-       badges:[{t:'Premium',c:'gold'},{t:'World No.1',c:'premium'}],
-       price:'₹1,12,000', per:'ALL 4 travellers combined — full premium service',
-       details:[{icon:'🕐',label:'Dep HYD',val:'06:00 via BOM'},{icon:'🕒',label:'Arr SIN',val:'14:20'},{icon:'⏱️',label:'Duration',val:'8h 20m via Mumbai'},{icon:'🧳',label:'Baggage',val:'30kg each + lounge'}],
-       desc:'₹28,000 per person return. World-class inflight service. Lie-flat business class available for upgrade.'}
-    ]
-  },
-  {
-    category:'🚕 Transfers', id:'cab',
-    options:[
-      {name:'Grab App (ride-hailing)',
-       badges:[{t:'Recommended',c:'best'},{t:'Flexible',c:'popular'}],
-       price:'₹900', per:'per one-way airport run (estimated)',
-       details:[{icon:'📱',label:'Book via',val:'Grab app (download before)'},{icon:'⏱️',label:'Wait time',val:'3 to 7 min'},{icon:'💳',label:'Payment',val:'Card / PayNow / Cash'},{icon:'🌡️',label:'AC',val:'Standard'}],
-       desc:'Most economical and popular. Fixed price shown before you confirm. Best for airport and daily runs.'},
-      {name:'ComfortDelGro Metered Taxi',
-       badges:[{t:'Official',c:'teal'}],
-       price:'₹1,300', per:'per one-way airport run (metered)',
-       details:[{icon:'📞',label:'Book',val:'ComfortDelGro app or street'},{icon:'⏱️',label:'Wait',val:'5 to 15 min'},{icon:'💳',label:'Payment',val:'Cash / NETS / Card'},{icon:'📋',label:'Receipt',val:'On request'}],
-       desc:'Official metered taxi. More reliable at peak hours. Accepts cash and all major card types.'},
-      {name:'Private Innova — Full Day Charter',
-       badges:[{t:'Family Comfort',c:'premium'}],
-       price:'₹3,800', per:'full day 8-hour charter with English driver',
-       details:[{icon:'🚗',label:'Vehicle',val:'Toyota Innova — 7 seats'},{icon:'⏱️',label:'Advance',val:'48h booking needed'},{icon:'💳',label:'Payment',val:'Prepaid online'},{icon:'👨',label:'Driver',val:'English-speaking'}],
-       desc:'Dedicated vehicle all day. Best for Day 4 Zoo + Night Safari loop. Comfortable with luggage and 4 passengers.'}
-    ]
-  },
-  {
-    category:'🎡 Attractions', id:'attract',
-    options:[
-      {name:'Universal Studios Singapore',
-       badges:[{t:'Kids Must-Do',c:'best'},{t:'Pre-book Saves 20%',c:'popular'}],
-       price:'₹18,500', per:'2 adults + 2 kids — full day entry',
-       details:[{icon:'⏰',label:'Opens',val:'10:00 AM'},{icon:'⏱️',label:'Best time',val:'Full day 6 to 8 hrs'},{icon:'📍',label:'Location',val:'Sentosa Island'},{icon:'👶',label:'Best age',val:'5 to 15 years'}],
-       desc:'Jurassic World, Minion Park, Transformers — all 4 family members guaranteed to love it. Book online to save ₹4,600.'},
-      {name:'Singapore Zoo + Night Safari Combo',
-       badges:[{t:'Best Combo Deal',c:'best'},{t:'15% Off Combo',c:'popular'}],
-       price:'₹25,300', per:'2 adults + 2 kids — Zoo day + Night Safari evening',
-       details:[{icon:'⏰',label:'Zoo Opens',val:'9:00 AM'},{icon:'🌙',label:'Night Safari',val:'Tram at 7:30 PM'},{icon:'📍',label:'Location',val:'Mandai — same complex'},{icon:'🦁',label:'Animals',val:'2,800+ animals total'}],
-       desc:'Same day — open zoo by day, magical nocturnal jungle by night. Best family experience in Singapore.'},
-      {name:'Gardens by the Bay — Domes',
-       badges:[{t:'Budget Pick',c:'budget'},{t:'Outdoor FREE',c:'best'}],
-       price:'₹11,000', per:'2 adults + 2 kids — Cloud Forest + Flower Dome entry',
-       details:[{icon:'⏰',label:'Opens',val:'9:00 AM'},{icon:'⏱️',label:'Duration',val:'2.5 to 3 hrs inside'},{icon:'📍',label:'Location',val:'Marina Bay (near MBS)'},{icon:'💡',label:'Tip',val:'Go early to avoid heat'}],
-       desc:'35m indoor waterfall in Cloud Forest dome. Outdoor Supertrees free at night — beautiful family photo stop.'}
-    ]
-  }
-];
-/* ══ SELECTED BOOKINGS STATE ══ */
-var selections = {};
-
-/* ══ RENDER BOOKING OPTIONS ══ */
-function renderBookingOptions(opts) {
-  var cats = document.getElementById('bookCats');
-  var panels = document.getElementById('bookPanels');
-  cats.innerHTML = ''; panels.innerHTML = '';
-  window._bookOpts = opts;
-
-  // Extract traveller count from subtitle for per-person calc
-  var sub = (_currentItinData && _currentItinData.subtitle) || '';
-  var travellers = 2;
-  var adults = 2; var kids = 0;
-  var mA = sub.match(/(\d+)\s*[Aa]dult/);
-  var mK = sub.match(/(\d+)\s*[Kk]id/);
-  if (mA) adults = parseInt(mA[1],10);
-  if (mK) kids = parseInt(mK[1],10);
-  travellers = adults + kids;
-  if (travellers < 1) travellers = 2;
-
-  opts.forEach(function(cat, ci) {
-    // Category tab
-    var tab = document.createElement('button');
-    tab.className = 'book-cat' + (ci === 0 ? ' active' : '');
-    tab.textContent = cat.category;
-    tab.setAttribute('data-panelid', cat.id);
-    cats.appendChild(tab);
-
-    // Panel
-    var panel = document.createElement('div');
-    panel.className = 'book-panel' + (ci === 0 ? ' active' : '');
-    panel.id = 'panel-' + cat.id;
-
-    // Traveller context line
-    var ctxDiv = document.createElement('div');
-    ctxDiv.style.cssText = 'font-size:11px;color:var(--muted);margin-bottom:10px;display:flex;align-items:center;gap:6px;';
-    var isPerNight = cat.id === 'hotel';
-    var isPerPax = cat.id === 'flight';
-    var ctxText = isPerPax
-      ? 'Prices shown are for ALL ' + travellers + ' travellers (' + adults + ' adults' + (kids ? ', ' + kids + ' kids' : '') + ') — return'
-      : isPerNight
-      ? 'Prices per night × nights. All ' + travellers + ' travellers share room.'
-      : 'Prices are estimated totals for the trip';
-    ctxDiv.innerHTML = '<span style="color:var(--teal)">👥</span> ' + ctxText;
-    panel.appendChild(ctxDiv);
-
-    cat.options.forEach(function(opt, oi) {
-      var bid = cat.id + '-' + oi;
-      var isSelected = selections[cat.id] && selections[cat.id].bid === bid;
-
-      var card = document.createElement('div');
-      card.className = 'opt-card' + (isSelected ? ' selected' : '');
-      card.id = 'optcard-' + bid;
-
-      // Parse price for per-person calc
-      var totalPrice = parseAmt(opt.price);
-      var perPerson = (isPerPax && travellers > 0) ? Math.round(totalPrice / travellers) : 0;
-      var perAdult  = (isPerPax && adults > 0)     ? Math.round(totalPrice / adults)     : 0;
-
-      // Badges
-      var badges = opt.badges.map(function(b){
-        return '<span class="opt-badge ' + b.c + '">' + b.t + '</span>';
-      }).join('');
-
-      // Deals row — honest live-check link, never AI-generated claims
-      var discHtml = buildDealsChip(cat.id, opt);
-
-      // Per-person breakdown
-      var perHtml = '';
-      if (isPerPax && perPerson > 0) {
-        perHtml = '<div class="opt-per-person">' +
-          '<span class="per-pill total">Total all pax: ' + opt.price + '</span>' +
-          '<span class="per-pill">Per adult: ' + fmtAmt(perAdult) + '</span>' +
-          (kids > 0 ? '<span class="per-pill">' + kids + ' kid(s) included</span>' : '') +
-          '</div>';
-      } else if (isPerNight && opt.nights) {
-        var nightTotal = totalPrice * opt.nights;
-        perHtml = '<div class="opt-per-person">' +
-          '<span class="per-pill">Per night: ' + opt.price + '</span>' +
-          '<span class="per-pill total">' + opt.nights + ' nights total: ' + fmtAmt(nightTotal) + '</span>' +
-          '</div>';
-      }
-
-      // Details
-      var dets = (opt.details||[]).map(function(d){
-        return '<div class="opt-detail">' + d.icon + ' ' + d.label + ': <span>' + d.val + '</span></div>';
-      }).join('');
-
-      // Provider chips — real booking sites per category
-      var providerHtml = buildProviderChips(cat.id, opt);
-
-      card.innerHTML =
-        '<div class="opt-header">' +
-          '<div style="flex:1">' +
-            '<div class="opt-name">' + opt.name + '</div>' +
-            '<div class="opt-badge-wrap">' + badges + '</div>' +
-            discHtml +
-          '</div>' +
-          '<div class="opt-price">' +
-            '<div class="opt-price-main">' + opt.price + '</div>' +
-            '<div class="opt-price-sub">' + opt.per + '</div>' +
-          '</div>' +
-        '</div>' +
-        (dets ? '<div class="opt-details">' + dets + '</div>' : '') +
-        perHtml +
-        '<div class="opt-footer" style="margin-top:10px">' +
-          '<div class="opt-desc">' + (opt.desc||'') + '</div>' +
-          '<button class="opt-select-btn' + (isSelected ? ' chosen' : '') + '" data-catid="' + cat.id + '" data-optidx="' + oi + '">' +
-            (isSelected ? '✓ Selected' : 'Select') +
-          '</button>' +
-        '</div>' +
-        providerHtml;
-
-      panel.appendChild(card);
-    });
-
-    panels.appendChild(panel);
-  });
-
-  // Tab click delegation
-  cats.addEventListener('click', function(e) {
-    var btn = e.target.closest('.book-cat');
-    if (!btn) return;
-    document.querySelectorAll('.book-cat').forEach(function(t){ t.classList.remove('active'); });
-    document.querySelectorAll('.book-panel').forEach(function(p){ p.classList.remove('active'); });
-    btn.classList.add('active');
-    var pid = btn.getAttribute('data-panelid');
-    var pnl = document.getElementById('panel-' + pid);
-    if (pnl) pnl.classList.add('active');
-  });
-
-  // Select button delegation
-  panels.addEventListener('click', function(e) {
-    var btn = e.target.closest('.opt-select-btn');
-    if (!btn) return;
-    var catId = btn.getAttribute('data-catid');
-    var optIdx = parseInt(btn.getAttribute('data-optidx'), 10);
-    var matchedCat = null;
-    window._bookOpts.forEach(function(c){ if (c.id === catId) matchedCat = c; });
-    if (!matchedCat) return;
-    var opt = matchedCat.options[optIdx];
-    selectOption(catId, optIdx, opt.name, opt.price, matchedCat.category);
-  });
-
-  updateSummary();
-}
-
-/* ══ DEALS CHIP — honest live-check, no AI-generated claims ══ */
-function buildDealsChip(catId, opt) {
-  // We never claim a specific discount. Instead we link directly to
-  // the deals/offers page of the relevant platform for this option.
-  var q = encodeURIComponent(opt.name || '');
-  var dest = encodeURIComponent(((_currentItinData&&_currentItinData.destination)||'').replace(/[^a-zA-Z ]/g,'').trim());
-  var dealLinks = [];
-
-  if (catId === 'hotel') {
-    dealLinks = [
-      {site:'MakeMyTrip Offers', url:'https://www.makemytrip.com/hotels/hotel-offers.html',
-       note:'Check today's hotel deals'},
-      {site:'Booking.com Deals', url:'https://www.booking.com/deals.html',
-       note:'Genius discounts & last-minute rates'},
-    ];
-  } else if (catId === 'flight') {
-    dealLinks = [
-      {site:'ixigo Fare Alerts', url:'https://www.ixigo.com/flights/price-alert',
-       note:'Set alert — get notified when fare drops'},
-      {site:'MMT Cheap Flights', url:'https://www.makemytrip.com/flights/cheap-flights.html',
-       note:'Check current flash sales'},
-    ];
-  } else if (catId === 'cab') {
-    dealLinks = [
-      {site:'Grab Promos', url:'https://www.grab.com/sg/promos/',
-       note:'Check current Grab discount codes'},
-    ];
-  } else if (catId === 'attract') {
-    dealLinks = [
-      {site:'Klook Deals', url:'https://www.klook.com/en-IN/deals/',
-       note:'Klook flash deals — up to 30% off tickets'},
-      {site:'MMT Activities', url:'https://www.makemytrip.com/activities/',
-       note:'Check activity packages & combos'},
-    ];
-  }
-
-  if (!dealLinks.length) return '';
-
-  var html = '<div class="deals-row">' +
-    '<span class="deals-label">🏷️ Check live deals:</span>';
-  dealLinks.forEach(function(d) {
-    html += '<a class="deal-chip" href="' + d.url + '" target="_blank" rel="noopener" title="' + d.note + '">' +
-      d.site + ' ↗</a>';
-  });
-  html += '<span class="deals-disclaimer">Prices shown above are estimates — verify on booking site before paying</span>';
-  html += '</div>';
-  return html;
-}
-
-/* ══ PROVIDER CHIP BUILDER ══ */
-function buildProviderChips(catId, opt) {
-  var chips = [];
-  var dest = (_currentItinData && _currentItinData.destination) || '';
-  // Encode opt name for search
-  var q = encodeURIComponent(opt.name);
-  var destQ = encodeURIComponent(dest.replace(/[^a-zA-Z ]/g,'').trim());
-
-  if (catId === 'hotel') {
-    chips = [
-      {cls:'mmtrip',  label:'MakeMyTrip', icon:'🏨',
-       url:'https://www.makemytrip.com/hotels/hotel-listing/?city='+destQ+'&searchText='+q},
-      {cls:'booking',  label:'Booking.com', icon:'🌐',
-       url:'https://www.booking.com/search.html?ss='+q},
-      {cls:'goibibo', label:'Goibibo', icon:'🏨',
-       url:'https://www.goibibo.com/hotels/search/?query='+q},
-      {cls:'agoda',   label:'Agoda', icon:'🔖',
-       url:'https://www.agoda.com/search?q='+q},
-    ];
-  } else if (catId === 'flight') {
-    chips = [
-      {cls:'mmtrip',   label:'MakeMyTrip', icon:'✈️',
-       url:'https://www.makemytrip.com/flights/'},
-      {cls:'cleartrip',label:'Cleartrip', icon:'✈️',
-       url:'https://www.cleartrip.com/flights/'},
-      {cls:'ixigo',    label:'ixigo', icon:'✈️',
-       url:'https://www.ixigo.com/flights'},
-      {cls:'goibibo',  label:'Goibibo', icon:'✈️',
-       url:'https://www.goibibo.com/flights/'},
-    ];
-  } else if (catId === 'cab') {
-    chips = [
-      {cls:'mmtrip',   label:'MakeMyTrip Cabs', icon:'🚕',
-       url:'https://www.makemytrip.com/cabs/'},
-      {cls:'cleartrip',label:'Cleartrip Cabs', icon:'🚕',
-       url:'https://www.cleartrip.com/cabs/'},
-      {cls:'ixigo',    label:'ixigo Cabs', icon:'🚕',
-       url:'https://www.ixigo.com/cabs'},
-    ];
-  } else if (catId === 'attract') {
-    chips = [
-      {cls:'klook',  label:'Klook', icon:'🎫',
-       url:'https://www.klook.com/en-IN/search/?keyword='+q},
-      {cls:'mmtrip', label:'MMT Activities', icon:'🎡',
-       url:'https://www.makemytrip.com/activities/'},
-    ];
-  }
-
-  if (!chips.length) return '';
-
-  var html = '<div class="opt-providers"><span class="provider-label">Book on:</span>';
-  chips.forEach(function(c) {
-    html += '<a class="provider-chip ' + c.cls + '" href="' + c.url + '" target="_blank" rel="noopener">' +
-      c.icon + ' ' + c.label + '</a>';
-  });
-  html += '</div>';
-  return html;
-}
-
-
+/* 
+/* ══ WIRE UP BUTTONS ══ */
+document.getElementById('demoBtn').addEventListener('click', loadDemo);
+document.getElementById('sendBtn').addEventListener('click', planTrip);
+document.getElementById('pdfBtn').addEventListener('click', exportPDF);
+document.getElementById('promptInput').addEventListener('keydown', function(e) {
+  if (e.key === 'Enter' && (e.ctrlKey || e.metaKey)) planTrip();
+});
+</script>
+</body>
+</html>
