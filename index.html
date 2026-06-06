@@ -4,20 +4,19 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <meta name="theme-color" content="#0a0f1e">
-<meta name="description" content="Personal Travel Concierge — AI-powered trip planning, booking & management">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <meta name="apple-mobile-web-app-title" content="TravelAI">
 <link rel="manifest" href="#" id="manifest-link">
 <title>TravelAI Concierge</title>
-<link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@300;400;600;700&family=DM+Sans:wght@300;400;500;600&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
 <style>
 :root{
-  --navy:#0a0f1e;--navy2:#0f1628;--navy3:#161e35;
+  --navy:#0a0f1e;--navy3:#161e35;
   --gold:#c9a84c;--gold2:#e8c870;
   --teal:#00c9b1;--teal2:#00e5cc;
-  --amber:#f59e0b;--rose:#f43f5e;
+  --amber:#f59e0b;--rose:#f43f5e;--green:#22c55e;
   --muted:#8899bb;--light:#dce8ff;--white:#f0f6ff;
   --glass:rgba(255,255,255,0.04);--glass2:rgba(255,255,255,0.08);
   --border:rgba(201,168,76,0.2);--border2:rgba(0,201,177,0.15);
@@ -27,657 +26,842 @@
 }
 *{margin:0;padding:0;box-sizing:border-box;}
 body{font-family:'DM Sans',sans-serif;background:var(--navy);color:var(--light);min-height:100vh;overflow-x:hidden;}
-
 .bg-mesh{position:fixed;inset:0;z-index:0;pointer-events:none;
   background:radial-gradient(ellipse 80% 50% at 10% 0%,rgba(0,201,177,0.08) 0%,transparent 60%),
              radial-gradient(ellipse 60% 40% at 90% 100%,rgba(201,168,76,0.08) 0%,transparent 60%);}
 .bg-grid{position:fixed;inset:0;z-index:0;pointer-events:none;opacity:0.03;
-  background-image:linear-gradient(rgba(255,255,255,0.5) 1px,transparent 1px),
-                   linear-gradient(90deg,rgba(255,255,255,0.5) 1px,transparent 1px);
+  background-image:linear-gradient(rgba(255,255,255,.5) 1px,transparent 1px),
+                   linear-gradient(90deg,rgba(255,255,255,.5) 1px,transparent 1px);
   background-size:48px 48px;}
-
 .app{position:relative;z-index:1;display:flex;flex-direction:column;min-height:100vh;}
 
 /* HEADER */
-header{display:flex;align-items:center;justify-content:space-between;padding:18px 28px;
+header{display:flex;align-items:center;justify-content:space-between;padding:16px 20px;
   border-bottom:1px solid var(--border);backdrop-filter:blur(20px);
-  background:rgba(10,15,30,0.85);position:sticky;top:0;z-index:100;}
-.logo{display:flex;align-items:center;gap:12px;}
-.logo-icon{width:40px;height:40px;border-radius:10px;
+  background:rgba(10,15,30,0.88);position:sticky;top:0;z-index:100;}
+.logo{display:flex;align-items:center;gap:11px;}
+.logo-icon{width:38px;height:38px;border-radius:10px;
   background:linear-gradient(135deg,var(--teal),var(--gold));
-  display:flex;align-items:center;justify-content:center;font-size:20px;
-  box-shadow:var(--glow-teal);}
-.logo-text{font-family:'Cormorant Garamond',serif;font-size:22px;font-weight:600;color:var(--white);}
-.logo-sub{font-size:11px;color:var(--teal);letter-spacing:2px;text-transform:uppercase;font-weight:500;}
-.header-badge{display:flex;align-items:center;gap:6px;
-  background:rgba(0,201,177,0.1);border:1px solid var(--border2);
-  padding:6px 12px;border-radius:20px;font-size:12px;color:var(--teal);}
-.pulse{width:6px;height:6px;background:var(--teal);border-radius:50%;animation:pulse 2s infinite;}
-@keyframes pulse{0%,100%{opacity:1;transform:scale(1)}50%{opacity:0.5;transform:scale(1.5)}}
+  display:flex;align-items:center;justify-content:center;font-size:19px;box-shadow:var(--glow-teal);}
+.logo-text{font-family:'Cormorant Garamond',serif;font-size:21px;font-weight:600;color:var(--white);}
+.logo-sub{font-size:10px;color:var(--teal);letter-spacing:2px;text-transform:uppercase;}
+.header-badge{display:flex;align-items:center;gap:6px;background:rgba(0,201,177,0.1);
+  border:1px solid var(--border2);padding:5px 11px;border-radius:20px;font-size:12px;color:var(--teal);}
+.pulse{width:6px;height:6px;background:var(--teal);border-radius:50%;animation:pulse 2s infinite;flex-shrink:0;}
+@keyframes pulse{0%,100%{opacity:1;transform:scale(1)}50%{opacity:.5;transform:scale(1.5)}}
 
 /* HERO */
-.hero{padding:40px 28px 28px;text-align:center;}
-.hero-tag{display:inline-flex;align-items:center;gap:8px;background:var(--glass2);
-  border:1px solid var(--border);padding:6px 16px;border-radius:20px;
-  font-size:12px;color:var(--gold);letter-spacing:1.5px;text-transform:uppercase;
-  margin-bottom:18px;font-weight:500;}
-.hero h1{font-family:'Cormorant Garamond',serif;font-size:clamp(2rem,7vw,3.6rem);
-  font-weight:300;line-height:1.1;color:var(--white);margin-bottom:14px;}
+.hero{padding:36px 20px 24px;text-align:center;}
+.hero-tag{display:inline-flex;align-items:center;gap:7px;background:var(--glass2);
+  border:1px solid var(--border);padding:5px 14px;border-radius:20px;
+  font-size:11px;color:var(--gold);letter-spacing:1.5px;text-transform:uppercase;margin-bottom:16px;}
+.hero h1{font-family:'Cormorant Garamond',serif;font-size:clamp(1.9rem,6vw,3.4rem);
+  font-weight:300;line-height:1.1;color:var(--white);margin-bottom:12px;}
 .hero h1 span{color:var(--gold);font-weight:600;font-style:italic;}
-.hero p{font-size:15px;color:var(--muted);max-width:520px;margin:0 auto 24px;line-height:1.7;}
-.tiers{display:flex;justify-content:center;gap:10px;flex-wrap:wrap;margin-bottom:0;}
-.tier{display:flex;align-items:center;gap:7px;padding:7px 14px;border-radius:8px;
-  font-size:12px;font-weight:500;border:1px solid;backdrop-filter:blur(10px);}
-.tier.ai{background:rgba(245,158,11,0.08);border-color:rgba(245,158,11,0.3);color:var(--amber);}
-.tier.gen{background:rgba(0,201,177,0.08);border-color:rgba(0,201,177,0.3);color:var(--teal);}
-.tier.agent{background:rgba(244,63,94,0.08);border-color:rgba(244,63,94,0.3);color:var(--rose);}
-.tier-dot{width:7px;height:7px;border-radius:50%;background:currentColor;}
+.hero p{font-size:14px;color:var(--muted);max-width:500px;margin:0 auto 22px;line-height:1.7;}
+.tiers{display:flex;justify-content:center;gap:8px;flex-wrap:wrap;}
+.tier{display:flex;align-items:center;gap:6px;padding:6px 13px;border-radius:8px;
+  font-size:11px;font-weight:500;border:1px solid;}
+.tier.ai{background:rgba(245,158,11,.08);border-color:rgba(245,158,11,.3);color:var(--amber);}
+.tier.gen{background:rgba(0,201,177,.08);border-color:rgba(0,201,177,.3);color:var(--teal);}
+.tier.agent{background:rgba(244,63,94,.08);border-color:rgba(244,63,94,.3);color:var(--rose);}
+.tier-dot{width:6px;height:6px;border-radius:50%;background:currentColor;flex-shrink:0;}
 
 /* PROMPT AREA */
-.prompt-wrap{padding:28px 20px 16px;max-width:700px;margin:0 auto;width:100%;}
-.example-chips{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:12px;justify-content:center;}
-.chip{background:var(--glass);border:1px solid var(--border);padding:6px 14px;
-  border-radius:20px;font-size:12px;color:var(--muted);cursor:pointer;transition:all 0.2s;}
-.chip:hover{background:rgba(201,168,76,0.1);border-color:var(--gold);color:var(--gold);}
+.prompt-wrap{padding:24px 16px 14px;max-width:700px;margin:0 auto;width:100%;}
+.chips{display:flex;gap:7px;flex-wrap:wrap;margin-bottom:11px;justify-content:center;}
+.chip{background:var(--glass);border:1px solid var(--border);padding:5px 13px;
+  border-radius:20px;font-size:12px;color:var(--muted);cursor:pointer;transition:all .2s;}
+.chip:hover{background:rgba(201,168,76,.1);border-color:var(--gold);color:var(--gold);}
 
-/* API KEY ROW */
 .apikey-row{display:flex;align-items:center;gap:8px;margin-bottom:10px;
-  background:var(--glass);border:1px solid var(--border);border-radius:10px;padding:10px 14px;}
+  background:var(--glass);border:1px solid var(--border);border-radius:10px;padding:9px 13px;}
 .apikey-row label{font-size:12px;color:var(--muted);white-space:nowrap;flex-shrink:0;}
 .apikey-row input{flex:1;background:transparent;border:none;outline:none;
   color:var(--white);font-size:13px;font-family:'DM Mono',monospace;min-width:0;}
 .apikey-row input::placeholder{color:var(--muted);}
-.apikey-save{background:rgba(201,168,76,0.15);border:1px solid var(--border);
-  color:var(--gold);font-size:12px;padding:5px 12px;border-radius:7px;
-  cursor:pointer;white-space:nowrap;font-weight:600;}
-.apikey-save:hover{background:rgba(201,168,76,0.25);}
+.apikey-save{background:rgba(201,168,76,.15);border:1px solid var(--border);color:var(--gold);
+  font-size:12px;padding:4px 11px;border-radius:7px;cursor:pointer;font-weight:600;white-space:nowrap;}
+.apikey-save:hover{background:rgba(201,168,76,.28);}
 .apikey-status{font-size:11px;white-space:nowrap;padding:3px 8px;border-radius:5px;}
-.apikey-status.set{color:var(--teal);background:rgba(0,201,177,0.1);}
-.apikey-status.unset{color:var(--amber);background:rgba(245,158,11,0.1);}
+.apikey-status.set{color:var(--teal);background:rgba(0,201,177,.1);}
+.apikey-status.unset{color:var(--amber);background:rgba(245,158,11,.1);}
 
 .prompt-box{background:var(--navy3);border:1px solid var(--border);border-radius:16px;
-  overflow:hidden;box-shadow:var(--shadow),var(--glow-teal);transition:border-color 0.3s,box-shadow 0.3s;}
-.prompt-box:focus-within{border-color:var(--teal);box-shadow:var(--shadow),0 0 0 3px rgba(0,201,177,0.12);}
+  overflow:hidden;box-shadow:var(--shadow),var(--glow-teal);transition:border-color .3s,box-shadow .3s;}
+.prompt-box:focus-within{border-color:var(--teal);box-shadow:var(--shadow),0 0 0 3px rgba(0,201,177,.12);}
 .prompt-input{width:100%;background:transparent;border:none;outline:none;
-  padding:18px 20px 8px;color:var(--white);font-size:15px;
-  font-family:'DM Sans',sans-serif;resize:none;line-height:1.6;min-height:80px;}
+  padding:16px 18px 8px;color:var(--white);font-size:14px;
+  font-family:'DM Sans',sans-serif;resize:none;line-height:1.6;min-height:76px;}
 .prompt-input::placeholder{color:var(--muted);}
 .prompt-footer{display:flex;align-items:center;justify-content:space-between;
-  padding:10px 16px 14px;gap:10px;flex-wrap:wrap;}
-.prompt-meta{font-size:12px;color:var(--muted);display:flex;align-items:center;gap:6px;flex:1;min-width:120px;}
-.btn-group{display:flex;gap:8px;align-items:center;}
-
+  padding:9px 14px 13px;gap:8px;flex-wrap:wrap;}
+.prompt-meta{font-size:11px;color:var(--muted);display:flex;align-items:center;gap:5px;flex:1;min-width:100px;}
+.btn-group{display:flex;gap:7px;align-items:center;}
 .demo-btn{background:transparent;border:1px solid var(--gold);color:var(--gold);
-  font-family:'DM Sans',sans-serif;font-size:13px;font-weight:600;
-  padding:10px 18px;border-radius:10px;cursor:pointer;display:flex;align-items:center;gap:7px;
-  transition:all 0.2s;white-space:nowrap;}
-.demo-btn:hover{background:rgba(201,168,76,0.12);box-shadow:var(--glow-gold);}
-.demo-btn:disabled{opacity:0.5;cursor:not-allowed;}
-
+  font-family:'DM Sans',sans-serif;font-size:12px;font-weight:600;
+  padding:9px 16px;border-radius:9px;cursor:pointer;transition:all .2s;white-space:nowrap;}
+.demo-btn:hover{background:rgba(201,168,76,.12);box-shadow:var(--glow-gold);}
+.demo-btn:disabled{opacity:.5;cursor:not-allowed;}
 .send-btn{background:linear-gradient(135deg,var(--teal),var(--teal2));border:none;
-  color:var(--navy);font-family:'DM Sans',sans-serif;font-size:13px;font-weight:600;
-  padding:10px 22px;border-radius:10px;cursor:pointer;display:flex;align-items:center;gap:8px;
-  transition:all 0.2s;white-space:nowrap;}
+  color:var(--navy);font-family:'DM Sans',sans-serif;font-size:12px;font-weight:600;
+  padding:9px 20px;border-radius:9px;cursor:pointer;transition:all .2s;white-space:nowrap;}
 .send-btn:hover{transform:translateY(-1px);box-shadow:var(--glow-teal);}
-.send-btn:disabled{opacity:0.5;cursor:not-allowed;transform:none;}
+.send-btn:disabled{opacity:.5;cursor:not-allowed;transform:none;}
 
-/* RESPONSE */
-.response-area{padding:0 20px 20px;max-width:700px;margin:0 auto;width:100%;}
-.thinking{display:none;align-items:center;gap:12px;padding:16px 20px;
+/* THINKING */
+.response-area{padding:0 16px 20px;max-width:700px;margin:0 auto;width:100%;}
+.thinking{display:none;align-items:center;gap:10px;padding:14px 18px;
   background:var(--glass);border:1px solid var(--border2);border-radius:12px;
-  margin-bottom:16px;font-size:13px;color:var(--teal);}
+  margin-bottom:14px;font-size:13px;color:var(--teal);}
 .thinking.active{display:flex;}
-.thinking-dots span{display:inline-block;width:6px;height:6px;border-radius:50%;
+.thinking-dots span{display:inline-block;width:5px;height:5px;border-radius:50%;
   background:var(--teal);margin:0 2px;animation:bounce 1.2s infinite;}
-.thinking-dots span:nth-child(2){animation-delay:0.2s}
-.thinking-dots span:nth-child(3){animation-delay:0.4s}
-@keyframes bounce{0%,60%,100%{transform:translateY(0)}30%{transform:translateY(-8px)}}
+.thinking-dots span:nth-child(2){animation-delay:.2s}
+.thinking-dots span:nth-child(3){animation-delay:.4s}
+@keyframes bounce{0%,60%,100%{transform:translateY(0)}30%{transform:translateY(-7px)}}
 
-.itinerary-card{background:var(--navy3);border:1px solid var(--border);
-  border-radius:16px;overflow:hidden;display:none;animation:fadeUp 0.4s ease;}
-.itinerary-card.visible{display:block;}
-@keyframes fadeUp{from{opacity:0;transform:translateY(16px)}to{opacity:1;transform:translateY(0)}}
+/* ═══ RICH ITINERARY CARD ═══ */
+.itin-card{display:none;animation:fadeUp .4s ease;}
+.itin-card.visible{display:block;}
+@keyframes fadeUp{from{opacity:0;transform:translateY(14px)}to{opacity:1;transform:translateY(0)}}
 
-.card-header{background:linear-gradient(90deg,rgba(0,201,177,0.1),rgba(201,168,76,0.1));
-  padding:16px 22px;border-bottom:1px solid var(--border);
-  display:flex;align-items:center;justify-content:space-between;gap:10px;}
-.card-title{font-family:'Cormorant Garamond',serif;font-size:18px;font-weight:600;
-  color:var(--white);flex:1;}
-.card-meta{font-size:12px;color:var(--teal);display:flex;align-items:center;gap:6px;white-space:nowrap;}
-.card-meta.demo-meta{color:var(--gold);}
-.card-body{padding:20px 22px;}
-.card-body pre{white-space:pre-wrap;font-family:'DM Sans',sans-serif;
-  font-size:13.5px;color:var(--light);line-height:1.8;}
-.agent-strip{display:flex;gap:8px;padding:14px 22px;flex-wrap:wrap;
-  border-top:1px solid var(--border);background:rgba(10,15,30,0.5);}
-.agent-action{display:flex;align-items:center;gap:6px;padding:7px 14px;
-  border-radius:8px;font-size:12px;font-weight:500;
-  background:var(--glass2);border:1px solid var(--border);color:var(--muted);}
-.agent-action.done{color:var(--teal);border-color:var(--border2);background:rgba(0,201,177,0.06);}
+/* Trip Header Banner */
+.trip-banner{background:linear-gradient(135deg,#0d1f3c,#0f2a1e);
+  border:1px solid var(--border);border-radius:16px 16px 0 0;
+  padding:20px 22px;display:flex;align-items:flex-start;justify-content:space-between;gap:12px;flex-wrap:wrap;}
+.trip-title-wrap{}
+.trip-dest{font-family:'Cormorant Garamond',serif;font-size:26px;font-weight:600;color:var(--white);line-height:1.1;}
+.trip-sub{font-size:12px;color:var(--muted);margin-top:4px;}
+.trip-badges{display:flex;gap:7px;flex-wrap:wrap;margin-top:10px;}
+.tbadge{padding:4px 11px;border-radius:6px;font-size:11px;font-weight:600;letter-spacing:.4px;}
+.tbadge.green{background:rgba(34,197,94,.12);border:1px solid rgba(34,197,94,.3);color:var(--green);}
+.tbadge.gold{background:rgba(201,168,76,.12);border:1px solid rgba(201,168,76,.3);color:var(--gold);}
+.tbadge.teal{background:rgba(0,201,177,.1);border:1px solid var(--border2);color:var(--teal);}
+.pdf-btn{background:linear-gradient(135deg,var(--gold),var(--gold2));border:none;
+  color:var(--navy);font-family:'DM Sans',sans-serif;font-size:12px;font-weight:700;
+  padding:10px 18px;border-radius:10px;cursor:pointer;display:flex;align-items:center;gap:6px;
+  transition:all .2s;white-space:nowrap;flex-shrink:0;}
+.pdf-btn:hover{transform:translateY(-1px);box-shadow:var(--glow-gold);}
+
+/* Budget Summary */
+.budget-section{background:var(--navy3);border-left:1px solid var(--border);
+  border-right:1px solid var(--border);padding:18px 22px;}
+.sec-title{font-size:11px;color:var(--gold);letter-spacing:2px;text-transform:uppercase;
+  font-weight:600;margin-bottom:14px;display:flex;align-items:center;gap:8px;}
+.sec-title::after{content:'';flex:1;height:1px;background:linear-gradient(90deg,var(--border),transparent);}
+.budget-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(140px,1fr));gap:8px;}
+.budget-item{background:var(--glass);border:1px solid var(--border);border-radius:10px;
+  padding:12px 14px;display:flex;align-items:center;gap:10px;}
+.budget-icon{font-size:18px;flex-shrink:0;}
+.budget-label{font-size:11px;color:var(--muted);}
+.budget-amt{font-size:14px;font-weight:600;color:var(--white);font-family:'DM Mono',monospace;}
+.budget-total{background:linear-gradient(90deg,rgba(201,168,76,.1),rgba(0,201,177,.08));
+  border:1px solid var(--gold);border-radius:10px;padding:12px 18px;
+  display:flex;align-items:center;justify-content:space-between;margin-top:10px;}
+.budget-total .lbl{font-size:13px;color:var(--gold);font-weight:600;}
+.budget-total .val{font-size:18px;font-weight:700;color:var(--gold2);font-family:'DM Mono',monospace;}
+
+/* Day Tabs */
+.day-tabs-wrap{background:var(--navy3);border-left:1px solid var(--border);
+  border-right:1px solid var(--border);border-top:1px solid var(--border);
+  padding:14px 22px 0;}
+.day-tabs{display:flex;gap:6px;overflow-x:auto;padding-bottom:0;
+  scrollbar-width:none;-ms-overflow-style:none;}
+.day-tabs::-webkit-scrollbar{display:none;}
+.day-tab{padding:8px 16px;border-radius:8px 8px 0 0;font-size:12px;font-weight:600;
+  cursor:pointer;border:1px solid transparent;border-bottom:none;
+  white-space:nowrap;transition:all .2s;color:var(--muted);background:transparent;}
+.day-tab:hover{color:var(--light);background:var(--glass);}
+.day-tab.active{color:var(--teal);background:rgba(0,201,177,.08);border-color:var(--border2);}
+
+/* Day Content */
+.day-content-wrap{background:var(--navy3);border:1px solid var(--border);
+  border-top:1px solid var(--border2);}
+.day-content{display:none;padding:18px 22px;}
+.day-content.active{display:block;animation:fadeUp .3s ease;}
+
+.session-block{margin-bottom:18px;}
+.session-header{display:flex;align-items:center;gap:8px;margin-bottom:10px;
+  padding-bottom:8px;border-bottom:1px solid var(--glass2);}
+.session-icon{font-size:16px;}
+.session-name{font-size:12px;color:var(--muted);text-transform:uppercase;letter-spacing:1.5px;font-weight:600;}
+
+.activity-row{display:flex;gap:12px;padding:10px 0;
+  border-bottom:1px solid rgba(255,255,255,.04);align-items:flex-start;}
+.activity-row:last-child{border-bottom:none;}
+.act-time{font-size:12px;font-weight:600;color:var(--teal);font-family:'DM Mono',monospace;
+  min-width:42px;flex-shrink:0;padding-top:1px;}
+.act-emoji{font-size:16px;flex-shrink:0;}
+.act-body{}
+.act-title{font-size:13px;font-weight:600;color:var(--white);line-height:1.3;}
+.act-desc{font-size:12px;color:var(--muted);margin-top:3px;line-height:1.5;}
+.act-cost{display:inline-flex;align-items:center;gap:4px;margin-top:5px;
+  background:rgba(201,168,76,.1);border:1px solid rgba(201,168,76,.25);
+  padding:2px 9px;border-radius:5px;font-size:11px;color:var(--gold);font-weight:600;
+  font-family:'DM Mono',monospace;}
+
+/* Booking Status */
+.booking-section{background:rgba(0,0,0,.2);border:1px solid var(--border);
+  border-top:none;padding:16px 22px;}
+.booking-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:8px;}
+.booking-item{display:flex;align-items:center;gap:9px;padding:9px 13px;
+  background:rgba(0,201,177,.05);border:1px solid var(--border2);border-radius:9px;}
+.booking-check{font-size:14px;flex-shrink:0;}
+.booking-text{}
+.booking-service{font-size:12px;font-weight:600;color:var(--white);}
+.booking-ref{font-size:10px;color:var(--teal);font-family:'DM Mono',monospace;}
+
+/* Tips */
+.tips-section{background:var(--navy3);border:1px solid var(--border);
+  border-top:none;border-radius:0 0 16px 16px;padding:16px 22px;}
+.tips-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:8px;}
+.tip-item{display:flex;gap:10px;padding:10px 12px;background:rgba(201,168,76,.05);
+  border:1px solid rgba(201,168,76,.15);border-radius:9px;}
+.tip-num{font-size:18px;flex-shrink:0;}
+.tip-text{font-size:12px;color:var(--light);line-height:1.6;}
 
 /* FEATURES */
-.features{padding:28px 20px 20px;max-width:700px;margin:0 auto;width:100%;}
-.section-label{font-size:11px;color:var(--gold);letter-spacing:2px;text-transform:uppercase;
-  font-weight:600;margin-bottom:14px;display:flex;align-items:center;gap:10px;}
+.features{padding:24px 16px 16px;max-width:700px;margin:0 auto;width:100%;}
+.section-label{font-size:10px;color:var(--gold);letter-spacing:2px;text-transform:uppercase;
+  font-weight:600;margin-bottom:12px;display:flex;align-items:center;gap:9px;}
 .section-label::after{content:'';flex:1;height:1px;background:linear-gradient(90deg,var(--border),transparent);}
-.feat-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(190px,1fr));gap:12px;}
-.feat-card{background:var(--glass);border:1px solid var(--border);border-radius:12px;
-  padding:18px 16px;transition:all 0.25s;}
+.feat-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(160px,1fr));gap:10px;}
+.feat-card{background:var(--glass);border:1px solid var(--border);border-radius:11px;
+  padding:16px 14px;transition:all .25s;}
 .feat-card:hover{background:var(--glass2);border-color:var(--teal);transform:translateY(-2px);box-shadow:var(--glow-teal);}
-.feat-icon{font-size:24px;margin-bottom:10px;}
-.feat-name{font-size:14px;font-weight:600;color:var(--white);margin-bottom:6px;}
-.feat-desc{font-size:12px;color:var(--muted);line-height:1.6;}
+.feat-icon{font-size:22px;margin-bottom:8px;}
+.feat-name{font-size:13px;font-weight:600;color:var(--white);margin-bottom:5px;}
+.feat-desc{font-size:11px;color:var(--muted);line-height:1.6;}
 
 /* FOOTER */
-footer{margin-top:auto;padding:18px 28px;border-top:1px solid var(--border);
+footer{margin-top:auto;padding:16px 20px;border-top:1px solid var(--border);
   display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:8px;
-  background:rgba(10,15,30,0.6);backdrop-filter:blur(10px);font-size:11px;color:var(--muted);}
-.footer-credit{font-family:'DM Mono',monospace;letter-spacing:0.5px;}
+  background:rgba(10,15,30,.65);backdrop-filter:blur(10px);font-size:11px;color:var(--muted);}
+.footer-credit{font-family:'DM Mono',monospace;letter-spacing:.4px;}
 .footer-credit span{color:var(--gold);}
-.token-badge{font-family:'DM Mono',monospace;font-size:11px;
-  background:var(--glass);border:1px solid var(--border);
-  padding:4px 10px;border-radius:6px;color:var(--teal);}
+.token-badge{font-family:'DM Mono',monospace;font-size:11px;background:var(--glass);
+  border:1px solid var(--border);padding:3px 9px;border-radius:6px;color:var(--teal);}
 
 /* INSTALL TOAST */
-.install-toast{position:fixed;bottom:80px;left:50%;transform:translateX(-50%);
-  background:var(--navy3);border:1px solid var(--gold);border-radius:12px;padding:14px 20px;
-  display:none;align-items:center;gap:14px;box-shadow:var(--shadow),var(--glow-gold);
-  font-size:13px;color:var(--white);z-index:200;animation:slideUp 0.4s ease;white-space:nowrap;}
+.install-toast{position:fixed;bottom:76px;left:50%;transform:translateX(-50%);
+  background:var(--navy3);border:1px solid var(--gold);border-radius:12px;padding:13px 18px;
+  display:none;align-items:center;gap:12px;box-shadow:var(--shadow),var(--glow-gold);
+  font-size:13px;color:var(--white);z-index:200;white-space:nowrap;}
 .install-toast.show{display:flex;}
-@keyframes slideUp{from{opacity:0;transform:translateX(-50%) translateY(20px)}to{opacity:1;transform:translateX(-50%) translateY(0)}}
 .install-btn{background:linear-gradient(135deg,var(--gold),var(--gold2));border:none;
-  color:var(--navy);font-weight:600;font-size:12px;padding:7px 16px;border-radius:8px;cursor:pointer;}
-.toast-close{background:none;border:none;color:var(--muted);cursor:pointer;font-size:18px;padding:0 4px;}
+  color:var(--navy);font-weight:600;font-size:12px;padding:6px 14px;border-radius:7px;cursor:pointer;}
+.toast-close{background:none;border:none;color:var(--muted);cursor:pointer;font-size:17px;padding:0 3px;}
 
-::-webkit-scrollbar{width:6px;}
+::-webkit-scrollbar{width:5px;}
 ::-webkit-scrollbar-track{background:var(--navy);}
 ::-webkit-scrollbar-thumb{background:var(--border);border-radius:3px;}
 </style>
 </head>
 <body>
-<div class="bg-mesh"></div>
-<div class="bg-grid"></div>
+<div class="bg-mesh"></div><div class="bg-grid"></div>
 <div class="app">
 
-  <header>
-    <div class="logo">
-      <div class="logo-icon">✈</div>
-      <div>
-        <div class="logo-text">TravelAI</div>
-        <div class="logo-sub">Personal Concierge</div>
-      </div>
-    </div>
-    <div class="header-badge"><span class="pulse"></span>Agentic AI Active</div>
-  </header>
-
-  <div class="hero">
-    <div class="hero-tag">✦ Three-Layer Intelligence</div>
-    <h1>Your Personal<br><span>Travel Concierge</span></h1>
-    <p>Tell us your dream trip. AI understands your preferences, GenAI crafts your itinerary, Agentic AI handles every booking — flights, hotels, cabs, restaurants, changes.</p>
-    <div class="tiers">
-      <div class="tier ai"><span class="tier-dot"></span>🧠 AI — Understands & Learns</div>
-      <div class="tier gen"><span class="tier-dot"></span>✨ GenAI — Creates Itineraries</div>
-      <div class="tier agent"><span class="tier-dot"></span>🤖 Agentic AI — Books Everything</div>
-    </div>
+<header>
+  <div class="logo">
+    <div class="logo-icon">✈</div>
+    <div><div class="logo-text">TravelAI</div><div class="logo-sub">Personal Concierge</div></div>
   </div>
+  <div class="header-badge"><span class="pulse"></span>Agentic AI Active</div>
+</header>
 
-  <div class="prompt-wrap">
-    <div class="example-chips">
-      <div class="chip" onclick="setPrompt(this)">5-day family trip to Singapore under ₹1.5L</div>
-      <div class="chip" onclick="setPrompt(this)">Romantic weekend in Goa under ₹40,000</div>
-      <div class="chip" onclick="setPrompt(this)">Solo backpack Europe 15 days ₹2L budget</div>
-      <div class="chip" onclick="setPrompt(this)">Honeymoon Maldives 7 nights ₹3 lakh</div>
-    </div>
+<div class="hero">
+  <div class="hero-tag">✦ Three-Layer Intelligence</div>
+  <h1>Your Personal<br><span>Travel Concierge</span></h1>
+  <p>Tell us your dream trip. AI understands preferences, GenAI crafts your itinerary, Agentic AI handles every booking — flights, hotels, cabs, restaurants.</p>
+  <div class="tiers">
+    <div class="tier ai"><span class="tier-dot"></span>🧠 AI — Understands</div>
+    <div class="tier gen"><span class="tier-dot"></span>✨ GenAI — Creates</div>
+    <div class="tier agent"><span class="tier-dot"></span>🤖 Agentic — Books</div>
+  </div>
+</div>
 
-    <!-- API KEY ROW -->
-    <div class="apikey-row">
-      <label>🔑 API Key</label>
-      <input type="password" id="apiKeyInput" placeholder="sk-ant-... (required for Plan My Trip)" autocomplete="off">
-      <button class="apikey-save" onclick="saveKey()">Save</button>
-      <span class="apikey-status unset" id="keyStatus">Not set</span>
-    </div>
-
-    <div class="prompt-box">
-      <textarea class="prompt-input" id="promptInput"
-        placeholder='Try: "Plan a 5-day family trip to Singapore under ₹1.5 lakh with 2 adults and 2 kids, preferring budget hotels near MRT"'
-        rows="3"></textarea>
-      <div class="prompt-footer">
-        <div class="prompt-meta"><span>💡</span> Add destination, duration, budget & traveller count</div>
-        <div class="btn-group">
-          <button class="demo-btn" id="demoBtn" onclick="loadDemo()">🇸🇬 See Demo</button>
-          <button class="send-btn" id="sendBtn" onclick="planTrip()"><span>✈</span> Plan My Trip</button>
-        </div>
+<div class="prompt-wrap">
+  <div class="chips">
+    <div class="chip" onclick="setPrompt(this)">5-day family trip Singapore ₹1.5L</div>
+    <div class="chip" onclick="setPrompt(this)">Romantic weekend Goa ₹40,000</div>
+    <div class="chip" onclick="setPrompt(this)">Solo Europe 15 days ₹2L</div>
+    <div class="chip" onclick="setPrompt(this)">Honeymoon Maldives 7 nights ₹3L</div>
+  </div>
+  <div class="apikey-row">
+    <label>🔑 API Key</label>
+    <input type="password" id="apiKeyInput" placeholder="sk-ant-... (for Plan My Trip)" autocomplete="off">
+    <button class="apikey-save" onclick="saveKey()">Save</button>
+    <span class="apikey-status unset" id="keyStatus">Not set</span>
+  </div>
+  <div class="prompt-box">
+    <textarea class="prompt-input" id="promptInput"
+      placeholder='Try: "Plan a 5-day family trip to Singapore under ₹1.5 lakh — 2 adults, 2 kids"'
+      rows="3"></textarea>
+    <div class="prompt-footer">
+      <div class="prompt-meta"><span>💡</span> Add destination, duration, budget & travellers</div>
+      <div class="btn-group">
+        <button class="demo-btn" id="demoBtn" onclick="loadDemo()">🇸🇬 See Demo</button>
+        <button class="send-btn" id="sendBtn" onclick="planTrip()">✈ Plan My Trip</button>
       </div>
     </div>
   </div>
+</div>
 
-  <div class="response-area">
-    <div class="thinking" id="thinking">
-      <span>🤖 Agentic AI thinking</span>
-      <div class="thinking-dots"><span></span><span></span><span></span></div>
-      <span id="thinkingStage" style="color:var(--muted);font-size:12px;">Analysing preferences…</span>
-    </div>
-    <div class="itinerary-card" id="itineraryCard">
-      <div class="card-header">
-        <div class="card-title" id="cardTitle">Your Custom Itinerary</div>
-        <div class="card-meta" id="cardMeta"><span class="pulse"></span> GenAI Generated</div>
+<div class="response-area">
+  <div class="thinking" id="thinking">
+    <span>🤖 Agentic AI thinking</span>
+    <div class="thinking-dots"><span></span><span></span><span></span></div>
+    <span id="thinkingStage" style="color:var(--muted);font-size:12px;">Analysing preferences…</span>
+  </div>
+
+  <!-- RICH ITINERARY CARD -->
+  <div class="itin-card" id="itinCard">
+
+    <!-- Banner -->
+    <div class="trip-banner" id="tripBanner">
+      <div class="trip-title-wrap">
+        <div class="trip-dest" id="tripDest">Singapore</div>
+        <div class="trip-sub" id="tripSub">5 Days · 2 Adults, 2 Kids · Jun 15–19 2025</div>
+        <div class="trip-badges" id="tripBadges"></div>
       </div>
-      <div class="card-body"><pre id="itineraryContent"></pre></div>
-      <div class="agent-strip" id="agentStrip"></div>
+      <button class="pdf-btn" onclick="exportPDF()">⬇ Export PDF</button>
     </div>
-  </div>
 
-  <div class="features">
-    <div class="section-label">What TravelAI does for you</div>
-    <div class="feat-grid">
-      <div class="feat-card"><div class="feat-icon">🧠</div><div class="feat-name">Preference Engine</div><div class="feat-desc">Learns your travel style, dietary needs, budget patterns, and past trips to personalise every recommendation.</div></div>
-      <div class="feat-card"><div class="feat-icon">🗺️</div><div class="feat-name">Smart Itineraries</div><div class="feat-desc">GenAI crafts day-by-day plans with timings, distances, must-sees, hidden gems and dining options.</div></div>
-      <div class="feat-card"><div class="feat-icon">✈️</div><div class="feat-name">Flight Booking</div><div class="feat-desc">Agentic AI searches and books the best-value flights across 200+ airlines, with auto seat selection.</div></div>
-      <div class="feat-card"><div class="feat-icon">🏨</div><div class="feat-name">Hotel & Stays</div><div class="feat-desc">Finds and books hotels near key attractions within your budget, handling all check-in logistics.</div></div>
-      <div class="feat-card"><div class="feat-icon">🚕</div><div class="feat-name">Cab & Transfers</div><div class="feat-desc">Airport pickups, city transfers, and inter-city rides pre-booked so you never wait at arrival.</div></div>
-      <div class="feat-card"><div class="feat-icon">🍽️</div><div class="feat-name">Restaurant Reservations</div><div class="feat-desc">Tables at the best local restaurants — curated for your taste, pre-booked at the right times.</div></div>
-      <div class="feat-card"><div class="feat-icon">🔄</div><div class="feat-name">Change Management</div><div class="feat-desc">Flight delay? Weather issue? Agentic AI automatically reschedules, rebooks, and keeps you moving.</div></div>
-      <div class="feat-card"><div class="feat-icon">💰</div><div class="feat-name">Budget Tracker</div><div class="feat-desc">Real-time spend tracking in INR with alerts when nearing limits and smart alternatives to save money.</div></div>
+    <!-- Budget -->
+    <div class="budget-section" id="budgetSection">
+      <div class="sec-title">💰 Budget Breakdown</div>
+      <div class="budget-grid" id="budgetGrid"></div>
+      <div class="budget-total" id="budgetTotal"></div>
     </div>
-  </div>
 
-  <footer>
-    <div class="footer-credit">Designed &amp; Architected by <span>Krishnamurthy Kandregula</span> · Made by Claude</div>
-    <div class="token-badge" id="tokenBadge">⚡ Ready</div>
-  </footer>
+    <!-- Day Tabs -->
+    <div class="day-tabs-wrap">
+      <div class="day-tabs" id="dayTabs"></div>
+    </div>
+    <div class="day-content-wrap" id="dayContentWrap"></div>
+
+    <!-- Booking Status -->
+    <div class="booking-section" id="bookingSection">
+      <div class="sec-title">🤖 Agentic AI — Booking Status</div>
+      <div class="booking-grid" id="bookingGrid"></div>
+    </div>
+
+    <!-- Tips -->
+    <div class="tips-section" id="tipsSection">
+      <div class="sec-title">✨ Pro Tips from Your Concierge</div>
+      <div class="tips-grid" id="tipsGrid"></div>
+    </div>
+
+  </div><!-- end itin-card -->
+</div>
+
+<div class="features">
+  <div class="section-label">What TravelAI does for you</div>
+  <div class="feat-grid">
+    <div class="feat-card"><div class="feat-icon">🧠</div><div class="feat-name">Preference Engine</div><div class="feat-desc">Learns your travel style, dietary needs, budget patterns and past trips.</div></div>
+    <div class="feat-card"><div class="feat-icon">🗺️</div><div class="feat-name">Smart Itineraries</div><div class="feat-desc">Day-by-day plans with timings, distances, must-sees and hidden gems.</div></div>
+    <div class="feat-card"><div class="feat-icon">✈️</div><div class="feat-name">Flight Booking</div><div class="feat-desc">Best-value flights across 200+ airlines with auto seat selection.</div></div>
+    <div class="feat-card"><div class="feat-icon">🏨</div><div class="feat-name">Hotel & Stays</div><div class="feat-desc">Hotels near attractions within budget, with all check-in logistics handled.</div></div>
+    <div class="feat-card"><div class="feat-icon">🚕</div><div class="feat-name">Cab & Transfers</div><div class="feat-desc">Airport pickups and city transfers pre-booked so you never wait.</div></div>
+    <div class="feat-card"><div class="feat-icon">🔄</div><div class="feat-name">Change Management</div><div class="feat-desc">Flight delay? Agentic AI reschedules and rebooks automatically.</div></div>
+  </div>
+</div>
+
+<footer>
+  <div class="footer-credit">Designed &amp; Architected by <span>Krishnamurthy Kandregula</span> · Made by Claude</div>
+  <div class="token-badge" id="tokenBadge">⚡ Ready</div>
+</footer>
 </div>
 
 <div class="install-toast" id="installToast">
-  <span>📲 Add TravelAI to your home screen</span>
+  <span>📲 Add TravelAI to home screen</span>
   <button class="install-btn" id="installBtn">Install</button>
   <button class="toast-close" onclick="document.getElementById('installToast').classList.remove('show')">✕</button>
 </div>
 
 <script>
-/* ── PWA ICON ── */
-function generateIcon(size) {
-  const c = document.createElement('canvas');
-  c.width = c.height = size;
-  const ctx = c.getContext('2d');
-  const s = size;
-  const bg = ctx.createLinearGradient(0,0,s,s);
-  bg.addColorStop(0,'#0a0f1e'); bg.addColorStop(1,'#0f1e2a');
-  ctx.fillStyle = bg;
-  const r = s*0.22;
-  ctx.beginPath();
-  ctx.moveTo(r,0); ctx.lineTo(s-r,0); ctx.quadraticCurveTo(s,0,s,r);
-  ctx.lineTo(s,s-r); ctx.quadraticCurveTo(s,s,s-r,s);
-  ctx.lineTo(r,s); ctx.quadraticCurveTo(0,s,0,s-r);
-  ctx.lineTo(0,r); ctx.quadraticCurveTo(0,0,r,0);
-  ctx.closePath(); ctx.fill();
-  const glow = ctx.createRadialGradient(s*.4,s*.35,0,s*.4,s*.35,s*.55);
-  glow.addColorStop(0,'rgba(0,201,177,0.18)'); glow.addColorStop(1,'rgba(0,0,0,0)');
-  ctx.fillStyle = glow; ctx.fillRect(0,0,s,s);
-  ctx.beginPath(); ctx.arc(s*.5,s*.48,s*.3,0,Math.PI*2);
-  const gg = ctx.createLinearGradient(s*.2,s*.2,s*.8,s*.8);
-  gg.addColorStop(0,'rgba(0,201,177,0.3)'); gg.addColorStop(1,'rgba(201,168,76,0.15)');
-  ctx.strokeStyle='rgba(0,201,177,0.6)'; ctx.lineWidth=s*.03; ctx.stroke();
-  ctx.fillStyle=gg; ctx.fill();
-  ctx.strokeStyle='rgba(0,201,177,0.25)'; ctx.lineWidth=s*.018;
-  for(let i=-1;i<=1;i++){
-    const y=s*.48+i*s*.1;
-    const hw=Math.sqrt(Math.max(0,(s*.3)**2-(y-s*.48)**2));
-    ctx.beginPath(); ctx.moveTo(s*.5-hw,y); ctx.lineTo(s*.5+hw,y); ctx.stroke();
-  }
-  ctx.beginPath(); ctx.ellipse(s*.5,s*.48,s*.12,s*.3,0,0,Math.PI*2); ctx.stroke();
-  ctx.save(); ctx.translate(s*.5,s*.48); ctx.rotate(-Math.PI/4);
-  ctx.fillStyle='#c9a84c';
-  ctx.beginPath(); ctx.ellipse(0,0,s*.07,s*.025,0,0,Math.PI*2); ctx.fill();
-  ctx.fillStyle='#e8c870';
-  ctx.beginPath(); ctx.moveTo(-s*.01,0); ctx.lineTo(s*.02,-s*.07); ctx.lineTo(s*.04,0); ctx.closePath(); ctx.fill();
-  ctx.beginPath(); ctx.moveTo(-s*.01,0); ctx.lineTo(s*.02,s*.07); ctx.lineTo(s*.04,0); ctx.closePath(); ctx.fill();
-  ctx.restore();
-  ctx.beginPath(); ctx.arc(s*.78,s*.22,s*.04,0,Math.PI*2);
-  ctx.fillStyle='rgba(0,229,204,0.8)'; ctx.fill();
+/* ══ PWA ICON ══ */
+function generateIcon(sz){
+  const c=document.createElement('canvas');c.width=c.height=sz;
+  const x=c.getContext('2d'),s=sz;
+  const bg=x.createLinearGradient(0,0,s,s);
+  bg.addColorStop(0,'#0a0f1e');bg.addColorStop(1,'#0f1e2a');
+  x.fillStyle=bg;const r=s*.22;
+  x.beginPath();x.moveTo(r,0);x.lineTo(s-r,0);x.quadraticCurveTo(s,0,s,r);
+  x.lineTo(s,s-r);x.quadraticCurveTo(s,s,s-r,s);x.lineTo(r,s);
+  x.quadraticCurveTo(0,s,0,s-r);x.lineTo(0,r);x.quadraticCurveTo(0,0,r,0);
+  x.closePath();x.fill();
+  const gl=x.createRadialGradient(s*.4,s*.35,0,s*.4,s*.35,s*.55);
+  gl.addColorStop(0,'rgba(0,201,177,.18)');gl.addColorStop(1,'rgba(0,0,0,0)');
+  x.fillStyle=gl;x.fillRect(0,0,s,s);
+  x.beginPath();x.arc(s*.5,s*.48,s*.3,0,Math.PI*2);
+  const gg=x.createLinearGradient(s*.2,s*.2,s*.8,s*.8);
+  gg.addColorStop(0,'rgba(0,201,177,.3)');gg.addColorStop(1,'rgba(201,168,76,.15)');
+  x.strokeStyle='rgba(0,201,177,.6)';x.lineWidth=s*.03;x.stroke();
+  x.fillStyle=gg;x.fill();
+  x.strokeStyle='rgba(0,201,177,.25)';x.lineWidth=s*.018;
+  for(let i=-1;i<=1;i++){const y=s*.48+i*s*.1;const hw=Math.sqrt(Math.max(0,(s*.3)**2-(y-s*.48)**2));x.beginPath();x.moveTo(s*.5-hw,y);x.lineTo(s*.5+hw,y);x.stroke();}
+  x.beginPath();x.ellipse(s*.5,s*.48,s*.12,s*.3,0,0,Math.PI*2);x.stroke();
+  x.save();x.translate(s*.5,s*.48);x.rotate(-Math.PI/4);
+  x.fillStyle='#c9a84c';x.beginPath();x.ellipse(0,0,s*.07,s*.025,0,0,Math.PI*2);x.fill();
+  x.fillStyle='#e8c870';
+  x.beginPath();x.moveTo(-s*.01,0);x.lineTo(s*.02,-s*.07);x.lineTo(s*.04,0);x.closePath();x.fill();
+  x.beginPath();x.moveTo(-s*.01,0);x.lineTo(s*.02,s*.07);x.lineTo(s*.04,0);x.closePath();x.fill();
+  x.restore();
+  x.beginPath();x.arc(s*.78,s*.22,s*.04,0,Math.PI*2);x.fillStyle='rgba(0,229,204,.8)';x.fill();
   return c.toDataURL('image/png');
 }
+const i192=generateIcon(192),i512=generateIcon(512);
+const mf={name:'TravelAI Concierge',short_name:'TravelAI',start_url:'.',display:'standalone',background_color:'#0a0f1e',theme_color:'#0a0f1e',icons:[{src:i192,sizes:'192x192',type:'image/png',purpose:'any maskable'},{src:i512,sizes:'512x512',type:'image/png',purpose:'any maskable'}]};
+document.getElementById('manifest-link').href=URL.createObjectURL(new Blob([JSON.stringify(mf)],{type:'application/manifest+json'}));
+const tl=document.createElement('link');tl.rel='apple-touch-icon';tl.href=i192;document.head.appendChild(tl);
+const fv=document.createElement('link');fv.rel='icon';fv.href=generateIcon(64);document.head.appendChild(fv);
 
-const icon192 = generateIcon(192);
-const icon512 = generateIcon(512);
-const manifest = {
-  name:'TravelAI Concierge',short_name:'TravelAI',
-  description:'Personal AI Travel Concierge',
-  start_url:'.',display:'standalone',
-  background_color:'#0a0f1e',theme_color:'#0a0f1e',
-  orientation:'portrait-primary',
-  icons:[
-    {src:icon192,sizes:'192x192',type:'image/png',purpose:'any maskable'},
-    {src:icon512,sizes:'512x512',type:'image/png',purpose:'any maskable'}
-  ]
-};
-const blob = new Blob([JSON.stringify(manifest)],{type:'application/manifest+json'});
-document.getElementById('manifest-link').href = URL.createObjectURL(blob);
-const tl=document.createElement('link'); tl.rel='apple-touch-icon'; tl.href=icon192; document.head.appendChild(tl);
-const fv=document.createElement('link'); fv.rel='icon'; fv.href=generateIcon(64); document.head.appendChild(fv);
+/* ══ PWA INSTALL ══ */
+let dp;
+window.addEventListener('beforeinstallprompt',e=>{e.preventDefault();dp=e;setTimeout(()=>document.getElementById('installToast').classList.add('show'),3000);});
+document.getElementById('installBtn').addEventListener('click',async()=>{if(!dp)return;dp.prompt();await dp.userChoice;dp=null;document.getElementById('installToast').classList.remove('show');});
 
-/* ── PWA INSTALL ── */
-let deferredPrompt;
-window.addEventListener('beforeinstallprompt', e => {
-  e.preventDefault(); deferredPrompt = e;
-  setTimeout(() => document.getElementById('installToast').classList.add('show'), 3000);
-});
-document.getElementById('installBtn').addEventListener('click', async () => {
-  if (!deferredPrompt) return;
-  deferredPrompt.prompt();
-  await deferredPrompt.userChoice;
-  deferredPrompt = null;
-  document.getElementById('installToast').classList.remove('show');
-});
-
-/* ── API KEY ── */
-let apiKey = localStorage.getItem('travelai_key') || '';
-function refreshKeyStatus() {
-  const st = document.getElementById('keyStatus');
-  if (apiKey) { st.textContent = '✓ Key set'; st.className = 'apikey-status set'; }
-  else { st.textContent = 'Not set'; st.className = 'apikey-status unset'; }
-}
-function saveKey() {
-  const val = document.getElementById('apiKeyInput').value.trim();
-  if (val) { apiKey = val; localStorage.setItem('travelai_key', val); }
-  refreshKeyStatus();
-  document.getElementById('apiKeyInput').value = '';
-}
+/* ══ API KEY ══ */
+let apiKey=localStorage.getItem('travelai_key')||'';
+function refreshKeyStatus(){const s=document.getElementById('keyStatus');if(apiKey){s.textContent='✓ Key set';s.className='apikey-status set';}else{s.textContent='Not set';s.className='apikey-status unset';}}
+function saveKey(){const v=document.getElementById('apiKeyInput').value.trim();if(v){apiKey=v;localStorage.setItem('travelai_key',v);}refreshKeyStatus();document.getElementById('apiKeyInput').value='';}
 refreshKeyStatus();
 
-/* ── CHIPS ── */
-function setPrompt(el) { document.getElementById('promptInput').value = el.textContent.trim(); }
+/* ══ CHIPS ══ */
+function setPrompt(el){document.getElementById('promptInput').value=el.textContent.trim();}
 
-/* ── THINKING STAGES ── */
-const stages = [
-  'Analysing preferences & budget…',
-  'GenAI crafting your itinerary…',
-  'Agentic AI searching flights…',
-  'Comparing hotel options…',
-  'Pre-booking restaurants…',
-  'Finalising your travel plan…'
-];
-let stageIdx=0, stageTimer;
-function startStages() {
-  stageIdx=0;
-  document.getElementById('thinkingStage').textContent = stages[0];
-  stageTimer = setInterval(() => {
-    stageIdx=(stageIdx+1)%stages.length;
-    document.getElementById('thinkingStage').textContent = stages[stageIdx];
-  }, 2000);
-}
-function stopStages() { clearInterval(stageTimer); }
+/* ══ THINKING ══ */
+const stages=['Analysing preferences & budget…','GenAI crafting your itinerary…','Agentic AI searching flights…','Comparing hotel options…','Pre-booking restaurants…','Finalising your travel plan…'];
+let si=0,st;
+function startStages(){si=0;document.getElementById('thinkingStage').textContent=stages[0];st=setInterval(()=>{si=(si+1)%stages.length;document.getElementById('thinkingStage').textContent=stages[si];},2000);}
+function stopStages(){clearInterval(st);}
 
-function showCard(title, metaHTML, metaClass, content, actions, tokenText) {
-  stopStages();
-  document.getElementById('thinking').classList.remove('active');
-  document.getElementById('cardTitle').textContent = title;
-  const m = document.getElementById('cardMeta');
-  m.innerHTML = metaHTML;
-  m.className = 'card-meta ' + (metaClass||'');
-  document.getElementById('itineraryContent').textContent = content;
-  document.getElementById('agentStrip').innerHTML = actions.map(a =>
-    '<div class="agent-action done">'+a.icon+' '+a.label+'</div>'
-  ).join('');
-  document.getElementById('itineraryCard').classList.add('visible');
-  document.getElementById('tokenBadge').textContent = tokenText;
-  document.getElementById('itineraryCard').scrollIntoView({behavior:'smooth',block:'start'});
+/* ══ DAY TABS ══ */
+function renderDayTabs(days){
+  const tabsEl=document.getElementById('dayTabs');
+  const contentEl=document.getElementById('dayContentWrap');
+  tabsEl.innerHTML='';contentEl.innerHTML='';
+  days.forEach(function(d,i){
+    const tab=document.createElement('div');
+    tab.className='day-tab'+(i===0?' active':'');
+    tab.textContent='Day '+(i+1)+' · '+d.label;
+    tab.onclick=function(){
+      document.querySelectorAll('.day-tab').forEach(function(t){t.classList.remove('active');});
+      document.querySelectorAll('.day-content').forEach(function(c){c.classList.remove('active');});
+      tab.classList.add('active');
+      document.getElementById('day-'+i).classList.add('active');
+    };
+    tabsEl.appendChild(tab);
+    const dc=document.createElement('div');
+    dc.className='day-content'+(i===0?' active':'');
+    dc.id='day-'+i;
+    dc.innerHTML=renderDayContent(d);
+    contentEl.appendChild(dc);
+  });
 }
 
-/* ── SINGAPORE DEMO DATA ── */
-const SINGAPORE_DEMO = `🌏 5-DAY FAMILY TRIP TO SINGAPORE — ₹1,50,000 BUDGET
-👨‍👩‍👧‍👦 2 Adults + 2 Kids (Ages 7 & 10)  ·  Jun 15–19, 2025
-
-━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-💰 BUDGET BREAKDOWN
-━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-✈  Flights (HYD ↔ SIN, IndiGo)    ₹ 52,000
-🏨  Hotel · Fragrance Hotel Ruby    ₹ 28,000  (5 nights near MRT)
-🚕  Airport transfers + MRT passes  ₹  6,500
-🍽️  Food & Dining (5 days)          ₹ 18,000
-🎡  Attractions & Entry Tickets     ₹ 32,000
-🛍️  Shopping & Miscellaneous        ₹ 13,500
-────────────────────────────────────
-💳  TOTAL                           ₹1,50,000
-
-━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-📅 DAY 1 — ARRIVAL & MARINA BAY
-━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-🌅 Morning
-  09:30  Depart Hyderabad (6E 81) · Land Changi T3 at 15:10 SGT
-  15:40  Grab taxi to Fragrance Hotel Ruby (~25 min, ₹900)
-  17:00  Check-in & freshen up
-
-🌇 Evening
-  18:30  MRT to Bayfront → stroll Marina Bay Sands Promenade
-  19:30  🍜 Dinner at Lau Pa Sat hawker centre
-         Chicken Rice ₹320, Satay skewers, Kaya toast
-         Est. cost: ₹2,200 for family
-  21:00  🌉 FREE Spectra light show at Marina Bay (9 PM & 9:30 PM)
-  22:00  Return to hotel via MRT
-
-━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-📅 DAY 2 — SENTOSA & UNIVERSAL STUDIOS
-━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-🌅 Morning
-  08:30  Breakfast at hotel
-  09:15  MRT → HarbourFront → Sentosa Express
-  10:00  🎢 Universal Studios Singapore (opens 10 AM)
-         Jurassic World · Minion Park · Transformers
-         Tickets: Adults S$83 · Kids S$63 ≈ ₹18,500 total
-
-🌇 Afternoon & Evening
-  14:00  🍔 Lunch at Mel's Drive-In inside USS (~₹2,800 family)
-  16:30  🏖️ Siloso Beach — free entry, kids love the waves!
-  19:00  🍤 Dinner: Coastes Beach Bar (Fish & Chips, Seafood) ₹3,200
-  21:00  Return via Sentosa Express + MRT
-
-━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-📅 DAY 3 — GARDENS BY THE BAY & CHINATOWN
-━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-🌅 Morning
-  09:00  🌿 Gardens by the Bay — Supertree Grove (FREE outdoor)
-         Cloud Forest + Flower Dome combo ≈ ₹11,000
-  11:30  Children's Garden — FREE entry, water-play paradise!
-
-🌇 Afternoon
-  13:00  🍛 Lunch: Maxwell Food Centre — Tian Tian Chicken Rice
-         Budget: ₹1,600 family
-  14:30  🏮 Chinatown Heritage Centre ≈ ₹2,600
-  16:00  Pagoda St · budget souvenir shopping
-  17:30  Sri Mariamman Temple (FREE) — stunning Hindu heritage!
-
-🌆 Evening
-  19:30  🦀 Dinner: Chinatown Complex Food Centre
-         Chilli Crab at Yang's Zi Char (~₹3,500 for family)
-
-━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-📅 DAY 4 — LITTLE INDIA & NIGHT SAFARI
-━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-🌅 Morning
-  09:30  🕌 Little India — Mustafa Centre, Tekka Market
-         Sri Veeramakaliamman Temple
-  10:30  🥞 Breakfast at Komala Vilas (South Indian!) ≈ ₹900
-
-🌇 Afternoon
-  13:30  🦁 Singapore Zoo + River Wonders (combo)
-         Adults S$78 · Kids S$52 ≈ ₹14,800
-  17:00  Rest at zoo café
-
-🌙 Night
-  19:30  🦉 Night Safari — world's first nocturnal zoo!
-         Tram ride through jungle, 1,000 animals
-         Adults S$55 · Kids S$38 ≈ ₹10,500
-  22:00  Grab → Hotel
-
-━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-📅 DAY 5 — ORCHARD ROAD & DEPARTURE
-━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-🌅 Morning
-  09:00  Ya Kun Kaya Toast — classic Singapore breakfast ≈ ₹400
-  10:00  🛍️ Orchard Road — ION Orchard, Takashimaya
-         Budget: ₹8,000 (chocolates, Bengawan Solo cookies)
-  12:30  🍜 Final lunch: Kopitiam food court, Wisma Atria
-
-🌇 Afternoon — Departure
-  14:30  Check-out · Grab to Changi Airport (₹1,100)
-  15:30  Changi T1 — FREE Butterfly Garden & 40m Slide for kids!
-  18:00  Board IndiGo 6E 82 → Hyderabad (lands 20:15 IST)
-
-━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-🤖 AGENTIC AI — BOOKING STATUS
-━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-✅  IndiGo 6E 81/82 HYD↔SIN — Seats 12A–D confirmed
-✅  Fragrance Hotel Ruby (Jun 15–19) — Booking #FHR29841
-✅  Sentosa Express day passes — QR codes sent to wallet
-✅  USS tickets (Jun 16, 10 AM) — E-tickets emailed
-✅  Cloud Forest + Flower Dome (Jun 17) — Skip-queue booked
-✅  Night Safari tram (Jun 18, 7:30 PM) — Front seats reserved
-✅  Maxwell & Chinatown tables — Reserved for family of 4
-🔔  Flight reminders set · ₹150 budget alert configured
-
-━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-✨ 3 PRO TIPS FROM YOUR CONCIERGE
-━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-💡 Buy 4-day Tourist Pass (S$40/adult) — unlimited MRT + bus
-💡 Book USS, Zoo & Night Safari online 2 weeks ahead — 20% cheaper
-💡 Hawker centres cut food costs by 60% vs restaurants — always eat local!
-
-Have a wonderful trip to the Lion City! 🦁✈🌴`;
-
-/* ── LOAD DEMO (no API, fully local) ── */
-function loadDemo() {
-  const demoBtn = document.getElementById('demoBtn');
-  const sendBtn = document.getElementById('sendBtn');
-  demoBtn.disabled = true;
-  sendBtn.disabled = true;
-  demoBtn.textContent = '⏳ Loading…';
-
-  document.getElementById('itineraryCard').classList.remove('visible');
-  document.getElementById('thinking').classList.add('active');
-  document.getElementById('tokenBadge').textContent = '⚡ Demo mode…';
-  startStages();
-
-  setTimeout(function() {
-    const actions = [
-      {icon:'✈',label:'IndiGo 6E 81/82 Confirmed'},
-      {icon:'🏨',label:'Fragrance Hotel Booked'},
-      {icon:'🚕',label:'Grab Transfers Ready'},
-      {icon:'🎢',label:'USS Tickets Reserved'},
-      {icon:'🦁',label:'Night Safari Booked'},
-      {icon:'🔔',label:'Alerts & Reminders Set'}
-    ];
-    showCard(
-      '🌏 5-Day Singapore Family Trip — ₹1,50,000',
-      '★ Sample Itinerary · Demo',
-      'demo-meta',
-      SINGAPORE_DEMO,
-      actions,
-      '⚡ Demo — 0 tokens used'
-    );
-    demoBtn.disabled = false;
-    sendBtn.disabled = false;
-    demoBtn.textContent = '🇸🇬 See Demo';
-  }, 2800);
-}
-
-/* ── PLAN TRIP (live API) ── */
-async function planTrip() {
-  const query = document.getElementById('promptInput').value.trim();
-  if (!query) { document.getElementById('promptInput').focus(); return; }
-  if (!apiKey) {
-    alert('Please enter your Anthropic API key above and click Save, then try again.');
-    document.getElementById('apiKeyInput').focus();
-    return;
-  }
-
-  const sendBtn = document.getElementById('sendBtn');
-  const demoBtn = document.getElementById('demoBtn');
-  sendBtn.disabled = true;
-  demoBtn.disabled = true;
-  document.getElementById('thinking').classList.add('active');
-  document.getElementById('itineraryCard').classList.remove('visible');
-  document.getElementById('tokenBadge').textContent = '⚡ Processing…';
-  startStages();
-
-  const systemPrompt = `You are TravelAI — a premium Personal Travel Concierge with three layers of intelligence:
-1. AI Layer: Deep understanding of traveller preferences, budgets, dietary needs, and travel styles
-2. GenAI Layer: Creates detailed, personalised day-by-day itineraries with timings, locations, distances, and local tips
-3. Agentic AI Layer: Simulates autonomous booking of flights, hotels, cabs, and restaurants
-
-When given a travel request, respond with:
-- A clear trip summary (destination, dates, budget breakdown in ₹)
-- Day-by-day itinerary with morning/afternoon/evening activities, meals and timings
-- Estimated costs per category (Flights, Hotels, Local Transport, Food, Activities)
-- Agentic AI booking status for each service
-- 3 pro travel tips for this destination
-
-Format clearly using emoji markers. Keep tone warm, confident and premium. All amounts in ₹.`;
-
-  try {
-    const res = await fetch('https://api.anthropic.com/v1/messages', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-        'x-api-key': apiKey,
-        'anthropic-version': '2023-06-01',
-        'anthropic-dangerous-direct-browser-access': 'true'
-      },
-      body: JSON.stringify({
-        model: 'claude-sonnet-4-20250514',
-        max_tokens: 1800,
-        system: systemPrompt,
-        messages: [{role:'user',content:query}]
-      })
+function renderDayContent(day){
+  let html='';
+  day.sessions.forEach(function(s){
+    html+='<div class="session-block"><div class="session-header"><span class="session-icon">'+s.icon+'</span><span class="session-name">'+s.name+'</span></div>';
+    s.activities.forEach(function(a){
+      html+='<div class="activity-row">';
+      html+='<div class="act-time">'+a.time+'</div>';
+      html+='<div class="act-emoji">'+a.emoji+'</div>';
+      html+='<div class="act-body"><div class="act-title">'+a.title+'</div>';
+      if(a.desc) html+='<div class="act-desc">'+a.desc+'</div>';
+      if(a.cost) html+='<span class="act-cost">₹'+a.cost+'</span>';
+      html+='</div></div>';
     });
+    html+='</div>';
+  });
+  return html;
+}
 
-    const data = await res.json();
+/* ══ RENDER ITINERARY ══ */
+function renderItinerary(data){
+  document.getElementById('tripDest').textContent=data.destination;
+  document.getElementById('tripSub').textContent=data.subtitle;
+  document.getElementById('tripBadges').innerHTML=data.badges.map(function(b){return '<span class="tbadge '+b.cls+'">'+b.text+'</span>';}).join('');
 
-    if (data.error) {
-      throw new Error(data.error.message || 'API error');
-    }
+  // Budget
+  const bg=document.getElementById('budgetGrid');
+  bg.innerHTML=data.budget.items.map(function(b){
+    return '<div class="budget-item"><div class="budget-icon">'+b.icon+'</div><div><div class="budget-label">'+b.label+'</div><div class="budget-amt">'+b.amt+'</div></div></div>';
+  }).join('');
+  document.getElementById('budgetTotal').innerHTML='<span class="lbl">💳 Total Budget</span><span class="val">'+data.budget.total+'</span>';
 
-    const text = data.content && data.content[0] ? data.content[0].text : 'No response received.';
-    const inputT = (data.usage && data.usage.input_tokens) || 0;
-    const outputT = (data.usage && data.usage.output_tokens) || 0;
+  // Days
+  renderDayTabs(data.days);
 
-    const lines = text.split('\n').filter(function(l){ return l.trim(); });
-    const title = lines[0].replace(/[#*✈🌏🗺️]/g,'').trim().slice(0,70) || 'Your Custom Itinerary';
+  // Bookings
+  document.getElementById('bookingGrid').innerHTML=data.bookings.map(function(b){
+    return '<div class="booking-item"><div class="booking-check">✅</div><div class="booking-text"><div class="booking-service">'+b.service+'</div><div class="booking-ref">'+b.ref+'</div></div></div>';
+  }).join('');
 
-    const actions = [
-      {icon:'✈',label:'Flights Searched'},
-      {icon:'🏨',label:'Hotels Booked'},
-      {icon:'🚕',label:'Transfers Ready'},
-      {icon:'🍽️',label:'Restaurants Reserved'},
-      {icon:'🔔',label:'Alerts Set'},
-      {icon:'📋',label:'Itinerary Saved'}
-    ];
-    showCard(
-      title,
-      '<span class="pulse"></span> GenAI Generated',
-      '',
-      text,
-      actions,
-      '⚡ ' + (inputT + outputT) + ' tokens'
-    );
+  // Tips
+  document.getElementById('tipsGrid').innerHTML=data.tips.map(function(t,i){
+    return '<div class="tip-item"><div class="tip-num">💡</div><div class="tip-text">'+t+'</div></div>';
+  }).join('');
 
-  } catch(err) {
+  document.getElementById('itinCard').classList.add('visible');
+  document.getElementById('itinCard').scrollIntoView({behavior:'smooth',block:'start'});
+}
+
+/* ══ SINGAPORE DEMO DATA ══ */
+const DEMO_DATA={
+  destination:'🌏 Singapore — 5-Day Family Trip',
+  subtitle:'2 Adults · 2 Kids (Ages 7 & 10)  ·  Jun 15–19, 2025',
+  badges:[{text:'✈ HYD → SIN',cls:'teal'},{text:'₹1,50,000',cls:'gold'},{text:'4★ Family',cls:'green'}],
+  budget:{
+    total:'₹1,50,000',
+    items:[
+      {icon:'✈',label:'Flights (IndiGo HYD↔SIN)',amt:'₹52,000'},
+      {icon:'🏨',label:'Fragrance Hotel Ruby (5N)',amt:'₹28,000'},
+      {icon:'🚕',label:'Transfers + MRT Passes',amt:'₹6,500'},
+      {icon:'🍽️',label:'Food & Dining',amt:'₹18,000'},
+      {icon:'🎡',label:'Attractions & Tickets',amt:'₹32,000'},
+      {icon:'🛍️',label:'Shopping & Misc',amt:'₹13,500'}
+    ]
+  },
+  days:[
+    {label:'Arrival & Marina Bay',sessions:[
+      {icon:'🌅',name:'Afternoon',activities:[
+        {time:'15:10',emoji:'✈️',title:'Land at Changi Airport T3',desc:'IndiGo 6E 81 from Hyderabad',cost:null},
+        {time:'15:40',emoji:'🚕',title:'Grab to Fragrance Hotel Ruby',desc:'~25 min ride, near Aljunied MRT',cost:'900'},
+        {time:'17:00',emoji:'🏨',title:'Check-in & Freshen Up',desc:'Booking #FHR29841 confirmed',cost:null}
+      ]},
+      {icon:'🌇',name:'Evening',activities:[
+        {time:'18:30',emoji:'🚇',title:'MRT to Bayfront Station',desc:'East–West line → Circle line',cost:null},
+        {time:'19:00',emoji:'🌉',title:'Marina Bay Sands Promenade',desc:'Iconic waterfront stroll with family',cost:null},
+        {time:'19:30',emoji:'🍜',title:'Dinner at Lau Pa Sat Hawker Centre',desc:'Chicken Rice, Satay skewers, Kaya toast',cost:'2,200'},
+        {time:'21:00',emoji:'💡',title:'Spectra Light Show (FREE)',desc:'Stunning water & light show at Marina Bay — 9 PM & 9:30 PM slots',cost:null}
+      ]}
+    ]},
+    {label:'Sentosa & Universal Studios',sessions:[
+      {icon:'🌅',name:'Morning',activities:[
+        {time:'08:30',emoji:'🥞',title:'Breakfast at Hotel',desc:'Included in stay',cost:null},
+        {time:'09:15',emoji:'🚇',title:'MRT to HarbourFront → Sentosa Express',desc:'Approx 30 min journey',cost:null},
+        {time:'10:00',emoji:'🎢',title:'Universal Studios Singapore',desc:'Jurassic World · Minion Park · Transformers · Far Far Away',cost:'18,500'}
+      ]},
+      {icon:'☀️',name:'Afternoon',activities:[
+        {time:'14:00',emoji:'🍔',title:"Lunch at Mel's Drive-In (inside USS)",desc:'Burgers, milkshakes — classic diner vibes',cost:'2,800'},
+        {time:'16:30',emoji:'🏖️',title:'Siloso Beach',desc:'Free entry · Kids love the waves & sand',cost:null}
+      ]},
+      {icon:'🌙',name:'Evening',activities:[
+        {time:'19:00',emoji:'🍤',title:'Dinner at Coastes Beach Bar',desc:'Fish & Chips, Seafood Pasta, Sea views',cost:'3,200'},
+        {time:'21:00',emoji:'🚇',title:'Return via Sentosa Express + MRT',desc:null,cost:null}
+      ]}
+    ]},
+    {label:'Gardens by the Bay & Chinatown',sessions:[
+      {icon:'🌅',name:'Morning',activities:[
+        {time:'09:00',emoji:'🌿',title:'Gardens by the Bay — Supertree Grove',desc:'FREE outdoor area · iconic 16-storey supertrees',cost:null},
+        {time:'10:00',emoji:'❄️',title:'Cloud Forest + Flower Dome (combo)',desc:'World\'s largest glass greenhouse · kids love the misty waterfall',cost:'11,000'},
+        {time:'11:30',emoji:'💦',title:"Children's Garden",desc:'FREE water play area — bring a change of clothes!',cost:null}
+      ]},
+      {icon:'☀️',name:'Afternoon',activities:[
+        {time:'13:00',emoji:'🍛',title:'Maxwell Food Centre',desc:'Tian Tian Chicken Rice (world-famous!) · Rojak · Laksa',cost:'1,600'},
+        {time:'14:30',emoji:'🏮',title:'Chinatown Heritage Centre',desc:'Rich history of Singapore\'s Chinese community',cost:'2,600'},
+        {time:'16:00',emoji:'🛍️',title:'Pagoda Street Shopping',desc:'Budget souvenirs, keychains, magnets, snacks'},
+        {time:'17:30',emoji:'🕌',title:'Sri Mariamman Temple (FREE)',desc:'Stunning Hindu heritage — beautiful South Indian architecture',cost:null}
+      ]},
+      {icon:'🌆',name:'Evening',activities:[
+        {time:'19:30',emoji:'🦀',title:'Dinner: Chinatown Complex Food Centre',desc:"Chilli Crab at Yang's Zi Char — the must-have Singapore dish",cost:'3,500'}
+      ]}
+    ]},
+    {label:'Little India & Night Safari',sessions:[
+      {icon:'🌅',name:'Morning',activities:[
+        {time:'09:30',emoji:'🕌',title:'Little India Walk',desc:'Mustafa Centre · Tekka Market · Sri Veeramakaliamman Temple',cost:null},
+        {time:'10:30',emoji:'🥞',title:'Breakfast at Komala Vilas',desc:'Authentic South Indian — idli, dosa, filter coffee!',cost:'900'}
+      ]},
+      {icon:'☀️',name:'Afternoon',activities:[
+        {time:'13:30',emoji:'🦁',title:'Singapore Zoo + River Wonders (combo)',desc:'World\'s best open-concept zoo — animals in natural habitats',cost:'14,800'},
+        {time:'17:00',emoji:'☕',title:'Rest at Zoo Café',desc:'Snacks and rest before Night Safari',cost:'1,200'}
+      ]},
+      {icon:'🌙',name:'Night',activities:[
+        {time:'19:30',emoji:'🦉',title:"Night Safari — World's First Nocturnal Zoo",desc:'Tram ride through jungle · 1,000 nocturnal animals · unmissable for kids!',cost:'10,500'},
+        {time:'22:00',emoji:'🚕',title:'Grab back to Hotel',desc:'~₹900 fare',cost:'900'}
+      ]}
+    ]},
+    {label:'Orchard Road & Departure',sessions:[
+      {icon:'🌅',name:'Morning',activities:[
+        {time:'09:00',emoji:'🍞',title:'Ya Kun Kaya Toast',desc:'Classic Singapore breakfast — kaya toast + soft-boiled eggs + kopi',cost:'400'},
+        {time:'10:00',emoji:'🛍️',title:'Orchard Road Shopping',desc:'ION Orchard · Takashimaya · Bengawan Solo cookies · Marks & Spencer',cost:'8,000'},
+        {time:'12:30',emoji:'🍜',title:'Final Lunch: Kopitiam Food Court',desc:'Wisma Atria · Mix of local hawker stalls',cost:'1,200'}
+      ]},
+      {icon:'✈️',name:'Departure',activities:[
+        {time:'14:30',emoji:'🧳',title:'Check-out · Grab to Changi Airport T1',desc:'Allow 45 min for journey',cost:'1,100'},
+        {time:'15:30',emoji:'🦋',title:'Changi Airport T1 — FREE attractions',desc:'Butterfly Garden · 40m Slide · Waterfall — kids will love it!',cost:null},
+        {time:'18:00',emoji:'✈️',title:'Board IndiGo 6E 82 → Hyderabad',desc:'Lands Hyderabad 20:15 IST · Bon voyage!',cost:null}
+      ]}
+    ]}
+  ],
+  bookings:[
+    {service:'IndiGo 6E 81/82 HYD↔SIN',ref:'Seats 12A–D · PNR SG8841'},
+    {service:'Fragrance Hotel Ruby (5 nights)',ref:'Booking #FHR29841'},
+    {service:'Sentosa Express Day Passes',ref:'QR codes in wallet'},
+    {service:'Universal Studios (Jun 16, 10 AM)',ref:'E-tickets emailed'},
+    {service:'Cloud Forest + Flower Dome (Jun 17)',ref:'Skip-queue pre-booked'},
+    {service:'Night Safari Tram (Jun 18, 7:30 PM)',ref:'Front seats reserved'},
+    {service:'Restaurant tables reserved',ref:'Maxwell & Chinatown (family of 4)'},
+    {service:'Flight alerts + ₹150K budget alert',ref:'Notifications active'}
+  ],
+  tips:[
+    'Buy a 4-Day Tourist Pass (S$40/adult) — unlimited MRT + bus rides, saves ~S$25 each vs paying per trip.',
+    'Book USS, Zoo & Night Safari tickets online 2 weeks ahead — up to 20% cheaper than at the gate.',
+    'Eat at hawker centres (Maxwell, Lau Pa Sat, Chinatown Complex) — cuts food costs by 60% vs restaurants.',
+    'Changi Airport is a destination itself! Arrive 2.5 hrs early and let the kids enjoy the free Butterfly Garden & slide.'
+  ]
+};
+
+/* ══ LOAD DEMO ══ */
+function loadDemo(){
+  const db=document.getElementById('demoBtn'),sb=document.getElementById('sendBtn');
+  db.disabled=true;sb.disabled=true;db.textContent='⏳ Loading…';
+  document.getElementById('itinCard').classList.remove('visible');
+  document.getElementById('thinking').classList.add('active');
+  document.getElementById('tokenBadge').textContent='⚡ Demo mode…';
+  startStages();
+  setTimeout(function(){
     stopStages();
     document.getElementById('thinking').classList.remove('active');
-    document.getElementById('cardTitle').textContent = 'Error';
-    document.getElementById('cardMeta').innerHTML = '⚠ Failed';
-    document.getElementById('itineraryContent').textContent = '⚠ ' + (err.message || 'Something went wrong. Check your API key and try again.');
-    document.getElementById('agentStrip').innerHTML = '';
-    document.getElementById('itineraryCard').classList.add('visible');
-    document.getElementById('tokenBadge').textContent = '⚡ Error';
-  }
-
-  sendBtn.disabled = false;
-  demoBtn.disabled = false;
+    renderItinerary(DEMO_DATA);
+    document.getElementById('tokenBadge').textContent='⚡ Demo — 0 tokens used';
+    db.disabled=false;sb.disabled=false;db.textContent='🇸🇬 See Demo';
+  },2800);
 }
 
-document.getElementById('promptInput').addEventListener('keydown', function(e) {
-  if (e.key === 'Enter' && (e.ctrlKey || e.metaKey)) planTrip();
-});
+/* ══ PLAN TRIP (live AI) — parses raw text into structured data ══ */
+async function planTrip(){
+  const query=document.getElementById('promptInput').value.trim();
+  if(!query){document.getElementById('promptInput').focus();return;}
+  if(!apiKey){alert('Please enter your Anthropic API key above and click Save.');document.getElementById('apiKeyInput').focus();return;}
+  const sb=document.getElementById('sendBtn'),db=document.getElementById('demoBtn');
+  sb.disabled=true;db.disabled=true;
+  document.getElementById('thinking').classList.add('active');
+  document.getElementById('itinCard').classList.remove('visible');
+  document.getElementById('tokenBadge').textContent='⚡ Processing…';
+  startStages();
+
+  const sys=`You are TravelAI — a premium Personal Travel Concierge. When given a travel request, respond ONLY with a valid JSON object (no markdown, no explanation) with this exact structure:
+{
+  "destination": "string — emoji + city name",
+  "subtitle": "string — travellers, dates",
+  "badges": [{"text":"string","cls":"teal|gold|green"}],
+  "budget": {
+    "total": "₹X,XX,XXX",
+    "items": [{"icon":"emoji","label":"string","amt":"₹X,XXX"}]
+  },
+  "days": [
+    {
+      "label": "short day title",
+      "sessions": [
+        {
+          "icon": "emoji",
+          "name": "Morning|Afternoon|Evening|Night",
+          "activities": [
+            {"time":"HH:MM","emoji":"emoji","title":"string","desc":"string or null","cost":"X,XXX or null"}
+          ]
+        }
+      ]
+    }
+  ],
+  "bookings": [{"service":"string","ref":"string"}],
+  "tips": ["string","string","string"]
+}
+All amounts in Indian Rupees (₹). Make it detailed and realistic.`;
+
+  try {
+    const res=await fetch('https://api.anthropic.com/v1/messages',{
+      method:'POST',
+      headers:{'Content-Type':'application/json','x-api-key':apiKey,'anthropic-version':'2023-06-01','anthropic-dangerous-direct-browser-access':'true'},
+      body:JSON.stringify({model:'claude-sonnet-4-20250514',max_tokens:4000,system:sys,messages:[{role:'user',content:query}]})
+    });
+    const d=await res.json();
+    if(d.error) throw new Error(d.error.message);
+    const raw=d.content[0].text.replace(/```json|```/g,'').trim();
+    const itinData=JSON.parse(raw);
+    stopStages();
+    document.getElementById('thinking').classList.remove('active');
+    renderItinerary(itinData);
+    const t=(d.usage&&d.usage.input_tokens||0)+(d.usage&&d.usage.output_tokens||0);
+    document.getElementById('tokenBadge').textContent='⚡ '+t+' tokens';
+  } catch(err){
+    stopStages();
+    document.getElementById('thinking').classList.remove('active');
+    // fallback: show error in card
+    document.getElementById('tripDest').textContent='⚠ Error';
+    document.getElementById('tripSub').textContent=err.message||'Something went wrong';
+    document.getElementById('tripBadges').innerHTML='';
+    document.getElementById('budgetGrid').innerHTML='<p style="color:var(--muted);font-size:13px;padding:8px">'+((err.message||'').includes('JSON')?'AI response could not be parsed. Please try again.':err.message||'Check your API key.')+'</p>';
+    document.getElementById('budgetTotal').innerHTML='';
+    document.getElementById('dayTabs').innerHTML='';
+    document.getElementById('dayContentWrap').innerHTML='';
+    document.getElementById('bookingGrid').innerHTML='';
+    document.getElementById('tipsGrid').innerHTML='';
+    document.getElementById('itinCard').classList.add('visible');
+    document.getElementById('tokenBadge').textContent='⚡ Error';
+  }
+  sb.disabled=false;db.disabled=false;
+}
+
+/* ══ PDF EXPORT ══ */
+function exportPDF(){
+  try {
+    const {jsPDF}=window.jspdf;
+    const doc=new jsPDF({orientation:'portrait',unit:'mm',format:'a4'});
+    const W=210,M=18;let y=M;
+    const navy=[10,15,30],gold=[201,168,76],teal=[0,201,177],white=[240,246,255],muted=[136,153,187],light=[220,232,255];
+
+    // Cover background
+    doc.setFillColor(...navy);doc.rect(0,0,W,297,'F');
+
+    // Header band
+    doc.setFillColor(15,22,40);doc.rect(0,0,W,38,'F');
+    doc.setDrawColor(...gold);doc.setLineWidth(.3);doc.line(0,38,W,38);
+
+    // Logo circle
+    doc.setFillColor(...teal);doc.circle(M+6,19,6,'F');
+    doc.setTextColor(...navy);doc.setFont('helvetica','bold');doc.setFontSize(9);doc.text('✈',M+3.5,21.5);
+
+    // App name
+    doc.setTextColor(...white);doc.setFont('helvetica','bold');doc.setFontSize(16);
+    doc.text('TravelAI Concierge',M+16,17);
+    doc.setTextColor(...teal);doc.setFont('helvetica','normal');doc.setFontSize(8);
+    doc.text('PERSONAL AI TRAVEL CONCIERGE',M+16,23);
+
+    // Date
+    doc.setTextColor(...muted);doc.setFontSize(8);
+    doc.text('Generated: '+new Date().toLocaleDateString('en-IN',{day:'numeric',month:'long',year:'numeric'}),W-M,17,{align:'right'});
+    doc.text('Powered by Claude AI',W-M,23,{align:'right'});
+
+    y=50;
+
+    // Trip title
+    const dest=document.getElementById('tripDest').textContent;
+    const sub=document.getElementById('tripSub').textContent;
+    doc.setTextColor(...gold);doc.setFont('helvetica','bold');doc.setFontSize(18);
+    doc.text(dest,M,y);y+=8;
+    doc.setTextColor(...muted);doc.setFont('helvetica','normal');doc.setFontSize(10);
+    doc.text(sub,M,y);y+=5;
+
+    // Separator
+    doc.setDrawColor(...gold);doc.setLineWidth(.4);doc.line(M,y,W-M,y);y+=8;
+
+    // Budget Section
+    doc.setTextColor(...gold);doc.setFont('helvetica','bold');doc.setFontSize(11);
+    doc.text('BUDGET BREAKDOWN',M,y);y+=6;
+    const budgetItems=document.querySelectorAll('.budget-item');
+    const col=2,cellW=(W-M*2-8)/col;
+    let col_i=0;const rowY=y;
+    budgetItems.forEach(function(item,i){
+      const bx=M+col_i*(cellW+8);const by=rowY+(Math.floor(i/col))*14;
+      doc.setFillColor(22,30,53);doc.roundedRect(bx,by,cellW,11,2,2,'F');
+      doc.setDrawColor(50,60,90);doc.setLineWidth(.2);doc.roundedRect(bx,by,cellW,11,2,2,'S');
+      const lbl=item.querySelector('.budget-label').textContent;
+      const amt=item.querySelector('.budget-amt').textContent;
+      doc.setTextColor(...muted);doc.setFont('helvetica','normal');doc.setFontSize(7.5);
+      doc.text(lbl,bx+3,by+5);
+      doc.setTextColor(...white);doc.setFont('helvetica','bold');doc.setFontSize(9);
+      doc.text(amt,bx+3,by+9);
+      col_i=(col_i+1)%col;
+    });
+    const rows=Math.ceil(budgetItems.length/col);
+    y=rowY+rows*14+4;
+
+    // Total bar
+    const tot=document.querySelector('.budget-total .val').textContent;
+    doc.setFillColor(40,35,15);doc.roundedRect(M,y,W-M*2,10,2,2,'F');
+    doc.setDrawColor(...gold);doc.setLineWidth(.4);doc.roundedRect(M,y,W-M*2,10,2,2,'S');
+    doc.setTextColor(...gold);doc.setFont('helvetica','bold');doc.setFontSize(11);
+    doc.text('TOTAL BUDGET',M+4,y+6.5);
+    doc.text(tot,W-M-4,y+6.5,{align:'right'});
+    y+=16;
+
+    // Days
+    const dayTabs=document.querySelectorAll('.day-tab');
+    dayTabs.forEach(function(tab,di){
+      if(y>260){doc.addPage();doc.setFillColor(...navy);doc.rect(0,0,W,297,'F');y=M;}
+      doc.setFillColor(15,25,45);doc.roundedRect(M,y,W-M*2,8,2,2,'F');
+      doc.setDrawColor(...teal);doc.setLineWidth(.3);doc.line(M,y+8,W-M,y+8);
+      doc.setTextColor(...teal);doc.setFont('helvetica','bold');doc.setFontSize(10);
+      doc.text('DAY '+(di+1)+' — '+tab.textContent.replace(/Day \d+ · /,'').toUpperCase(),M+3,y+5.5);
+      y+=11;
+
+      const dayContent=document.getElementById('day-'+di);
+      const rows=dayContent.querySelectorAll('.activity-row');
+      rows.forEach(function(row){
+        if(y>270){doc.addPage();doc.setFillColor(...navy);doc.rect(0,0,W,297,'F');y=M;}
+        const time=row.querySelector('.act-time').textContent;
+        const title=row.querySelector('.act-title').textContent;
+        const descEl=row.querySelector('.act-desc');
+        const costEl=row.querySelector('.act-cost');
+        doc.setTextColor(...teal);doc.setFont('helvetica','bold');doc.setFontSize(8.5);
+        doc.text(time,M+2,y);
+        doc.setTextColor(...white);doc.text(title,M+18,y);
+        if(costEl){doc.setTextColor(...gold);doc.text(costEl.textContent,W-M,y,{align:'right'});}
+        y+=5;
+        if(descEl){
+          doc.setTextColor(...muted);doc.setFont('helvetica','normal');doc.setFontSize(7.5);
+          const lines=doc.splitTextToSize(descEl.textContent,W-M*2-22);
+          doc.text(lines,M+18,y);
+          y+=lines.length*4;
+        }
+        y+=2;
+      });
+      y+=4;
+    });
+
+    // Bookings
+    if(y>240){doc.addPage();doc.setFillColor(...navy);doc.rect(0,0,W,297,'F');y=M;}
+    doc.setDrawColor(...gold);doc.setLineWidth(.3);doc.line(M,y,W-M,y);y+=7;
+    doc.setTextColor(...gold);doc.setFont('helvetica','bold');doc.setFontSize(11);
+    doc.text('AGENTIC AI — BOOKING STATUS',M,y);y+=7;
+    document.querySelectorAll('.booking-item').forEach(function(b){
+      if(y>275){doc.addPage();doc.setFillColor(...navy);doc.rect(0,0,W,297,'F');y=M;}
+      doc.setTextColor(0,201,177);doc.setFontSize(8);doc.text('✓',M+2,y);
+      doc.setTextColor(...white);doc.setFont('helvetica','bold');doc.setFontSize(8.5);
+      doc.text(b.querySelector('.booking-service').textContent,M+8,y);
+      doc.setTextColor(...muted);doc.setFont('helvetica','normal');doc.setFontSize(7.5);
+      doc.text(b.querySelector('.booking-ref').textContent,M+8,y+4);
+      y+=9;
+    });
+
+    // Tips
+    if(y>240){doc.addPage();doc.setFillColor(...navy);doc.rect(0,0,W,297,'F');y=M;}
+    y+=4;doc.setDrawColor(...gold);doc.line(M,y,W-M,y);y+=7;
+    doc.setTextColor(...gold);doc.setFont('helvetica','bold');doc.setFontSize(11);
+    doc.text('PRO TIPS FROM YOUR CONCIERGE',M,y);y+=7;
+    document.querySelectorAll('.tip-text').forEach(function(t,i){
+      if(y>270){doc.addPage();doc.setFillColor(...navy);doc.rect(0,0,W,297,'F');y=M;}
+      doc.setFillColor(30,25,10);doc.roundedRect(M,y-1,W-M*2,10,2,2,'F');
+      doc.setTextColor(...gold);doc.setFont('helvetica','bold');doc.setFontSize(8);
+      doc.text('💡 Tip '+(i+1),M+3,y+5);
+      doc.setTextColor(...light);doc.setFont('helvetica','normal');doc.setFontSize(7.5);
+      const lines=doc.splitTextToSize(t.textContent,W-M*2-22);
+      doc.text(lines,M+18,y+4.5);
+      y+=Math.max(11,lines.length*4.5+3);
+    });
+
+    // Footer on every page
+    const pages=doc.internal.getNumberOfPages();
+    for(let p=1;p<=pages;p++){
+      doc.setPage(p);
+      doc.setFillColor(10,12,22);doc.rect(0,284,W,13,'F');
+      doc.setDrawColor(...gold);doc.setLineWidth(.2);doc.line(0,284,W,284);
+      doc.setTextColor(...muted);doc.setFont('helvetica','normal');doc.setFontSize(7);
+      doc.text('Designed & Architected by Krishnamurthy Kandregula · Made by Claude · TravelAI Personal Concierge',M,290);
+      doc.text('Page '+p+' of '+pages,W-M,290,{align:'right'});
+    }
+
+    const fname='TravelAI_'+dest.replace(/[^a-zA-Z0-9]/g,'_').replace(/_+/g,'_')+'_Itinerary.pdf';
+    doc.save(fname);
+  } catch(e){alert('PDF export error: '+e.message);}
+}
+
+document.getElementById('promptInput').addEventListener('keydown',function(e){if(e.key==='Enter'&&(e.ctrlKey||e.metaKey))planTrip();});
 </script>
 </body>
 </html>
