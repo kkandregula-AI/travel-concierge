@@ -250,10 +250,72 @@ header{display:flex;align-items:center;justify-content:space-between;padding:14p
 .feat-icon{font-size:21px;margin-bottom:7px;}
 .feat-name{font-size:13px;font-weight:600;color:var(--white);margin-bottom:4px;}
 .feat-desc{font-size:11px;color:var(--muted);line-height:1.6;}
-footer{margin-top:auto;padding:14px 18px;border-top:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:7px;background:rgba(10,15,30,.65);backdrop-filter:blur(10px);font-size:11px;color:var(--muted);}
+footer{margin-top:auto;padding:12px 18px;border-top:1px solid var(--border);
+  background:rgba(10,15,30,.65);backdrop-filter:blur(10px);font-size:11px;color:var(--muted);}
+.footer-top{display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:7px;margin-bottom:8px;}
 .footer-credit{font-family:'DM Mono',monospace;letter-spacing:.4px;}
 .footer-credit span{color:var(--gold);}
-.token-badge{font-family:'DM Mono',monospace;font-size:11px;background:var(--glass);border:1px solid var(--border);padding:3px 9px;border-radius:6px;color:var(--teal);}
+/* Token Intelligence Widget */
+.token-intel{display:flex;align-items:center;gap:6px;flex-wrap:wrap;}
+.token-badge{font-family:'DM Mono',monospace;font-size:11px;background:var(--glass);
+  border:1px solid var(--border);padding:3px 9px;border-radius:6px;color:var(--teal);}
+.cache-badge{font-family:'DM Mono',monospace;font-size:11px;background:rgba(34,197,94,.08);
+  border:1px solid rgba(34,197,94,.25);padding:3px 9px;border-radius:6px;color:var(--green);
+  display:none;}
+.cache-badge.show{display:inline-block;}
+.savings-badge{font-family:'DM Mono',monospace;font-size:11px;background:rgba(201,168,76,.08);
+  border:1px solid rgba(201,168,76,.25);padding:3px 9px;border-radius:6px;color:var(--gold);
+  display:none;}
+.savings-badge.show{display:inline-block;}
+/* Price disclaimer banner */
+.price-disclaimer{display:flex;align-items:flex-start;gap:8px;padding:7px 10px;
+  background:rgba(245,158,11,.06);border:1px solid rgba(245,158,11,.2);
+  border-radius:7px;font-size:10px;color:var(--muted);line-height:1.5;margin-top:2px;}
+.price-disclaimer strong{color:var(--amber);}
+/* Price pill on opt cards */
+.price-type-pill{display:inline-flex;align-items:center;gap:3px;font-size:9px;
+  padding:1px 6px;border-radius:3px;margin-left:5px;vertical-align:middle;
+  background:rgba(245,158,11,.1);border:1px solid rgba(245,158,11,.25);color:var(--amber);
+  font-weight:600;letter-spacing:.3px;}
+/* App Disclaimer Modal */
+.disclaimer-overlay{position:fixed;inset:0;z-index:500;background:rgba(0,0,0,.75);
+  backdrop-filter:blur(6px);display:flex;align-items:flex-end;justify-content:center;
+  padding:0;}
+.disclaimer-overlay.hidden{display:none;}
+.disclaimer-sheet{background:var(--navy3);border:1px solid var(--border);
+  border-radius:20px 20px 0 0;padding:24px 20px 36px;max-width:680px;width:100%;
+  max-height:90vh;overflow-y:auto;}
+.disclaimer-handle{width:36px;height:4px;background:var(--border);border-radius:2px;
+  margin:0 auto 18px;}
+.disclaimer-title{font-family:'Cormorant Garamond',serif;font-size:22px;font-weight:600;
+  color:var(--white);margin-bottom:4px;display:flex;align-items:center;gap:10px;}
+.disclaimer-subtitle{font-size:12px;color:var(--teal);margin-bottom:18px;}
+.disclaimer-section{margin-bottom:16px;padding:13px 14px;border-radius:10px;
+  background:var(--glass);border:1px solid var(--border);}
+.disclaimer-section-title{font-size:11px;font-weight:700;letter-spacing:1px;
+  text-transform:uppercase;margin-bottom:7px;display:flex;align-items:center;gap:7px;}
+.disclaimer-section-title.amber{color:var(--amber);}
+.disclaimer-section-title.teal{color:var(--teal);}
+.disclaimer-section-title.green{color:var(--green);}
+.disclaimer-section-title.rose{color:var(--rose);}
+.disclaimer-body{font-size:12px;color:var(--light);line-height:1.75;}
+.disclaimer-body li{margin-left:14px;margin-bottom:4px;}
+.disclaimer-body a{color:var(--teal);text-decoration:underline;}
+.disclaimer-accept{width:100%;margin-top:20px;padding:14px;
+  background:linear-gradient(135deg,var(--teal),var(--teal2));
+  border:none;color:var(--navy);font-family:'DM Sans',sans-serif;
+  font-size:14px;font-weight:700;border-radius:12px;cursor:pointer;
+  -webkit-tap-highlight-color:rgba(0,0,0,0);}
+.disclaimer-accept:active{opacity:.85;}
+/* Disclaimer info button in header */
+.info-btn{background:var(--glass);border:1px solid var(--border);color:var(--muted);
+  font-size:13px;padding:5px 10px;border-radius:8px;cursor:pointer;
+  -webkit-tap-highlight-color:rgba(0,0,0,0);}
+.info-btn:active{background:var(--glass2);}
+/* Inline disclaimer bar under booking section header */
+.inline-disclaimer{font-size:11px;color:var(--muted);line-height:1.6;
+  padding:8px 12px;background:rgba(0,0,0,.2);border-radius:6px;margin-bottom:12px;}
+.inline-disclaimer strong{color:var(--amber);}
 .install-toast{position:fixed;bottom:70px;left:50%;transform:translateX(-50%);background:var(--navy3);border:1px solid var(--gold);border-radius:12px;padding:12px 16px;display:none;align-items:center;gap:11px;box-shadow:var(--shadow),var(--glow-gold);font-size:12px;color:var(--white);z-index:200;white-space:nowrap;}
 .install-toast.show{display:flex;}
 .install-btn{background:linear-gradient(135deg,var(--gold),var(--gold2));border:none;color:var(--navy);font-weight:600;font-size:11px;padding:6px 13px;border-radius:7px;cursor:pointer;}
@@ -272,7 +334,10 @@ footer{margin-top:auto;padding:14px 18px;border-top:1px solid var(--border);disp
     <div class="logo-icon">&#9992;</div>
     <div><div class="logo-text">TravelAI</div><div class="logo-sub">Personal Concierge</div></div>
   </div>
-  <div class="header-badge"><span class="pulse"></span>Agentic AI Active</div>
+  <div style="display:flex;align-items:center;gap:8px;">
+    <button class="info-btn" id="disclaimerBtn" title="About this app">&#x2139;&#xFE0F; About</button>
+    <div class="header-badge"><span class="pulse"></span>Agentic AI Active</div>
+  </div>
 </header>
 <div class="hero">
   <div class="hero-tag">&#10022; Three-Layer Intelligence</div>
@@ -319,6 +384,7 @@ footer{margin-top:auto;padding:14px 18px;border-top:1px solid var(--border);disp
       <div>
         <div class="trip-dest" id="tripDest">Singapore</div>
         <div class="trip-sub" id="tripSub">5 Days &middot; 2 Adults, 2 Kids</div>
+        <div style="font-size:10px;color:var(--amber);margin-top:4px;">&#x26A0; Budget figures are AI estimates. Verify actual prices on booking sites.</div>
         <div class="trip-badges" id="tripBadges"></div>
       </div>
       <button class="pdf-btn" id="pdfBtn">&#11015; Export PDF</button>
@@ -335,9 +401,11 @@ footer{margin-top:auto;padding:14px 18px;border-top:1px solid var(--border);disp
     <div class="day-content-wrap" id="dayContentWrap"></div>
     <div class="booking-section" id="bookingSection">
       <div class="sec-title">&#x1F6CE;&#xFE0F; Review &amp; Select Your Options</div>
-      <div class="booking-notice">
-        <div class="booking-notice-icon">&#x26A0;&#xFE0F;</div>
-        <div class="booking-notice-text"><strong>You are always in control.</strong> TravelAI never books anything. Review, select, then open the provider link to pay. All prices are estimates &mdash; verify at checkout. Discount links go to real platform offer pages.</div>
+      <div class="inline-disclaimer">
+        <strong>Planning tool only</strong> &mdash; TravelAI never books or charges anything.
+        Prices marked <strong style="color:var(--amber)">~Est.</strong> are AI estimates for planning, not real-time quotes.
+        Tap any booking platform link to see actual prices for your specific dates.
+        <a href="#" id="disclaimerLink" style="color:var(--teal);">Full disclaimer &#8599;</a>
       </div>
       <div class="book-cats" id="bookCats"></div>
       <div id="bookPanels"></div>
@@ -369,10 +437,98 @@ footer{margin-top:auto;padding:14px 18px;border-top:1px solid var(--border);disp
   </div>
 </div>
 <footer>
-  <div class="footer-credit">Designed &amp; Architected by <span>Krishnamurthy Kandregula</span> &middot; Made by Claude</div>
-  <div class="token-badge" id="tokenBadge">&#x26A1; Ready</div>
+  <div class="footer-top">
+    <div class="footer-credit">Designed &amp; Architected by <span>Krishnamurthy Kandregula</span> &middot; Made by Claude</div>
+    <div class="token-intel">
+      <div class="token-badge" id="tokenBadge">&#x26A1; Ready</div>
+      <div class="cache-badge" id="cacheBadge">&#x1F9CA; Cached</div>
+      <div class="savings-badge" id="savingsBadge">Saved 0 tokens</div>
+    </div>
+  </div>
+  <div class="price-disclaimer">
+    <strong>&#x26A0; Price Transparency:</strong>&nbsp;All prices shown are <strong>AI-estimated indicative figures</strong> based on typical market rates. They are <strong>not real-time quotes</strong> — actual prices depend on travel dates, availability, season and demand. Always verify and confirm the final price on the booking platform before paying.
+  </div>
 </footer>
 </div>
+
+<!-- DISCLAIMER MODAL -->
+<div class="disclaimer-overlay" id="disclaimerOverlay">
+  <div class="disclaimer-sheet">
+    <div class="disclaimer-handle"></div>
+    <div class="disclaimer-title">&#x2139;&#xFE0F; About TravelAI Concierge</div>
+    <div class="disclaimer-subtitle">Please read before planning your trip</div>
+
+    <div class="disclaimer-section">
+      <div class="disclaimer-section-title amber">&#x26A0;&#xFE0F; What this app does</div>
+      <div class="disclaimer-body">
+        TravelAI is a <strong>travel planning and inspiration tool</strong>. It uses AI to help you:
+        <ul>
+          <li>Plan approximate day-by-day itineraries for any destination</li>
+          <li>Understand a rough cost breakdown across flights, hotels, food and activities</li>
+          <li>Explore hotel, flight and activity options with links to booking platforms</li>
+          <li>Get curated local tips, timings and must-see recommendations</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="disclaimer-section">
+      <div class="disclaimer-section-title rose">&#x274C; What this app does NOT do</div>
+      <div class="disclaimer-body">
+        <ul>
+          <li><strong>Does not book anything</strong> — TravelAI never makes a reservation or charges your card</li>
+          <li><strong>Does not show real-time prices</strong> — all costs shown are AI-estimated indicative figures based on typical market rates, not live inventory data</li>
+          <li><strong>Does not guarantee availability</strong> — hotels, flights and activities shown may be unavailable on your dates</li>
+          <li><strong>Does not provide visa, insurance or legal advice</strong></li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="disclaimer-section">
+      <div class="disclaimer-section-title teal">&#x1F517; How bookings work</div>
+      <div class="disclaimer-body">
+        Each hotel, flight and activity card contains direct links to trusted Indian booking platforms:
+        <strong>MakeMyTrip, Booking.com, Cleartrip, ixigo, Goibibo, Agoda, Klook</strong> and others.
+        Tapping a booking link opens the provider&rsquo;s own secure website where you can:
+        <ul>
+          <li>See the actual real-time price for your exact dates</li>
+          <li>Check availability and room/seat types</li>
+          <li>Complete the booking safely on the provider&rsquo;s platform</li>
+        </ul>
+        TravelAI has <strong>no affiliation</strong> with any booking platform and earns <strong>no commission</strong> on any booking.
+      </div>
+    </div>
+
+    <div class="disclaimer-section">
+      <div class="disclaimer-section-title amber">&#x1F4B0; About the prices shown</div>
+      <div class="disclaimer-body">
+        Budget figures in this app are <strong>approximate estimates</strong> generated by AI based on typical market rates for the destination. Actual prices vary significantly based on:
+        <ul>
+          <li>Your specific travel dates (peak season vs off-season)</li>
+          <li>How early you book (last-minute vs advance booking)</li>
+          <li>Room type, seat class, group size</li>
+          <li>Current demand and promotions</li>
+        </ul>
+        Always <strong>verify the final price</strong> on the booking platform before completing any transaction.
+      </div>
+    </div>
+
+    <div class="disclaimer-section">
+      <div class="disclaimer-section-title green">&#x2714;&#xFE0F; Best way to use TravelAI</div>
+      <div class="disclaimer-body">
+        <ul>
+          <li>Use the itinerary as a <strong>starting point</strong> — customise timings and activities to your preferences</li>
+          <li>Use the budget breakdown to <strong>understand rough proportions</strong> — flights vs hotel vs food vs activities</li>
+          <li>Tap booking platform links to <strong>get actual prices</strong> for your dates</li>
+          <li>Compare 2&ndash;3 platforms before booking — prices vary between platforms</li>
+          <li>For complex international trips, consider consulting a licensed travel agent</li>
+        </ul>
+      </div>
+    </div>
+
+    <button class="disclaimer-accept" id="disclaimerAccept">I Understand &mdash; Start Planning</button>
+  </div>
+</div>
+
 <div class="install-toast" id="installToast">
   <span>&#x1F4F2; Add TravelAI to home screen</span>
   <button class="install-btn" id="installBtn">Install</button>
@@ -654,7 +810,7 @@ function renderBookingOptions(opts){
       var fltHtml=cat.id==='flight'?buildFlightSchedule(opt):'';
       card.innerHTML=
         '<div class="opt-header"><div style="flex:1"><div class="opt-name">'+opt.name+'</div><div class="opt-badge-wrap">'+badges+'</div></div>'+
-        '<div class="opt-price"><div class="opt-price-main">'+opt.price+'</div><div class="opt-price-sub">'+opt.per+'</div></div></div>'+
+        '<div class="opt-price"><div class="opt-price-main">'+opt.price+'<span class="price-type-pill">~Est.</span></div><div class="opt-price-sub">'+opt.per+'</div></div></div>'+
         fltHtml+
         ((!fltHtml&&dets)?'<div class="opt-details">'+dets+'</div>':'')+
         perHtml+
@@ -1071,7 +1227,28 @@ function planTrip(){
   document.getElementById('tokenBadge').textContent='\u26A1 Processing\u2026';
   startStages();
   var sys='You are TravelAI — a premium Personal Travel Concierge. When given a travel request, respond ONLY with a valid JSON object (no markdown, no explanation) with this exact structure:\n{"destination":"emoji + city name","subtitle":"travellers, dates","badges":[{"text":"string","cls":"teal|gold|green"}],"budget":{"total":"Rs X","items":[{"icon":"emoji","label":"string","amt":"Rs X"}]},"days":[{"label":"short title","sessions":[{"icon":"emoji","name":"Morning|Afternoon|Evening|Night","activities":[{"time":"HH:MM","emoji":"emoji","title":"string","desc":"string or null","cost":"number or null"}]}]}],"tips":["string","string","string"],"bookingOptions":[{"category":"emoji Name","id":"hotel|flight|cab|attract","options":[{"name":"string","badges":[{"t":"label","c":"best|popular|budget|premium"}],"price":"Rs X","per":"description","nights":3,"details":[{"icon":"emoji","label":"string","val":"string"}],"desc":"string"}]}]}\nRules: 4 bookingOptions categories (hotel, flight, cab, attract), 3 options each, SPECIFIC to destination, all amounts in Indian Rupees, flights price covers ALL travellers combined return, hotels include nights field, no apostrophes anywhere, pure JSON only';
-  fetch('https://api.anthropic.com/v1/messages',{method:'POST',headers:{'Content-Type':'application/json','x-api-key':apiKey,'anthropic-version':'2023-06-01','anthropic-dangerous-direct-browser-access':'true'},body:JSON.stringify({model:'claude-sonnet-4-20250514',max_tokens:4000,system:sys,messages:[{role:'user',content:query}]})})
+  // Build cached system prompt — cache_control marks it for prompt caching
+  var cachedBody = JSON.stringify({
+    model:'claude-sonnet-4-20250514',
+    max_tokens:4000,
+    system:[{
+      type:'text',
+      text:sys,
+      cache_control:{type:'ephemeral'}   // cache the large system prompt across calls
+    }],
+    messages:[{role:'user',content:query}]
+  });
+  fetch('https://api.anthropic.com/v1/messages',{
+    method:'POST',
+    headers:{
+      'Content-Type':'application/json',
+      'x-api-key':apiKey,
+      'anthropic-version':'2023-06-01',
+      'anthropic-beta':'prompt-caching-2024-07-31',
+      'anthropic-dangerous-direct-browser-access':'true'
+    },
+    body:cachedBody
+  })
   .then(function(res){return res.json();})
   .then(function(d){
     if(d.error)throw new Error(d.error.message);
@@ -1079,8 +1256,38 @@ function planTrip(){
     var itinData=JSON.parse(raw);
     stopStages();document.getElementById('thinking').classList.remove('active');
     renderItinerary(itinData);
-    var t=((d.usage&&d.usage.input_tokens)||0)+((d.usage&&d.usage.output_tokens)||0);
-    document.getElementById('tokenBadge').textContent='\u26A1 '+t+' tokens';
+
+    // Token intelligence — show input, output, cache read/write breakdown
+    var usage = d.usage || {};
+    var inputT   = usage.input_tokens         || 0;
+    var outputT  = usage.output_tokens        || 0;
+    var cacheWrite = usage.cache_creation_input_tokens || 0;
+    var cacheRead  = usage.cache_read_input_tokens     || 0;
+    var totalT   = inputT + outputT;
+    var savedT   = cacheRead;  // tokens served from cache = tokens not billed at full rate
+
+    // Update token badge
+    var badge = document.getElementById('tokenBadge');
+    if(badge) badge.textContent = '\u26A1 ' + totalT + ' tokens';
+
+    // Cache badge
+    var cacheBadge = document.getElementById('cacheBadge');
+    if(cacheBadge){
+      if(cacheRead > 0 || cacheWrite > 0){
+        cacheBadge.classList.add('show');
+        cacheBadge.textContent = cacheRead > 0
+          ? '\u2744 Cache hit: ' + cacheRead + ' tokens'
+          : '\u2744 Cache write: ' + cacheWrite + ' tokens';
+      }
+    }
+
+    // Savings badge — cache read tokens cost 90% less than input tokens
+    var savBadge = document.getElementById('savingsBadge');
+    if(savBadge && cacheRead > 0){
+      var savedCost = Math.round(cacheRead * 0.9);  // 90% discount on cache reads
+      savBadge.classList.add('show');
+      savBadge.textContent = '\u2193 Saved ~' + savedCost + ' tokens via cache';
+    }
   })
   .catch(function(err){
     stopStages();document.getElementById('thinking').classList.remove('active');
@@ -1287,12 +1494,41 @@ function exportPDF(confirmedMode){
   }
 }
 
+/* ══ DISCLAIMER LOGIC ══ */
+function showDisclaimer(){
+  var ol=document.getElementById('disclaimerOverlay');
+  if(ol)ol.classList.remove('hidden');
+}
+function hideDisclaimer(){
+  var ol=document.getElementById('disclaimerOverlay');
+  if(ol)ol.classList.add('hidden');
+  try{localStorage.setItem('travelai_disclaimer','1');}catch(e){}
+}
+// Show on first visit; re-show via info button
+var seenDisclaimer=(function(){try{return localStorage.getItem('travelai_disclaimer')==='1';}catch(e){return false;}})();
+if(!seenDisclaimer){
+  showDisclaimer();
+}
+document.getElementById('disclaimerAccept').addEventListener('click', hideDisclaimer);
+document.getElementById('disclaimerBtn').addEventListener('click', showDisclaimer);
+// Tap outside sheet to close
+document.getElementById('disclaimerOverlay').addEventListener('click', function(e){
+  if(e.target===this) hideDisclaimer();
+});
+
 /* ══ WIRE UP BUTTONS ══ */
 document.getElementById('demoBtn').addEventListener('click', loadDemo);
 document.getElementById('sendBtn').addEventListener('click', planTrip);
 document.getElementById('pdfBtn').addEventListener('click', exportPDF);
 document.getElementById('promptInput').addEventListener('keydown', function(e) {
   if (e.key === 'Enter' && (e.ctrlKey || e.metaKey)) planTrip();
+});
+// Disclaimer link in booking section
+document.addEventListener('click', function(e){
+  if(e.target && e.target.id === 'disclaimerLink'){
+    e.preventDefault();
+    showDisclaimer();
+  }
 });
 
 </script>
