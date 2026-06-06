@@ -1,0 +1,707 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="theme-color" content="#0a0f1e">
+<meta name="description" content="Personal Travel Concierge — AI-powered trip planning, booking & management">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="TravelAI">
+<link rel="manifest" href="#" id="manifest-link">
+<title>TravelAI Concierge</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@300;400;600;700&family=DM+Sans:wght@300;400;500;600&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+
+<style>
+:root {
+  --navy: #0a0f1e;
+  --navy2: #0f1628;
+  --navy3: #161e35;
+  --gold: #c9a84c;
+  --gold2: #e8c870;
+  --teal: #00c9b1;
+  --teal2: #00e5cc;
+  --amber: #f59e0b;
+  --rose: #f43f5e;
+  --muted: #8899bb;
+  --light: #dce8ff;
+  --white: #f0f6ff;
+  --glass: rgba(255,255,255,0.04);
+  --glass2: rgba(255,255,255,0.08);
+  --border: rgba(201,168,76,0.2);
+  --border2: rgba(0,201,177,0.15);
+  --shadow: 0 24px 64px rgba(0,0,0,0.5);
+  --glow-gold: 0 0 30px rgba(201,168,76,0.25);
+  --glow-teal: 0 0 30px rgba(0,201,177,0.25);
+}
+
+*{margin:0;padding:0;box-sizing:border-box;}
+
+body {
+  font-family: 'DM Sans', sans-serif;
+  background: var(--navy);
+  color: var(--light);
+  min-height: 100vh;
+  overflow-x: hidden;
+}
+
+/* ── BACKGROUND ── */
+.bg-mesh {
+  position: fixed; inset: 0; z-index: 0; pointer-events: none;
+  background:
+    radial-gradient(ellipse 80% 50% at 10% 0%, rgba(0,201,177,0.08) 0%, transparent 60%),
+    radial-gradient(ellipse 60% 40% at 90% 100%, rgba(201,168,76,0.08) 0%, transparent 60%),
+    radial-gradient(ellipse 40% 60% at 50% 50%, rgba(10,15,30,0) 0%, var(--navy) 100%);
+}
+.bg-grid {
+  position: fixed; inset: 0; z-index: 0; pointer-events: none; opacity: 0.03;
+  background-image: linear-gradient(rgba(255,255,255,0.5) 1px, transparent 1px),
+                    linear-gradient(90deg, rgba(255,255,255,0.5) 1px, transparent 1px);
+  background-size: 48px 48px;
+}
+
+/* ── LAYOUT ── */
+.app { position: relative; z-index: 1; display: flex; flex-direction: column; min-height: 100vh; }
+
+/* ── HEADER ── */
+header {
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 18px 28px;
+  border-bottom: 1px solid var(--border);
+  backdrop-filter: blur(20px);
+  background: rgba(10,15,30,0.8);
+  position: sticky; top: 0; z-index: 100;
+}
+.logo { display: flex; align-items: center; gap: 12px; }
+.logo-icon {
+  width: 40px; height: 40px; border-radius: 10px;
+  background: linear-gradient(135deg, var(--teal), var(--gold));
+  display: flex; align-items: center; justify-content: center; font-size: 20px;
+  box-shadow: var(--glow-teal);
+}
+.logo-text { font-family: 'Cormorant Garamond', serif; font-size: 22px; font-weight: 600; color: var(--white); letter-spacing: 0.5px; }
+.logo-sub { font-size: 11px; color: var(--teal); letter-spacing: 2px; text-transform: uppercase; font-weight: 500; }
+.header-badge {
+  display: flex; align-items: center; gap: 6px;
+  background: rgba(0,201,177,0.1); border: 1px solid var(--border2);
+  padding: 6px 12px; border-radius: 20px; font-size: 12px; color: var(--teal);
+}
+.pulse { width: 6px; height: 6px; background: var(--teal); border-radius: 50%; animation: pulse 2s infinite; }
+@keyframes pulse { 0%,100%{opacity:1;transform:scale(1)} 50%{opacity:0.5;transform:scale(1.5)} }
+
+/* ── HERO ── */
+.hero {
+  padding: 48px 28px 32px;
+  text-align: center;
+}
+.hero-tag {
+  display: inline-flex; align-items: center; gap: 8px;
+  background: var(--glass2); border: 1px solid var(--border);
+  padding: 6px 16px; border-radius: 20px; font-size: 12px;
+  color: var(--gold); letter-spacing: 1.5px; text-transform: uppercase;
+  margin-bottom: 20px; font-weight: 500;
+}
+.hero h1 {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: clamp(2rem, 7vw, 3.8rem);
+  font-weight: 300; line-height: 1.1;
+  color: var(--white); margin-bottom: 16px;
+}
+.hero h1 span { color: var(--gold); font-weight: 600; font-style: italic; }
+.hero p { font-size: 15px; color: var(--muted); max-width: 520px; margin: 0 auto 28px; line-height: 1.7; }
+
+/* ── AI TIER BADGES ── */
+.tiers {
+  display: flex; justify-content: center; gap: 10px; flex-wrap: wrap; margin-bottom: 36px;
+}
+.tier {
+  display: flex; align-items: center; gap: 7px;
+  padding: 7px 14px; border-radius: 8px; font-size: 12px; font-weight: 500;
+  border: 1px solid; backdrop-filter: blur(10px);
+  letter-spacing: 0.3px;
+}
+.tier.ai   { background: rgba(245,158,11,0.08); border-color: rgba(245,158,11,0.3); color: var(--amber); }
+.tier.gen  { background: rgba(0,201,177,0.08); border-color: rgba(0,201,177,0.3); color: var(--teal); }
+.tier.agent{ background: rgba(244,63,94,0.08); border-color: rgba(244,63,94,0.3); color: var(--rose); }
+.tier-dot { width: 7px; height: 7px; border-radius: 50%; background: currentColor; }
+
+/* ── PROMPT BOX ── */
+.prompt-wrap { padding: 0 20px 24px; max-width: 700px; margin: 0 auto; width: 100%; }
+.example-chips {
+  display: flex; gap: 8px; flex-wrap: wrap; margin-bottom: 12px; justify-content: center;
+}
+.chip {
+  background: var(--glass); border: 1px solid var(--border);
+  padding: 6px 14px; border-radius: 20px; font-size: 12px;
+  color: var(--muted); cursor: pointer; transition: all 0.2s;
+}
+.chip:hover { background: rgba(201,168,76,0.1); border-color: var(--gold); color: var(--gold); }
+
+.prompt-box {
+  background: var(--navy3);
+  border: 1px solid var(--border);
+  border-radius: 16px; overflow: hidden;
+  box-shadow: var(--shadow), var(--glow-teal);
+  transition: border-color 0.3s, box-shadow 0.3s;
+}
+.prompt-box:focus-within {
+  border-color: var(--teal);
+  box-shadow: var(--shadow), 0 0 0 3px rgba(0,201,177,0.12);
+}
+.prompt-input {
+  width: 100%; background: transparent; border: none; outline: none;
+  padding: 18px 20px 8px; color: var(--white); font-size: 15px;
+  font-family: 'DM Sans', sans-serif; resize: none; line-height: 1.6; min-height: 80px;
+}
+.prompt-input::placeholder { color: var(--muted); }
+.prompt-footer {
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 10px 16px 14px;
+}
+.prompt-meta { font-size: 12px; color: var(--muted); display: flex; align-items: center; gap: 6px; }
+.send-btn {
+  background: linear-gradient(135deg, var(--teal), var(--teal2));
+  border: none; color: var(--navy); font-family: 'DM Sans', sans-serif;
+  font-size: 13px; font-weight: 600; padding: 10px 22px;
+  border-radius: 10px; cursor: pointer; display: flex; align-items: center; gap: 8px;
+  transition: all 0.2s; letter-spacing: 0.3px;
+}
+.send-btn:hover { transform: translateY(-1px); box-shadow: var(--glow-teal); }
+.send-btn:disabled { opacity: 0.5; cursor: not-allowed; transform: none; }
+.demo-btn {
+  background: transparent;
+  border: 1px solid var(--border);
+  color: var(--gold); font-family: 'DM Sans', sans-serif;
+  font-size: 13px; font-weight: 600; padding: 10px 18px;
+  border-radius: 10px; cursor: pointer; display: flex; align-items: center; gap: 7px;
+  transition: all 0.2s; letter-spacing: 0.3px;
+}
+.demo-btn:hover { background: rgba(201,168,76,0.1); border-color: var(--gold); box-shadow: var(--glow-gold); }
+
+/* ── RESPONSE AREA ── */
+.response-area { padding: 0 20px 20px; max-width: 700px; margin: 0 auto; width: 100%; }
+
+.thinking {
+  display: none; align-items: center; gap: 12px;
+  padding: 16px 20px; background: var(--glass);
+  border: 1px solid var(--border2); border-radius: 12px; margin-bottom: 16px;
+  font-size: 13px; color: var(--teal);
+}
+.thinking.active { display: flex; }
+.thinking-dots span {
+  display: inline-block; width: 6px; height: 6px; border-radius: 50%;
+  background: var(--teal); margin: 0 2px;
+  animation: bounce 1.2s infinite;
+}
+.thinking-dots span:nth-child(2){animation-delay:0.2s}
+.thinking-dots span:nth-child(3){animation-delay:0.4s}
+@keyframes bounce{0%,60%,100%{transform:translateY(0)}30%{transform:translateY(-8px)}}
+
+.itinerary-card {
+  background: var(--navy3); border: 1px solid var(--border);
+  border-radius: 16px; overflow: hidden; display: none;
+  animation: fadeUp 0.4s ease;
+}
+.itinerary-card.visible { display: block; }
+@keyframes fadeUp { from{opacity:0;transform:translateY(16px)} to{opacity:1;transform:translateY(0)} }
+
+.card-header {
+  background: linear-gradient(90deg, rgba(0,201,177,0.1), rgba(201,168,76,0.1));
+  padding: 18px 22px; border-bottom: 1px solid var(--border);
+  display: flex; align-items: center; justify-content: space-between;
+}
+.card-title { font-family: 'Cormorant Garamond', serif; font-size: 20px; font-weight: 600; color: var(--white); }
+.card-meta { font-size: 12px; color: var(--teal); display: flex; align-items: center; gap: 6px; }
+
+.card-body { padding: 20px 22px; }
+.card-body pre {
+  white-space: pre-wrap; font-family: 'DM Sans', sans-serif;
+  font-size: 14px; color: var(--light); line-height: 1.75;
+}
+
+/* agent actions */
+.agent-strip {
+  display: flex; gap: 8px; padding: 14px 22px; flex-wrap: wrap;
+  border-top: 1px solid var(--border);
+  background: rgba(10,15,30,0.5);
+}
+.agent-action {
+  display: flex; align-items: center; gap: 6px;
+  padding: 7px 14px; border-radius: 8px; font-size: 12px; font-weight: 500;
+  background: var(--glass2); border: 1px solid var(--border);
+  color: var(--muted); cursor: default;
+}
+.agent-action.done { color: var(--teal); border-color: var(--border2); background: rgba(0,201,177,0.06); }
+.agent-action.pending { color: var(--amber); border-color: rgba(245,158,11,0.3); background: rgba(245,158,11,0.06); }
+
+/* ── FEATURES GRID ── */
+.features { padding: 32px 20px 20px; max-width: 700px; margin: 0 auto; width: 100%; }
+.section-label {
+  font-size: 11px; color: var(--gold); letter-spacing: 2px; text-transform: uppercase;
+  font-weight: 600; margin-bottom: 14px; display: flex; align-items: center; gap: 10px;
+}
+.section-label::after { content:''; flex:1; height:1px; background: linear-gradient(90deg, var(--border), transparent); }
+
+.feat-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 12px; }
+.feat-card {
+  background: var(--glass); border: 1px solid var(--border);
+  border-radius: 12px; padding: 18px 16px;
+  transition: all 0.25s;
+}
+.feat-card:hover { background: var(--glass2); border-color: var(--teal); transform: translateY(-2px); box-shadow: var(--glow-teal); }
+.feat-icon { font-size: 24px; margin-bottom: 10px; }
+.feat-name { font-size: 14px; font-weight: 600; color: var(--white); margin-bottom: 6px; }
+.feat-desc { font-size: 12px; color: var(--muted); line-height: 1.6; }
+
+/* ── FOOTER ── */
+footer {
+  margin-top: auto; padding: 20px 28px;
+  border-top: 1px solid var(--border);
+  display: flex; align-items: center; justify-content: space-between; flex-wrap: gap;
+  background: rgba(10,15,30,0.6); backdrop-filter: blur(10px);
+  font-size: 11px; color: var(--muted);
+}
+.footer-credit { font-family: 'DM Mono', monospace; letter-spacing: 0.5px; }
+.footer-credit span { color: var(--gold); }
+.token-badge {
+  font-family: 'DM Mono', monospace; font-size: 11px;
+  background: var(--glass); border: 1px solid var(--border);
+  padding: 4px 10px; border-radius: 6px; color: var(--teal);
+}
+
+/* ── INSTALL TOAST ── */
+.install-toast {
+  position: fixed; bottom: 80px; left: 50%; transform: translateX(-50%);
+  background: var(--navy3); border: 1px solid var(--gold);
+  border-radius: 12px; padding: 14px 20px;
+  display: flex; align-items: center; gap: 14px;
+  box-shadow: var(--shadow), var(--glow-gold);
+  font-size: 13px; color: var(--white); z-index: 200;
+  animation: slideUp 0.4s ease; white-space: nowrap;
+  display: none;
+}
+.install-toast.show { display: flex; }
+@keyframes slideUp { from{opacity:0;transform:translateX(-50%) translateY(20px)} to{opacity:1;transform:translateX(-50%) translateY(0)} }
+.install-btn {
+  background: linear-gradient(135deg, var(--gold), var(--gold2));
+  border: none; color: var(--navy); font-weight: 600; font-size: 12px;
+  padding: 7px 16px; border-radius: 8px; cursor: pointer;
+}
+.toast-close { background: none; border: none; color: var(--muted); cursor: pointer; font-size: 18px; padding: 0 4px; }
+
+/* ── SCROLLBAR ── */
+::-webkit-scrollbar { width: 6px; }
+::-webkit-scrollbar-track { background: var(--navy); }
+::-webkit-scrollbar-thumb { background: var(--border); border-radius: 3px; }
+</style>
+</head>
+<body>
+
+<div class="bg-mesh"></div>
+<div class="bg-grid"></div>
+
+<div class="app">
+
+  <!-- HEADER -->
+  <header>
+    <div class="logo">
+      <div class="logo-icon">✈</div>
+      <div>
+        <div class="logo-text">TravelAI</div>
+        <div class="logo-sub">Personal Concierge</div>
+      </div>
+    </div>
+    <div class="header-badge">
+      <span class="pulse"></span>
+      Agentic AI Active
+    </div>
+  </header>
+
+  <!-- HERO -->
+  <div class="hero">
+    <div class="hero-tag">✦ Three-Layer Intelligence</div>
+    <h1>Your Personal<br><span>Travel Concierge</span></h1>
+    <p>Tell us your dream trip. AI understands your preferences, GenAI crafts your itinerary, Agentic AI handles every booking — flights, hotels, cabs, restaurants, changes.</p>
+    <div class="tiers">
+      <div class="tier ai"><span class="tier-dot"></span>🧠 AI — Understands & Learns</div>
+      <div class="tier gen"><span class="tier-dot"></span>✨ GenAI — Creates Itineraries</div>
+      <div class="tier agent"><span class="tier-dot"></span>🤖 Agentic AI — Books Everything</div>
+    </div>
+  </div>
+
+  <!-- PROMPT -->
+  <div class="prompt-wrap">
+    <div class="example-chips">
+      <div class="chip" onclick="setPrompt(this)">5-day family trip to Singapore under ₹1.5L</div>
+      <div class="chip" onclick="setPrompt(this)">Romantic weekend in Goa under ₹40,000</div>
+      <div class="chip" onclick="setPrompt(this)">Solo backpack Europe 15 days ₹2L budget</div>
+      <div class="chip" onclick="setPrompt(this)">Honeymoon Maldives 7 nights ₹3 lakh</div>
+    </div>
+
+    <div class="prompt-box">
+      <textarea
+        class="prompt-input"
+        id="promptInput"
+        placeholder='Try: "Plan a 5-day family trip to Singapore under ₹1.5 lakh with 2 adults and 2 kids, preferring budget hotels near MRT"'
+        rows="3"
+      ></textarea>
+      <div class="prompt-footer">
+        <div class="prompt-meta">
+          <span>💡</span> Include destination, duration, budget & traveller count for best results
+        </div>
+        <div style="display:flex;gap:8px;align-items:center;">
+          <button class="demo-btn" id="demoBtn" onclick="loadDemo()">
+            🇸🇬 See Demo
+          </button>
+          <button class="send-btn" id="sendBtn" onclick="planTrip()">
+            <span>✈</span> Plan My Trip
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- RESPONSE -->
+  <div class="response-area">
+    <div class="thinking" id="thinking">
+      <span>🤖 Agentic AI thinking</span>
+      <div class="thinking-dots"><span></span><span></span><span></span></div>
+      <span id="thinkingStage" style="color:var(--muted);font-size:12px;">Analysing preferences…</span>
+    </div>
+
+    <div class="itinerary-card" id="itineraryCard">
+      <div class="card-header">
+        <div class="card-title" id="cardTitle">Your Custom Itinerary</div>
+        <div class="card-meta" id="cardMeta"><span class="pulse"></span> GenAI Generated</div>
+      </div>
+      <div class="card-body">
+        <pre id="itineraryContent"></pre>
+      </div>
+      <div class="agent-strip" id="agentStrip"></div>
+    </div>
+  </div>
+
+  <!-- FEATURES -->
+  <div class="features">
+    <div class="section-label">What TravelAI does for you</div>
+    <div class="feat-grid">
+      <div class="feat-card">
+        <div class="feat-icon">🧠</div>
+        <div class="feat-name">Preference Engine</div>
+        <div class="feat-desc">Learns your travel style, dietary needs, budget patterns, and past trips to personalise every recommendation.</div>
+      </div>
+      <div class="feat-card">
+        <div class="feat-icon">🗺️</div>
+        <div class="feat-name">Smart Itineraries</div>
+        <div class="feat-desc">GenAI crafts day-by-day plans with timings, distances, must-sees, hidden gems and dining options.</div>
+      </div>
+      <div class="feat-card">
+        <div class="feat-icon">✈️</div>
+        <div class="feat-name">Flight Booking</div>
+        <div class="feat-desc">Agentic AI searches and books the best-value flights across 200+ airlines, with auto seat selection.</div>
+      </div>
+      <div class="feat-card">
+        <div class="feat-icon">🏨</div>
+        <div class="feat-name">Hotel & Stays</div>
+        <div class="feat-desc">Finds and books hotels near key attractions within your budget, handling all check-in logistics.</div>
+      </div>
+      <div class="feat-card">
+        <div class="feat-icon">🚕</div>
+        <div class="feat-name">Cab & Transfers</div>
+        <div class="feat-desc">Airport pickups, city transfers, and inter-city rides pre-booked so you never wait at arrival.</div>
+      </div>
+      <div class="feat-card">
+        <div class="feat-icon">🍽️</div>
+        <div class="feat-name">Restaurant Reservations</div>
+        <div class="feat-desc">Tables at the best local restaurants — curated for your taste, pre-booked at the right times.</div>
+      </div>
+      <div class="feat-card">
+        <div class="feat-icon">🔄</div>
+        <div class="feat-name">Change Management</div>
+        <div class="feat-desc">Flight delay? Weather issue? Agentic AI automatically reschedules, rebooks, and keeps you moving.</div>
+      </div>
+      <div class="feat-card">
+        <div class="feat-icon">💰</div>
+        <div class="feat-name">Budget Tracker</div>
+        <div class="feat-desc">Real-time spend tracking in INR with alerts when nearing limits and smart alternatives to save money.</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- FOOTER -->
+  <footer>
+    <div class="footer-credit">
+      Designed & Architected by <span>Krishnamurthy Kandregula</span> · Made by Claude
+    </div>
+    <div class="token-badge" id="tokenBadge">⚡ Ready</div>
+  </footer>
+</div>
+
+<!-- INSTALL TOAST -->
+<div class="install-toast" id="installToast">
+  <span>📲 Add TravelAI to your home screen</span>
+  <button class="install-btn" id="installBtn">Install</button>
+  <button class="toast-close" onclick="document.getElementById('installToast').classList.remove('show')">✕</button>
+</div>
+
+<script>
+// ─── PWA ICON (Canvas) ───────────────────────────────────────────────
+function generateIcon(size) {
+  const c = document.createElement('canvas');
+  c.width = c.height = size;
+  const ctx = c.getContext('2d');
+  const s = size;
+
+  // Background
+  const bg = ctx.createLinearGradient(0, 0, s, s);
+  bg.addColorStop(0, '#0a0f1e');
+  bg.addColorStop(1, '#0f1e2a');
+  ctx.fillStyle = bg;
+  const r = s * 0.22;
+  ctx.beginPath();
+  ctx.moveTo(r, 0);
+  ctx.lineTo(s - r, 0);
+  ctx.quadraticCurveTo(s, 0, s, r);
+  ctx.lineTo(s, s - r);
+  ctx.quadraticCurveTo(s, s, s - r, s);
+  ctx.lineTo(r, s);
+  ctx.quadraticCurveTo(0, s, 0, s - r);
+  ctx.lineTo(0, r);
+  ctx.quadraticCurveTo(0, 0, r, 0);
+  ctx.closePath();
+  ctx.fill();
+
+  // Glow
+  const glow = ctx.createRadialGradient(s*0.4, s*0.35, 0, s*0.4, s*0.35, s*0.55);
+  glow.addColorStop(0, 'rgba(0,201,177,0.18)');
+  glow.addColorStop(1, 'rgba(0,0,0,0)');
+  ctx.fillStyle = glow;
+  ctx.fillRect(0, 0, s, s);
+
+  // Globe circle
+  ctx.beginPath();
+  ctx.arc(s*0.5, s*0.48, s*0.3, 0, Math.PI*2);
+  const globeGrad = ctx.createLinearGradient(s*0.2, s*0.2, s*0.8, s*0.8);
+  globeGrad.addColorStop(0, 'rgba(0,201,177,0.3)');
+  globeGrad.addColorStop(1, 'rgba(201,168,76,0.15)');
+  ctx.strokeStyle = 'rgba(0,201,177,0.6)';
+  ctx.lineWidth = s * 0.03;
+  ctx.stroke();
+  ctx.fillStyle = globeGrad;
+  ctx.fill();
+
+  // Latitude lines
+  ctx.strokeStyle = 'rgba(0,201,177,0.25)';
+  ctx.lineWidth = s * 0.018;
+  for (let i = -1; i <= 1; i++) {
+    const y = s*0.48 + i * s*0.1;
+    const hw = Math.sqrt(Math.max(0, (s*0.3)**2 - (y - s*0.48)**2));
+    ctx.beginPath();
+    ctx.moveTo(s*0.5 - hw, y);
+    ctx.lineTo(s*0.5 + hw, y);
+    ctx.stroke();
+  }
+
+  // Longitude arc
+  ctx.beginPath();
+  ctx.ellipse(s*0.5, s*0.48, s*0.12, s*0.3, 0, 0, Math.PI*2);
+  ctx.stroke();
+
+  // Plane
+  ctx.save();
+  ctx.translate(s*0.5, s*0.48);
+  ctx.rotate(-Math.PI/4);
+  ctx.fillStyle = '#c9a84c';
+  // Body
+  ctx.beginPath();
+  ctx.ellipse(0, 0, s*0.07, s*0.025, 0, 0, Math.PI*2);
+  ctx.fill();
+  // Wings
+  ctx.fillStyle = '#e8c870';
+  ctx.beginPath();
+  ctx.moveTo(-s*0.01, 0);
+  ctx.lineTo(s*0.02, -s*0.07);
+  ctx.lineTo(s*0.04, 0);
+  ctx.closePath();
+  ctx.fill();
+  ctx.beginPath();
+  ctx.moveTo(-s*0.01, 0);
+  ctx.lineTo(s*0.02, s*0.07);
+  ctx.lineTo(s*0.04, 0);
+  ctx.closePath();
+  ctx.fill();
+  ctx.restore();
+
+  // Corner teal dot
+  ctx.beginPath();
+  ctx.arc(s*0.78, s*0.22, s*0.04, 0, Math.PI*2);
+  ctx.fillStyle = 'rgba(0,229,204,0.8)';
+  ctx.fill();
+
+  return c.toDataURL('image/png');
+}
+
+// ─── MANIFEST ────────────────────────────────────────────────────────
+const icon192 = generateIcon(192);
+const icon512 = generateIcon(512);
+const manifest = {
+  name: 'TravelAI Concierge',
+  short_name: 'TravelAI',
+  description: 'Personal AI Travel Concierge — plan, book, and manage your trips',
+  start_url: '.',
+  display: 'standalone',
+  background_color: '#0a0f1e',
+  theme_color: '#0a0f1e',
+  orientation: 'portrait-primary',
+  icons: [
+    { src: icon192, sizes: '192x192', type: 'image/png', purpose: 'any maskable' },
+    { src: icon512, sizes: '512x512', type: 'image/png', purpose: 'any maskable' }
+  ]
+};
+const blob = new Blob([JSON.stringify(manifest)], { type: 'application/manifest+json' });
+document.getElementById('manifest-link').href = URL.createObjectURL(blob);
+
+// Apple touch icon
+const touchIcon = document.createElement('link');
+touchIcon.rel = 'apple-touch-icon';
+touchIcon.href = icon192;
+document.head.appendChild(touchIcon);
+
+// Favicon
+const favicon = document.createElement('link');
+favicon.rel = 'icon';
+favicon.href = generateIcon(64);
+document.head.appendChild(favicon);
+
+// ─── PWA INSTALL ─────────────────────────────────────────────────────
+let deferredPrompt;
+window.addEventListener('beforeinstallprompt', e => {
+  e.preventDefault();
+  deferredPrompt = e;
+  setTimeout(() => document.getElementById('installToast').classList.add('show'), 3000);
+});
+document.getElementById('installBtn').addEventListener('click', async () => {
+  if (!deferredPrompt) return;
+  deferredPrompt.prompt();
+  const { outcome } = await deferredPrompt.userChoice;
+  deferredPrompt = null;
+  document.getElementById('installToast').classList.remove('show');
+});
+
+// ─── PROMPT CHIPS ────────────────────────────────────────────────────
+function setPrompt(el) {
+  document.getElementById('promptInput').value = el.textContent;
+}
+
+// ─── THINKING STAGES ─────────────────────────────────────────────────
+const stages = [
+  'Analysing preferences & budget…',
+  'GenAI crafting your itinerary…',
+  'Agentic AI searching flights…',
+  'Comparing hotel options…',
+  'Pre-booking restaurants…',
+  'Finalising your travel plan…'
+];
+let stageIdx = 0, stageTimer;
+function startStages() {
+  stageIdx = 0;
+  document.getElementById('thinkingStage').textContent = stages[0];
+  stageTimer = setInterval(() => {
+    stageIdx = (stageIdx + 1) % stages.length;
+    document.getElementById('thinkingStage').textContent = stages[stageIdx];
+  }, 2200);
+}
+function stopStages() { clearInterval(stageTimer); }
+
+// ─── PLAN TRIP ────────────────────────────────────────────────────────
+async function planTrip() {
+  const query = document.getElementById('promptInput').value.trim();
+  if (!query) { document.getElementById('promptInput').focus(); return; }
+
+  const btn = document.getElementById('sendBtn');
+  btn.disabled = true;
+  document.getElementById('thinking').classList.add('active');
+  document.getElementById('itineraryCard').classList.remove('visible');
+  document.getElementById('tokenBadge').textContent = '⚡ Processing…';
+  startStages();
+
+  const systemPrompt = `You are TravelAI — a premium Personal Travel Concierge with three layers of intelligence:
+
+1. AI Layer: Deep understanding of traveller preferences, budgets, dietary needs, and travel styles
+2. GenAI Layer: Creates detailed, personalised day-by-day itineraries with timings, locations, distances, and local tips
+3. Agentic AI Layer: Simulates autonomous booking of flights, hotels, cabs, and restaurants
+
+When given a travel request, respond with:
+- A clear trip summary (destination, dates, budget breakdown in ₹)
+- Day-by-day itinerary with morning/afternoon/evening activities, meals and timings
+- Estimated costs per category (Flights, Hotels, Local Transport, Food, Activities)
+- Agentic AI booking status for each service
+- 3 pro travel tips for this destination
+
+Format clearly using emoji markers. Keep tone warm, confident and premium. Show all amounts in Indian Rupees (₹).`;
+
+  try {
+    const res = await fetch('https://api.anthropic.com/v1/messages', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'anthropic-dangerous-direct-browser-access': 'true'
+      },
+      body: JSON.stringify({
+        model: 'claude-sonnet-4-20250514',
+        max_tokens: 1800,
+        system: systemPrompt,
+        messages: [{ role: 'user', content: query }]
+      })
+    });
+
+    const data = await res.json();
+    const text = data.content?.[0]?.text || 'Could not generate itinerary. Please try again.';
+    const inputT = data.usage?.input_tokens || 0;
+    const outputT = data.usage?.output_tokens || 0;
+
+    stopStages();
+    document.getElementById('thinking').classList.remove('active');
+
+    // Parse title from first line
+    const lines = text.split('\n').filter(l => l.trim());
+    const title = lines[0].replace(/[#*✈🌏🗺️]/g, '').trim().slice(0, 60) || 'Your Custom Itinerary';
+    document.getElementById('cardTitle').textContent = title;
+    document.getElementById('cardMeta').innerHTML = `<span class="pulse"></span> GenAI Generated`;
+    document.getElementById('itineraryContent').textContent = text;
+
+    // Agent actions strip
+    const actions = [
+      { icon: '✈', label: 'Flights Searched', done: true },
+      { icon: '🏨', label: 'Hotels Booked', done: true },
+      { icon: '🚕', label: 'Transfers Ready', done: true },
+      { icon: '🍽️', label: 'Restaurants Reserved', done: true },
+      { icon: '🔔', label: 'Alerts Set', done: true },
+      { icon: '📋', label: 'Itinerary Saved', done: true }
+    ];
+    document.getElementById('agentStrip').innerHTML = actions.map(a =>
+      `<div class="agent-action ${a.done ? 'done' : 'pending'}">${a.icon} ${a.label}</div>`
+    ).join('');
+
+    document.getElementById('itineraryCard').classList.add('visible');
+    document.getElementById('tokenBadge').textContent = `⚡ ${inputT + outputT} tokens`;
+
+  } catch(err) {
+    stopStages();
+    document.getElementById('thinking').classList.remove('active');
+    document.getElementById('itineraryContent').textContent = '⚠ ' + (err.message || 'Something went wrong. Check your API key.');
+    document.getElementById('itineraryCard').classList.add('visible');
+    document.getElementById('tokenBadge').textContent = '⚡ Error';
+  }
+
+  btn.disabled = false;
+}
+
+// Enter key
+document.getElementById('promptInput').addEventListener('keydown', e => {
+  if (e.key === 'Enter' && (e.ctrlKey || e.metaKey)) planTrip();
+});
+</script>
+</body>
+</html>
